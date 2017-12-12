@@ -1,0 +1,49 @@
+body.index {
+  background: rgba(0, 0, 0, .9);
+}
+
+body.index main {
+	@include container(true);
+  text-align: center;
+
+  #login {
+    @include center-vertically(absolute);
+    left: 0;
+    right: 0;
+  }
+
+  h1 {
+    @include scale(font-size 80px 32px, line-height 80px 32px);
+    display: block;
+    width: 100%;
+    color: $white;
+    font-weight: $light;
+    margin: 0 0 $base-margin 0;
+
+    &::before {
+      @include font-awesome(spotify);
+      display: inline-block;
+      width: 100%;
+      margin: 0 auto;
+      font-size: 60px;
+      line-height: 60px;
+      margin-bottom: $base-margin;
+      color: $green;
+    }
+  }
+
+  h2 {
+    @include scale(font-size 24px 18px, line-height 24px 18px);
+    display: block;
+    width: 100%;
+    color: $white;
+    font-weight: $light;
+    margin: 0 0 $base-margin*2 0;
+  }
+
+	button {
+    @include button(transparent, $white, $white, $white, $black, $white);
+    border-radius: 50px;
+    text-decoration: none;
+	}
+}

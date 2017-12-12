@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300, 700');
+
+$light: 300;
+$bold: 700;
+$sans-serif: 'Open Sans', 'Helvetica Nueue', sans-serif;
+
+body {
+	font-family: $sans-serif;
+}
+
+%base-text {
+	font-family: $sans-serif;
+	font-size: 18px;
+	line-height: 1.75;
+	letter-spacing: .025em;
+	font-weight: $light;
+	text-decoration: none;
+}
+
+%small-heading {
+  font-family: $sans-serif;
+  font-size: 22px;
+  line-height: 2;
+  letter-spacing: .05em;
+  font-weight: $light;
+  text-transform: uppercase; 
+}

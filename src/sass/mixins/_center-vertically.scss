@@ -1,0 +1,4 @@
+@mixin center-vertically($position: relative) {
+	@include position($position, 50% null null null);
+	@include transform( translateY(-50%) );
+}

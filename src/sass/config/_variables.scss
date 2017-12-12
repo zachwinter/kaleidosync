@@ -1,0 +1,115 @@
+/**
+ * Generated from /src/config.json
+ */
+@import "global";
+
+/**
+ * Sass-Specific Globals
+ */
+$outer-padding:        30px;
+$mobile-outer-padding: 30px;
+$base-margin:          30px;
+$base-transition:      150ms ease-in-out;
+
+/**
+ * Site Colors
+ */
+$white:  #ffffff;
+$black:  #333333;
+$gray:   #6d6d6d;
+$blue:   #41A8DF;
+$pink:   #E72271;
+$green:  #2fd566;
+$red:    #eb5a4f;
+$orange: #f8a32c;
+$purple: #a65cd4;
+
+$base-color:      $blue;
+$secondary-color: $black;
+
+/**
+ * Fixed / Static Header
+ */
+$fixed-header:        global(fixed_header);
+$adjust-body-padding: true;
+
+/**
+ * Header Top/Bottom Padding
+ */
+$header-padding:            30px;
+$mobile-header-padding:     15px; 
+$scrolled-header-padding:   10px;
+
+/**
+ * Header Item Height
+ */
+$header-item-height:        50px;
+$mobile-header-item-height: 30px;
+
+/**
+ * Calculated Header Height
+ */
+$header-height:          $header-item-height        + ($header-padding          * 2);
+$mobile-header-height:   $mobile-header-item-height + ($mobile-header-padding   * 2);
+$scrolled-header-height: $header-item-height        + ($scrolled-header-padding * 2);
+
+/**
+ * Header Box Shadow (Fixed + Scrolled, Mobile)
+ */
+$header-box-shadow:          0 0 1px rgba(0, 0, 0, .3);
+$header-box-shadow-inactive: 0 0 1px rgba(0, 0, 0,  0);
+
+/**
+ * Mobile Header Breakpoint
+ */
+$header-mobile-breakpoint: global(mobile_menu_breakpoint);
+
+/**
+ * Form Configuration
+ */
+$form-mobile-breakpoint: 640;
+$input-height: 60px;
+$mobile-input-height: 45px;
+$input-color: $black;
+$input-background: transparent;
+$input-padding: 10px;
+$input-border-color: rgba(0, 0, 0, .5);
+$input-border: 1px solid $input-border-color;
+$input-border-bottom-only: true;
+$input-border-radius: 0;
+$input-focus-color: $base-color;
+$checkbox-radio-color: $input-border-color;
+
+/**
+ * Social Colors
+ */
+$social-color-list: (
+	twitter: #00aced,
+	facebook: #3b5998,
+	googleplus: #dd4b39,
+	pinterest: #cb2027,
+	linkedin: #007bb6,
+	youtube: #bb0000,
+	vimeo: #aad450,
+	tumblr: #32506d,
+	instagram: #517fa4,
+	flickr: #ff0084, 
+	dribbble: #ea4c89,
+	quora: #a82400,
+	foursquare: #0072b1,
+	forrst: #5B9A68,
+	vk: #45668e,
+	wordpress: #21759b,
+	stumbleupon: #EB4823,
+	yahoo: #7B0099,
+	blogger: #fb8f3d,
+	soundcloud: #ff3a00
+);
+
+/**
+ * Social Color Helper
+ * .facebook { color: social-color(facebook); }
+ */
+@function social-color($color) {
+	@return map-get($social-color-list, $color);
+} 

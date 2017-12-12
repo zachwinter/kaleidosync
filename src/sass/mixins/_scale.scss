@@ -1,0 +1,24 @@
+@mixin scale($properties...) {
+	$breakpoint-list: map-values($breakpoints);
+
+  @each $property in $properties {
+    #{nth($property, 1)}: nth($property, 2);
+  }
+
+  @each $key, $val in $breakpoints {
+    @include bp($key) {
+      @each $property in $properties {
+        $prop    : nth($property, 1);
+        $desktop : nth($property, 2);
+        $mobile  : nth($property, 3);
+        $iterate : (($desktop * 1) - ($mobile * 1)) / (length($breakpoint-list) - 1);
+
+        @if index($breakpoint-list, $val) == length($breakpoint-list) {
+          #{$prop}: $mobile;
+        } @else {
+          #{$prop}: ($desktop * 1) - ($iterate * index($breakpoint-list, $val));
+        }
+      }
+    }
+  }
+}

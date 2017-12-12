@@ -1,0 +1,7 @@
+@mixin show-when($breakpoint, $display: block) {
+	display: none;
+
+	@include bp($breakpoint) {
+		display: $display;
+	}
+} 
