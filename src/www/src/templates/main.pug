@@ -1,0 +1,17 @@
+include partials/mixins
+
+block vars
+  - let INCLUDE_HEADER = false;
+  - let INCLUDE_FOOTER = false;
+  
+doctype html  
+html(data-template="main")  
+  include partials/head    
+  body(data-scrolled="false" class=(path))
+    if INCLUDE_HEADER === true || typeof(INCLUDE_HEADER) === 'undefined'
+      include partials/header
+    main
+      block main
+    if INCLUDE_FOOTER === true || typeof(INCLUDE_FOOTER) === 'undefined'
+      include partials/footer
+    include partials/javascript

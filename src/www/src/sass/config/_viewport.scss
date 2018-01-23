@@ -1,0 +1,20 @@
+$master-max-width: 1280px;
+$grid-columns: 12;
+$max-width: $master-max-width + ($outer-padding * 2);
+
+$breakpoints: ( 
+	1280: new-breakpoint(max-width 1280px $grid-columns), 
+	1024: new-breakpoint(max-width 1024px $grid-columns), 
+	900:  new-breakpoint(max-width 900px  $grid-columns),
+	768:  new-breakpoint(max-width 768px  $grid-columns),
+	640:  new-breakpoint(max-width 640px  $grid-columns),
+	480:  new-breakpoint(max-width 480px  $grid-columns),
+	400:  new-breakpoint(max-width 480px  $grid-columns),
+	320:  new-breakpoint(max-width 320px  $grid-columns)
+);
+
+@mixin bp($bp) {
+	$breakpoint: map-get($breakpoints, $bp);
+	
+	@include media($breakpoint) { @content; }
+}

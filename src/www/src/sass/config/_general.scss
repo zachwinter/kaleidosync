@@ -1,0 +1,83 @@
+html, body {
+	max-width: 100%;
+	overflow-x: hidden;
+	text-rendering: auto;
+	margin: 0;
+	padding: 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	color: $black;
+}
+
+body {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+main {
+	flex: 1;
+	width: 100%;
+}
+
+img {
+	@include size(100% auto);
+}
+
+.container {
+	@include container(true);
+}
+
+blockquote, q, table, pre {
+	margin-bottom: $base-margin;
+}
+
+code {
+	font-size: 16px;
+
+	@include bp(640) { font-size: 12px; }
+}
+
+$button-color: $base-color;
+
+@mixin button(
+	$background: transparent,
+	$color: $button-color,
+	$border-color: $button-color,
+	$hover-background: $button-color,
+	$hover-color: $white,
+	$hover-border-color: $button-color
+) {
+	@extends %small-heading;
+	@include transition(all $base-transition);
+	background-color: $background;
+	border: 2px solid $border-color;
+	height: $input-height;
+	line-height: $input-height - 4px;
+	padding: 0 30px;
+	margin-bottom: $base-margin; 
+	color: $color;
+	text-transform: uppercase;
+	border-radius: 0;
+	display: inline-block;
+	font-size: 18px;
+
+	&:hover {
+		background-color: $hover-background;
+		color: $hover-color;
+		border-color: $hover-border-color;
+	}
+
+	&:active {
+		@include transform( translateY(3px) scale(.95) );
+	}
+
+	&:focus {
+		outline: 0;
+	}
+}
+
+#{$all-buttons}, .button {
+	@include button;
+}

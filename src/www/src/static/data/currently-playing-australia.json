@@ -1,0 +1,78 @@
+{
+  "timestamp" : 1516596780025,
+  "progress_ms" : 140363,
+  "is_playing" : true,
+  "item" : {
+    "album" : {
+      "album_type" : "album",
+      "artists" : [ {
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/artist/4LG4Bs1Gadht7TCrMytQUO"
+        },
+        "href" : "https://api.spotify.com/v1/artists/4LG4Bs1Gadht7TCrMytQUO",
+        "id" : "4LG4Bs1Gadht7TCrMytQUO",
+        "name" : "The Shins",
+        "type" : "artist",
+        "uri" : "spotify:artist:4LG4Bs1Gadht7TCrMytQUO"
+      } ],
+      "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TR", "TW", "US", "UY" ],
+      "external_urls" : {
+        "spotify" : "https://open.spotify.com/album/7f5IY1tuyC4yEardrzrxwe"
+      },
+      "href" : "https://api.spotify.com/v1/albums/7f5IY1tuyC4yEardrzrxwe",
+      "id" : "7f5IY1tuyC4yEardrzrxwe",
+      "images" : [ {
+        "height" : 640,
+        "url" : "https://i.scdn.co/image/351381691eb5fb6c47e2a1f715922e7a0cb622f2",
+        "width" : 640
+      }, {
+        "height" : 300,
+        "url" : "https://i.scdn.co/image/52cc3a84ce127bdee8aea291e691d9695305c0c0",
+        "width" : 300
+      }, {
+        "height" : 64,
+        "url" : "https://i.scdn.co/image/ed7cc3c943324c48711c208a54f64421b2c02ff5",
+        "width" : 64
+      } ],
+      "name" : "Wincing The Night Away",
+      "type" : "album",
+      "uri" : "spotify:album:7f5IY1tuyC4yEardrzrxwe"
+    },
+    "artists" : [ {
+      "external_urls" : {
+        "spotify" : "https://open.spotify.com/artist/4LG4Bs1Gadht7TCrMytQUO"
+      },
+      "href" : "https://api.spotify.com/v1/artists/4LG4Bs1Gadht7TCrMytQUO",
+      "id" : "4LG4Bs1Gadht7TCrMytQUO",
+      "name" : "The Shins",
+      "type" : "artist",
+      "uri" : "spotify:artist:4LG4Bs1Gadht7TCrMytQUO"
+    } ],
+    "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TR", "TW", "US", "UY" ],
+    "disc_number" : 1,
+    "duration_ms" : 236733,
+    "explicit" : false,
+    "external_ids" : {
+      "isrc" : "USSUB0770502"
+    },
+    "external_urls" : {
+      "spotify" : "https://open.spotify.com/track/1JQiZTI59vPKwXHaU0md7I"
+    },
+    "href" : "https://api.spotify.com/v1/tracks/1JQiZTI59vPKwXHaU0md7I",
+    "id" : "1JQiZTI59vPKwXHaU0md7I",
+    "name" : "Australia",
+    "popularity" : 64,
+    "preview_url" : "https://p.scdn.co/mp3-preview/09f14755c568aa5af4dedae4068d5e16b8ea25a0?cid=ddb9b25d4d0e42eaa0e67240e7c61e2b",
+    "track_number" : 2,
+    "type" : "track",
+    "uri" : "spotify:track:1JQiZTI59vPKwXHaU0md7I"
+  },
+  "context" : {
+    "external_urls" : {
+      "spotify" : "https://open.spotify.com/artist/4LG4Bs1Gadht7TCrMytQUO"
+    },
+    "href" : "https://api.spotify.com/v1/artists/4LG4Bs1Gadht7TCrMytQUO",
+    "type" : "artist",
+    "uri" : "spotify:artist:4LG4Bs1Gadht7TCrMytQUO"
+  }
+}

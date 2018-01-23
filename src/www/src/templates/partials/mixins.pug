@@ -1,0 +1,346 @@
+//- SELECT INPUTS
+
+  :: Mixin ::
+
+  +select-input({
+    name: 'gender',
+    options: [
+      { value: 'male',   text: 'Male'   },
+      { value: 'female', text: 'Female' }
+    ]
+  })
+  
+  :: Output ::
+
+  <div class="select-container">
+    <div>
+      <select>
+        <option value="male">Male</option>
+        <option value="female">Female></option>
+      </select>
+    </div>
+  </div>
+
+mixin select-input(object)
+  div.select-container
+    div
+      select(
+        name= object.name
+        required= typeof(object.required) !== 'undefined'
+      )
+        each option in object.options
+          option(value= option.value)= option.text
+
+
+
+//- CHECKBOX INPUTS
+
+  :: Mixin ::
+
+  +checkbox-input({
+    label: 'Contact Me',
+    name: 'contact',
+    value: 'yes'
+  })
+
+  :: Output ::
+
+  <div class="checkbox-container">
+    <label>
+      <input type="checkbox" name="contact" value="yes"><i class="icon"></i><span>Contact Me</span>
+    </label>
+  </div>
+
+mixin checkbox-input(object)
+  div.checkbox-container
+    label
+      input(
+        type="checkbox"
+        name=  object.name
+        value= object.value,
+        required= typeof(object.required) !== 'undefined'
+      )
+      i.icon
+      span= object.label
+
+
+
+//- RADIO INPUTS
+
+  :: Mixin ::
+
+  +radio-input({
+    name: 'plan',
+    options: [
+      { label: 'Standard', value: 'standard' },
+      { label: 'Premium',  value: 'premium'  }
+    ],
+    required: true 
+  })
+
+  :: Output ::
+
+  <div class="radio-container">
+    <label class="radio-label">
+      <input type="radio" name="plan" value="standard" required="required"><i class="icon"></i><span>Standard</span>
+    </label>
+    <label class="radio-label">
+      <input type="radio" name="plan" value="premium" required="required"><i class="icon"></i><span>Premium</span>
+    </label>
+  </div>
+
+mixin radio-input(object)
+  div.radio-container
+    each option in object.options
+      label.radio-label
+        input(
+          type="radio"
+          name=  object.name
+          value= option.value
+          required= typeof(object.required) !== 'undefined'
+        )
+        i.icon
+        span= option.label 
+
+
+
+//- RANGE INPUTS
+
+  :: Mixin ::
+
+  +range-input({
+    name: 'experience',
+    ticker: true,
+    step: 1,
+    min: 0,
+    max: 20
+  })
+
+  :: Output ::
+
+  <div>
+    <span data-range-ticker="data-range-ticker">0</span>
+    <input type="range" name="experience" min="0" max="20" step="1" value="0" placeholder="">
+  </div>
+
+mixin range-input(object)
+  div
+    if object.ticker
+      span(data-range-ticker)= object.min
+    input(
+      type="range" 
+      name= object.name 
+      min=  object.min 
+      max=  object.max
+      step=        typeof(object.step)        !== 'undefined' ? object.step  : 1
+      value=       typeof(object.value)       !== 'undefined' ? object.value : object.min
+      placeholder= typeof(object.placeholder) !== 'undefined' ? object.placeholder : ''
+      required=    typeof(object.required)    !== 'undefined'
+    )
+
+
+
+//- SLIDER
+
+  :: Mixin ::
+
+  +slider
+    +slide
+      h1 Slide 01
+      p Nullam a venenatis enim. Phasellus pulvinar neque sit amet erat porttitor varius eget ac sapien.
+    +slide
+      h1 Slide 02
+      p Nullam a venenatis enim. Phasellus pulvinar neque sit amet erat porttitor varius eget ac sapien.
+    +slide
+      h1 Slide 03
+      p Nullam a venenatis enim. Phasellus pulvinar neque sit amet erat porttitor varius eget ac sapien.
+  +slider-pagination
+
+  :: Output ::
+
+  <div data-slider="data-slider">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">
+        <h1>Slide 01</h1>
+        <p>Nullam a venenatis enim. Phasellus pulvinar neque sit amet erat porttitor varius eget ac sapien.</p>
+      </div>
+      <div class="swiper-slide">
+        <h1>Slide 01</h1>
+        <p>Nullam a venenatis enim. Phasellus pulvinar neque sit amet erat porttitor varius eget ac sapien.</p>
+      </div>
+      <div class="swiper-slide">
+        <h1>Slide 01</h1>
+        <p>Nullam a venenatis enim. Phasellus pulvinar neque sit amet erat porttitor varius eget ac sapien.</p>
+      </div>
+    </div>
+    <div data-slider-pagination="data-slider-pagination"></div>
+
+mixin slider
+  div(data-slider)
+    div.swiper-wrapper
+      if block
+        block
+
+mixin slide
+  div.swiper-slide
+    if block
+      block
+
+mixin slider-pagination
+  div(data-slider-pagination)
+
+
+
+//- PHOTO GALLERY
+
+  :: Mixin ::
+
+  +photo-gallery([
+    { src: 'static/images/photo-01.jpg', size: '1080x1080' },
+    { src: 'static/images/photo-02.jpg', size: '1080x1080' },
+    { src: 'static/images/photo-03.jpg', size: '1080x1080' },
+    { src: 'static/images/photo-04.jpg', size: '1080x1080' },
+    { src: 'static/images/photo-05.jpg', size: '1080x1080' },
+    { src: 'static/images/photo-06.jpg', size: '1080x1080' }
+  ])
+
+  :: Output ::
+
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="pswp__bg"> </div>
+    <div class="pswp__scroll-wrap">
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+      <div class="pswp__ui pswp__ui--hidden">
+        <div class="pswp__top-bar">
+          <div class="pswp__counter"></div>
+          <button class="pswp__button pswp__button--close" title="Close"></button>
+          <button class="pswp__button pswp__button--fs" title="Toggle Fullscreen"></button>
+          <button class="pswp__button pswp__button--zoom" title="Zoom In/Out"></button>
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="pswp__button pswp__button--arrow--left" title="Previous"></button>
+        <button class="pswp__button pswp__button--arrow--right" title="Next"></button>
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ul data-gallery="data-gallery">
+    <li><img src="static/images/photo-01.jpg" alt="" data-size="1080x1080"/></li>
+    <li><img src="static/images/photo-02.jpg" alt="" data-size="1080x1080"/></li>
+    <li><img src="static/images/photo-03.jpg" alt="" data-size="1080x1080"/></li>
+    <li><img src="static/images/photo-04.jpg" alt="" data-size="1080x1080"/></li>
+    <li><img src="static/images/photo-05.jpg" alt="" data-size="1080x1080"/></li>
+    <li><img src="static/images/photo-06.jpg" alt="" data-size="1080x1080"/></li>
+  </ul>
+
+mixin photoswipe
+  div.pswp(tabindex="-1" role="dialog" aria-hidden="true")
+      div.pswp__bg 
+      div.pswp__scroll-wrap
+        div.pswp__container
+          div.pswp__item
+          div.pswp__item
+          div.pswp__item
+        div.pswp__ui.pswp__ui--hidden
+          div.pswp__top-bar
+            div.pswp__counter
+            button.pswp__button.pswp__button--close(title="Close")
+            button.pswp__button.pswp__button--fs(title="Toggle Fullscreen")
+            button.pswp__button.pswp__button--zoom(title="Zoom In/Out")
+            div.pswp__preloader
+              div.pswp__preloader__icn
+                div.pswp__preloader__cut
+                  div.pswp__preloader__donut
+          button.pswp__button.pswp__button--arrow--left(title="Previous")
+          button.pswp__button.pswp__button--arrow--right(title="Next")
+          div.pswp__caption
+            div.pswp__caption__center
+
+mixin photo-gallery(images)
+  +photoswipe
+  ul(data-gallery)
+    each image in images
+      li: img(src= image.src alt= image.alt || '' data-size= image.size)
+
+
+
+//- ACCORDION
+
+  :: Mixin ::
+
+  +accordion
+    +accordion-item
+      block header
+        button Click for more info
+      block content
+        p Nullam a venenatis enim. Phasellus pulvinar neque sit amet erat porttitor varius eget ac sapien.
+    +accordion-item
+      block header
+        button Click for more info
+      block content
+        p Nullam a venenatis enim. Phasellus pulvinar neque sit amet erat porttitor varius eget ac sapien.
+    +accordion-item
+      block header
+        button Click for more info
+      block content
+        p Nullam a venenatis enim. Phasellus pulvinar neque sit amet erat porttitor varius eget ac sapien.
+
+  :: Output ::
+  
+  <ul data-accordion="data-accordion">
+    <li data-item="data-item" data-open="false">
+      <div data-header="data-header">
+        <button>Click for more info</button>
+      </div>
+      <div data-content="data-content">
+        <p>Nullam a venenatis enim. Phasellus pulvinar neque sit amet erat porttitor varius eget ac sapien.</p>
+      </div>
+    </li>
+    <li data-item="data-item" data-open="false">
+      <div data-header="data-header">
+        <button>Click for more info</button>
+      </div>
+      <div data-content="data-content">
+        <p>Nullam a venenatis enim. Phasellus pulvinar neque sit amet erat porttitor varius eget ac sapien.</p>
+      </div>
+    </li>
+    <li data-item="data-item" data-open="false">
+      <div data-header="data-header">
+        <button>Click for more info</button>
+      </div>
+      <div data-content="data-content">
+        <p>Nullam a venenatis enim. Phasellus pulvinar neque sit amet erat porttitor varius eget ac sapien.</p>
+      </div>
+    </li>
+  </ul>
+
+mixin accordion
+  ul(data-accordion)
+    block
+
+mixin accordion-item
+  li(data-item data-open="false")
+    div(data-header)
+      block header
+    div(data-content)
+      block content
+
+
+mixin typed(text, elClass)
+  div.typed-js
+    div.typed-text-container
+      div(class= elClass)
+    div.text-container
+      div(data-text= text)

@@ -1,0 +1,17 @@
+@mixin border-underline(
+	$color : $base-color,
+	$order : true,
+	$size  : 1px
+){
+	@include transition(color $base-transition, border $base-transition);
+
+	@if $order == true {
+		border-bottom: $size solid transparent;
+
+		&:hover { border-color: $color; }
+	} @else {
+		border-bottom: $size solid $color;
+
+		&:hover { border-color: transparent; }
+	}
+} 

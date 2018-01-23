@@ -1,8 +1,0 @@
-@mixin full-when($breakpoint) {
-	@include bp($breakpoint) {
-		width: 100%;
-		float: none;
-		margin-right: 0;
-		margin-left: 0;
-	}
-} 

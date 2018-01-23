@@ -1,0 +1,13 @@
+@mixin outer-padding($full: null) {
+	padding-left: $outer-padding;
+	padding-right: $outer-padding;
+
+	@if $full { padding: $outer-padding; }
+
+	@include bp(640) {
+		padding-left: $mobile-outer-padding;
+		padding-right: $mobile-outer-padding;
+
+		@if $full { padding: $mobile-outer-padding; }
+	}
+}

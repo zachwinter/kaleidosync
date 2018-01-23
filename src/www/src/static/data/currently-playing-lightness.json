@@ -1,0 +1,78 @@
+{
+  "timestamp" : 1516587395892,
+  "progress_ms" : 0,
+  "is_playing" : true,
+  "item" : {
+    "album" : {
+      "album_type" : "album",
+      "artists" : [ {
+        "external_urls" : {
+          "spotify" : "https://open.spotify.com/artist/0YrtvWJMgSdVrk3SfNjTbx"
+        },
+        "href" : "https://api.spotify.com/v1/artists/0YrtvWJMgSdVrk3SfNjTbx",
+        "id" : "0YrtvWJMgSdVrk3SfNjTbx",
+        "name" : "Death Cab for Cutie",
+        "type" : "artist",
+        "uri" : "spotify:artist:0YrtvWJMgSdVrk3SfNjTbx"
+      } ],
+      "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TR", "TW", "US", "UY" ],
+      "external_urls" : {
+        "spotify" : "https://open.spotify.com/album/5FJTVcpDFYqlo7vjjHEA9V"
+      },
+      "href" : "https://api.spotify.com/v1/albums/5FJTVcpDFYqlo7vjjHEA9V",
+      "id" : "5FJTVcpDFYqlo7vjjHEA9V",
+      "images" : [ {
+        "height" : 640,
+        "url" : "https://i.scdn.co/image/de09b94ce25766e015d26b45606857257f477f9c",
+        "width" : 640
+      }, {
+        "height" : 300,
+        "url" : "https://i.scdn.co/image/69afd0843ad43bf26f6372304e631ab43ff8f7db",
+        "width" : 300
+      }, {
+        "height" : 64,
+        "url" : "https://i.scdn.co/image/9230cd8da30350da8b81962c0eeb5081b2235395",
+        "width" : 64
+      } ],
+      "name" : "Transatlanticism",
+      "type" : "album",
+      "uri" : "spotify:album:5FJTVcpDFYqlo7vjjHEA9V"
+    },
+    "artists" : [ {
+      "external_urls" : {
+        "spotify" : "https://open.spotify.com/artist/0YrtvWJMgSdVrk3SfNjTbx"
+      },
+      "href" : "https://api.spotify.com/v1/artists/0YrtvWJMgSdVrk3SfNjTbx",
+      "id" : "0YrtvWJMgSdVrk3SfNjTbx",
+      "name" : "Death Cab for Cutie",
+      "type" : "artist",
+      "uri" : "spotify:artist:0YrtvWJMgSdVrk3SfNjTbx"
+    } ],
+    "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TR", "TW", "US", "UY" ],
+    "disc_number" : 1,
+    "duration_ms" : 210213,
+    "explicit" : false,
+    "external_ids" : {
+      "isrc" : "USBS50310280"
+    },
+    "external_urls" : {
+      "spotify" : "https://open.spotify.com/track/3EnD9mAbEHTFKDGjhZixBL"
+    },
+    "href" : "https://api.spotify.com/v1/tracks/3EnD9mAbEHTFKDGjhZixBL",
+    "id" : "3EnD9mAbEHTFKDGjhZixBL",
+    "name" : "Lightness",
+    "popularity" : 46,
+    "preview_url" : "https://p.scdn.co/mp3-preview/e4271ce9c7c721108936a8d3335e8ef1c6a7e6ca?cid=ddb9b25d4d0e42eaa0e67240e7c61e2b",
+    "track_number" : 2,
+    "type" : "track",
+    "uri" : "spotify:track:3EnD9mAbEHTFKDGjhZixBL"
+  },
+  "context" : {
+    "external_urls" : {
+      "spotify" : "https://open.spotify.com/album/5FJTVcpDFYqlo7vjjHEA9V"
+    },
+    "href" : "https://api.spotify.com/v1/albums/5FJTVcpDFYqlo7vjjHEA9V",
+    "type" : "album",
+    "uri" : "spotify:album:5FJTVcpDFYqlo7vjjHEA9V"
+  }
+}

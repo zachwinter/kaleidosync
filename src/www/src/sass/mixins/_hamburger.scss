@@ -1,0 +1,51 @@
+@mixin hamburger(
+  $size,
+  $color,
+  $open-color: $color,
+  $transition: $base-transition
+){
+  $offset: 10px;
+  $line-width: 2px;
+
+  @include size(($size - 1px) ($size - $offset - 1px));
+  display: block;
+  position: relative;
+  z-index: 200;
+  border: 0;
+  margin-top: $offset / 2;
+
+  &:before, &:after {
+    @include size(100% $line-width);
+    @include position(absolute, null 0px null 0px);
+    content: '';
+    transition: all $transition;
+    background: $color;
+  }
+
+  &:before { top:    0; }
+  &:after  { bottom: 0; }
+
+  span {
+    @include size(100%);
+    display: block;
+
+    &:before, &:after {
+      @include size(100% $line-width);
+      @include position(absolute, ((($size - $offset) / 2) - $line-width) 0px null 0px);
+      content: '';
+      transition: all $transition;
+      background: $color;
+    }
+  }
+
+  &.open {
+    &:before, &:after {
+      background: $open-color;
+      opacity: 0;
+    }
+
+    span:before, span:after { background: $open-color; }
+    span:before { transform: rotate(45deg);  }
+    span:after  { transform: rotate(-45deg); }
+  }
+}
