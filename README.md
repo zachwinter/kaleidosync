@@ -16,4 +16,9 @@ If you're interested in creating something similar, I've included a template as 
 
 The template class extends base classes that keep track of your currently playing song, which specific interval is active, and expose event hooks on every interval change: e.g. on every beat change, do {x}.
 
+Server-side code authenticates with Spotify using OAUTH.
+
+Visualizer-specific code can be found here:
+`/public/js/kaleidosync/`
+
 Feel free to reach out if you have any questions – or, even better, constructive feedback!
