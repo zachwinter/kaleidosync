@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,700');
+@import url('https://fonts.googleapis.com/css?family=Share');
+
+@import 'global';
+@import 'imports/reset';
+@import 'pages/index'; 
+@import 'kaleidosync/toast';
+
+body {
+  @include base-text;
+}  

@@ -1,0 +1,424 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,700");
+@import url("https://fonts.googleapis.com/css?family=Share");
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0; }
+
+body {
+  max-width: 100%;
+  overflow-x: hidden; }
+
+.index {
+  background: #5fc49e;
+  color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center; }
+  .index .content {
+    position: relative; }
+  .index #shade {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: #f0f0f0;
+    transition: opacity 2s linear;
+    opacity: 1; }
+  .index.loaded #shade {
+    opacity: 0; }
+  .index #shade.hide {
+    display: none; }
+  .index h1 {
+    font-size: 38px;
+    font-family: "Share", sans-serif;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-size: 32px;
+    line-height: 32px; }
+    @media all and (min-width: 320px) {
+      .index h1 {
+        font-size: 49.6px;
+        line-height: 55.6px; } }
+    @media all and (min-width: 480px) {
+      .index h1 {
+        font-size: 67.2px;
+        line-height: 79.2px; } }
+    @media all and (min-width: 640px) {
+      .index h1 {
+        font-size: 84.8px;
+        line-height: 102.8px; } }
+    @media all and (min-width: 768px) {
+      .index h1 {
+        font-size: 102.4px;
+        line-height: 126.4px; } }
+    @media all and (min-width: 1024px) {
+      .index h1 {
+        font-size: 120px;
+        line-height: 150px; } }
+    @media all and (min-width: 1280px) {
+      .index h1 {
+        font-size: 120px;
+        line-height: 150px; } }
+  .index p {
+    font-size: 24px;
+    line-height: 24px; }
+    @media all and (min-width: 320px) {
+      .index p {
+        font-size: 25.6px;
+        line-height: 25.6px; } }
+    @media all and (min-width: 480px) {
+      .index p {
+        font-size: 27.2px;
+        line-height: 27.2px; } }
+    @media all and (min-width: 640px) {
+      .index p {
+        font-size: 28.8px;
+        line-height: 28.8px; } }
+    @media all and (min-width: 768px) {
+      .index p {
+        font-size: 30.4px;
+        line-height: 30.4px; } }
+    @media all and (min-width: 1024px) {
+      .index p {
+        font-size: 32px;
+        line-height: 32px; } }
+    @media all and (min-width: 1280px) {
+      .index p {
+        font-size: 32px;
+        line-height: 32px; } }
+  .index .index, .index button {
+    transform: translateY(50px);
+    opacity: 0; }
+
+@keyframes button {
+  0% { }
+  100% {
+    transform: translateY(0);
+    opacity: 1; } }
+  .index .buttons {
+    position: absolute;
+    right: 0;
+    bottom: -100px;
+    left: 0;
+    align-items: center;
+    z-index: 100; }
+    .index .buttons.show button {
+      animation: button 1s cubic-bezier(0.81, 0.14, 0.22, 0.86);
+      animation-fill-mode: forwards; }
+      .index .buttons.show button:last-child {
+        animation-delay: .2s; }
+  .index button {
+    font-size: 18px;
+    font-family: "Share", sans-serif;
+    text-transform: uppercase;
+    font-weight: 300;
+    padding: 15px;
+    display: inline-block;
+    border-radius: 100px;
+    color: #010B13;
+    transition: all 0.15s linear;
+    background: #f0f0f0;
+    margin-top: 1.5625em; }
+    .index button:hover {
+      background: #010B13;
+      color: #f0f0f0; }
+    .index button:active, .index button:focus {
+      outline: 0; }
+    .index button:active {
+      transform: translateY(4px); }
+    @media all and (min-width: 320px) {
+      .index button {
+        margin-top: 1.86035em; } }
+    @media all and (min-width: 480px) {
+      .index button {
+        margin-top: 2.1582em; } }
+    @media all and (min-width: 640px) {
+      .index button {
+        margin-top: 2.45605em; } }
+    @media all and (min-width: 768px) {
+      .index button {
+        margin-top: 2.75391em; } }
+    @media all and (min-width: 1024px) {
+      .index button {
+        margin-top: 3.05176em; } }
+    @media all and (min-width: 1280px) {
+      .index button {
+        margin-top: 3.05176em; } }
+    .index button:first-child {
+      margin-right: 1.25em; }
+  .index #kaleidoscope {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1; }
+
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  height: 120px;
+  transition: opacity 300ms cubic-bezier(0.81, 0.14, 0.22, 0.86);
+  z-index: 100;
+  background: rgba(1, 11, 19, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  text-align: left; }
+  #toast img {
+    height: 120px;
+    width: 120px; }
+  #toast h1 {
+    font-size: 18px;
+    font-family: "Share", sans-serif;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-size: 28px;
+    line-height: 30px;
+    color: #f0f0f0;
+    padding: 0 30px;
+    font-weight: 300; }
+    #toast h1 i {
+      font-style: normal; }
+    #toast h1 span {
+      font-family: "Open Sans", sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.5;
+      display: block;
+      font-size: .5em; }
+
+body {
+  font-family: "Open Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.5; }
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0; }
+
+body {
+  max-width: 100%;
+  overflow-x: hidden; }
+
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  height: 120px;
+  transition: opacity 300ms cubic-bezier(0.81, 0.14, 0.22, 0.86);
+  z-index: 100;
+  background: rgba(1, 11, 19, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  text-align: left; }
+  #toast img {
+    height: 120px;
+    width: 120px; }
+  #toast h1 {
+    font-size: 18px;
+    font-family: "Share", sans-serif;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-size: 28px;
+    line-height: 30px;
+    color: #f0f0f0;
+    padding: 0 30px;
+    font-weight: 300; }
+    #toast h1 i {
+      font-style: normal; }
+    #toast h1 span {
+      font-family: "Open Sans", sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.5;
+      display: block;
+      font-size: .5em; }
+
+.index {
+  background: #5fc49e;
+  color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center; }
+  .index .content {
+    position: relative; }
+  .index #shade {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: #f0f0f0;
+    transition: opacity 2s linear;
+    opacity: 1; }
+  .index.loaded #shade {
+    opacity: 0; }
+  .index #shade.hide {
+    display: none; }
+  .index h1 {
+    font-size: 38px;
+    font-family: "Share", sans-serif;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-size: 32px;
+    line-height: 32px; }
+    @media all and (min-width: 320px) {
+      .index h1 {
+        font-size: 49.6px;
+        line-height: 55.6px; } }
+    @media all and (min-width: 480px) {
+      .index h1 {
+        font-size: 67.2px;
+        line-height: 79.2px; } }
+    @media all and (min-width: 640px) {
+      .index h1 {
+        font-size: 84.8px;
+        line-height: 102.8px; } }
+    @media all and (min-width: 768px) {
+      .index h1 {
+        font-size: 102.4px;
+        line-height: 126.4px; } }
+    @media all and (min-width: 1024px) {
+      .index h1 {
+        font-size: 120px;
+        line-height: 150px; } }
+    @media all and (min-width: 1280px) {
+      .index h1 {
+        font-size: 120px;
+        line-height: 150px; } }
+  .index p {
+    font-size: 24px;
+    line-height: 24px; }
+    @media all and (min-width: 320px) {
+      .index p {
+        font-size: 25.6px;
+        line-height: 25.6px; } }
+    @media all and (min-width: 480px) {
+      .index p {
+        font-size: 27.2px;
+        line-height: 27.2px; } }
+    @media all and (min-width: 640px) {
+      .index p {
+        font-size: 28.8px;
+        line-height: 28.8px; } }
+    @media all and (min-width: 768px) {
+      .index p {
+        font-size: 30.4px;
+        line-height: 30.4px; } }
+    @media all and (min-width: 1024px) {
+      .index p {
+        font-size: 32px;
+        line-height: 32px; } }
+    @media all and (min-width: 1280px) {
+      .index p {
+        font-size: 32px;
+        line-height: 32px; } }
+  .index .index, .index button {
+    transform: translateY(50px);
+    opacity: 0; }
+
+@keyframes button {
+  0% { }
+  100% {
+    transform: translateY(0);
+    opacity: 1; } }
+  .index .buttons {
+    position: absolute;
+    right: 0;
+    bottom: -100px;
+    left: 0;
+    align-items: center;
+    z-index: 100; }
+    .index .buttons.show button {
+      animation: button 1s cubic-bezier(0.81, 0.14, 0.22, 0.86);
+      animation-fill-mode: forwards; }
+      .index .buttons.show button:last-child {
+        animation-delay: .2s; }
+  .index button {
+    font-size: 18px;
+    font-family: "Share", sans-serif;
+    text-transform: uppercase;
+    font-weight: 300;
+    padding: 15px;
+    display: inline-block;
+    border-radius: 100px;
+    color: #010B13;
+    transition: all 0.15s linear;
+    background: #f0f0f0;
+    margin-top: 1.5625em; }
+    .index button:hover {
+      background: #010B13;
+      color: #f0f0f0; }
+    .index button:active, .index button:focus {
+      outline: 0; }
+    .index button:active {
+      transform: translateY(4px); }
+    @media all and (min-width: 320px) {
+      .index button {
+        margin-top: 1.86035em; } }
+    @media all and (min-width: 480px) {
+      .index button {
+        margin-top: 2.1582em; } }
+    @media all and (min-width: 640px) {
+      .index button {
+        margin-top: 2.45605em; } }
+    @media all and (min-width: 768px) {
+      .index button {
+        margin-top: 2.75391em; } }
+    @media all and (min-width: 1024px) {
+      .index button {
+        margin-top: 3.05176em; } }
+    @media all and (min-width: 1280px) {
+      .index button {
+        margin-top: 3.05176em; } }
+    .index button:first-child {
+      margin-right: 1.25em; }
+  .index #kaleidoscope {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1; }
+
+.visualizer #kaleidoscope {
+  position: fixed;
+  top: 0;
+  left: 0; }
+
+#metrics {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  display: none; }
+  #metrics div {
+    font-size: 18px;
+    font-family: "Share", sans-serif;
+    text-transform: uppercase;
+    font-weight: 300;
+    width: 200px;
+    color: #f0f0f0; }
+  #metrics i {
+    float: right;
+    font-style: normal; }
+
+
+
+/*# sourceMappingURL=style.css.map */

@@ -1,5 +1,0 @@
-@mixin hide-when($breakpoint) {
-	@include bp($breakpoint) {
-		display: none;
-	}
-} 

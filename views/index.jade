@@ -1,0 +1,21 @@
+extends layout
+
+block variables
+  - var bodyClass = 'index'
+
+block content
+  div.content
+    h1= title
+    p A Spotify Visualizer
+    div.buttons
+      button(class="login") Login
+      button(class="demo") Demo
+    canvas(id="kaleidoscope")
+    audio
+    div(id="shade")
+  div#metrics
+    div#tatums
+    div#segments
+    div#beats
+    div#bars
+    div#sections

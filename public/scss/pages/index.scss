@@ -1,0 +1,87 @@
+@import 'global';
+
+.index {
+  background: $green; 
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+
+  .content {
+    position: relative;
+  }
+
+  #shade {
+    @include position(fixed, 0 0 0 0);
+    background: $white;
+    transition: opacity 2s linear;  
+    opacity: 1;
+  }
+
+  &.loaded #shade {
+    opacity: 0;
+  }
+
+  #shade.hide { display: none; }
+
+  h1 {
+    @include heading;
+    @include scale(
+      font-size 32px 120px,
+      line-height 32px 150px
+    );
+  }
+
+  p {
+    @include scale(
+      font-size 24px 32px,
+      line-height 24px 32px
+    )
+  }
+
+  %initial-state {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+
+  @keyframes button {
+    0% {
+      @extend %initial-state;
+    }
+
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .buttons {
+    @include position(absolute, null 0 -100px 0);
+    align-items: center;
+    z-index: 100;
+    
+    &.show button {
+      animation: button 1s $base-easing;
+      animation-fill-mode: forwards;
+
+      &:last-child {
+        animation-delay: .2s;
+      }
+    }
+  }
+
+  button {
+    @include button;
+    @include scale(margin-top modular-scale(2) modular-scale(5));
+    @extend %initial-state;
+
+    &:first-child { margin-right: modular-scale(1); }
+  }
+
+  #kaleidoscope {
+    @include position(fixed, 0 null null 0);
+    z-index: -1;
+  }
+}  

@@ -1,0 +1,37 @@
+@import 'global';
+
+#toast {
+  @include position(fixed, null null 20px 20px);
+  height: 120px;
+  transition: opacity $base-transition;
+  z-index: 100;
+  background: rgba($black, .6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  text-align: left;
+  
+  img {
+    @include size(120px);
+  }
+
+  h1 {
+    @include all-caps;
+    font-size: 28px;
+    line-height: 30px;
+    color: $white;
+    padding: 0 30px;
+    font-weight: $normal;
+
+    i {
+      font-style: normal;
+    }
+    
+    span {
+      @include base-text;
+      display: block;
+      font-size: .5em;
+    }
+  }
+} 

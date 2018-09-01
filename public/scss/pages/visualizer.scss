@@ -1,0 +1,25 @@
+@import 'global';
+
+.visualizer {
+  #kaleidoscope {
+    @include position(fixed, 0 null null 0);
+  }
+}
+
+#metrics {
+  @include position(fixed, 20px null null 20px);
+  background: rgba(0, 0, 0, .5);
+  padding: 10px;
+  display: none;
+
+  div {
+    @include all-caps;
+    width: 200px;
+    color: $white;
+  }
+
+  i {
+    float: right;
+    font-style: normal;
+  }
+}

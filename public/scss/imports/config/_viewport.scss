@@ -1,0 +1,12 @@
+$max-width: 1280px;
+$mobile-outer-padding: 20px;
+$desktop-outer-padding: 30px;
+
+$breakpoints: (
+  mobile-tiny: 320,
+  mobile-sm: 480,
+  mobile: 640,
+  tablet-sm: 768,
+  tablet: 1024,
+  laptop: 1280
+);

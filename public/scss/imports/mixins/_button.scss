@@ -1,0 +1,20 @@
+@mixin button($color: $white) {
+  @include all-caps;
+  @include padding(15px);
+  display: inline-block;
+  border-radius: 100px;
+  color: $black;
+  transition: all $hover-transition;
+  background: $white;
+
+  &:hover {
+    background: $black;
+    color: $white;
+  }
+
+  &:active, &:focus { outline: 0; }
+
+  &:active {
+    transform: translateY(4px);
+  }
+}
