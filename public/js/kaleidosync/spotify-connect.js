@@ -1,4 +1,3 @@
-import Axios from '../lib/axios.min'
 import Cookies from '../lib/js.cookie'
 
 class SpotifyConnect {
@@ -8,19 +7,11 @@ class SpotifyConnect {
     this.accessToken = Cookies.get('KALEIDOSYNC_ACCESS_TOKEN')
     this.refreshToken = Cookies.get('KALEIDOSYNC_REFRESH_TOKEN')
     this.refreshCode = Cookies.get('KALEIDOSYNC_REFRESH_CODE')
-
-    try {
-      this.api = Axios.create({
-        baseURL: 'https://api.spotify.com/v1',
-        headers: {
-          Authorization: 'Bearer ' + this.accessToken,
-          Accept: 'application/json'
-        }
-      })
-    } catch(err) {
-      console.log(err)
+    this.headers = {
+      Authorization: 'Bearer ' + this.accessToken,
+      Accept: 'application/json'
     }
-
+    
     this.currentlyPlaying = {}
     this.trackAnalysis = {} 
     this.trackProgress = {}
@@ -48,16 +39,18 @@ class SpotifyConnect {
     const delay = window.performance.now()
 
     if (this.demo) {
-      return new Promise((resolve, reject) => {
-        Axios.get('/data/currently-playing.json')
-          .then((res) => resolve({...res.data, delay: window.performance.now() - delay}))
+       return new Promise((resolve, reject) => {
+         fetch('/data/currently-playing.json')
+          .then((res) => res.json())
+          .then((res) => resolve({...res, delay: window.performance.now() - delay}))
           .catch((err) => reject(err))
-      })
+       })
     }
 
     return new Promise((resolve, reject) => {
-      this.api.get('/me/player/currently-playing')
-        .then((res) => resolve({...res.data, delay: window.performance.now() - delay}))
+      fetch('https://api.spotify.com/v1/me/player/currently-playing', { headers: this.headers })
+        .then((res) => res.json())
+        .then((res) => resolve({...res, delay: window.performance.now() - delay}))
         .catch((err) => reject(err))
     })
   }
@@ -65,15 +58,17 @@ class SpotifyConnect {
   getTrackFeatures() {
     if (this.demo) {
       return new Promise((resolve, reject) => {
-        Axios.get('/data/track-features.json')
-          .then((res) => resolve(res.data))
+        fetch(`/data/track-features.json`)
+          .then((res) => res.json())
+          .then((res) => resolve(res))
           .catch((err) => reject(err))
       })
     }
 
     return new Promise((resolve, reject) => {
-      this.api.get(`/audio-features/${this.currentlyPlaying.item.id}`)
-        .then((res) => resolve(res.data))
+      fetch(`https://api.spotify.com/v1/audio-features/${this.currentlyPlaying.item.id}`, { headers: this.headers })
+        .then((res) => res.json())
+        .then((res) => resolve(res))
         .catch((err) => reject(err))
     })
   }
@@ -81,15 +76,17 @@ class SpotifyConnect {
   getTrackAnalysis() {
     if (this.demo) {
       return new Promise((resolve, reject) => {
-        Axios.get('/data/track-analysis.json')
-          .then((res) => resolve(res.data))
+        fetch(`/data/track-analysis.json`)
+          .then((res) => res.json())
+          .then((res) => resolve(res))
           .catch((err) => reject(err))
       })
     }
 
     return new Promise((resolve, reject) => {
-      this.api.get(`/audio-analysis/${this.currentlyPlaying.item.id}`)
-        .then((res) => resolve(res.data))
+      fetch(`https://api.spotify.com/v1/audio-analysis/${this.currentlyPlaying.item.id}`, { headers: this.headers })
+        .then((res) => res.json())
+        .then((res) => resolve(res))
         .catch((err) => reject(err))
     })
   }

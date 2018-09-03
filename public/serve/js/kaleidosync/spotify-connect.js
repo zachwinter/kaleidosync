@@ -1,11 +1,9 @@
-define(['exports', '../lib/axios.min', '../lib/js.cookie'], function (exports, _axios, _js) {
+define(['exports', '../lib/js.cookie'], function (exports, _js) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-
-  var _axios2 = _interopRequireDefault(_axios);
 
   var _js2 = _interopRequireDefault(_js);
 
@@ -64,18 +62,10 @@ define(['exports', '../lib/axios.min', '../lib/js.cookie'], function (exports, _
       this.accessToken = _js2.default.get('KALEIDOSYNC_ACCESS_TOKEN');
       this.refreshToken = _js2.default.get('KALEIDOSYNC_REFRESH_TOKEN');
       this.refreshCode = _js2.default.get('KALEIDOSYNC_REFRESH_CODE');
-
-      try {
-        this.api = _axios2.default.create({
-          baseURL: 'https://api.spotify.com/v1',
-          headers: {
-            Authorization: 'Bearer ' + this.accessToken,
-            Accept: 'application/json'
-          }
-        });
-      } catch (err) {
-        console.log(err);
-      }
+      this.headers = {
+        Authorization: 'Bearer ' + this.accessToken,
+        Accept: 'application/json'
+      };
 
       this.currentlyPlaying = {};
       this.trackAnalysis = {};
@@ -109,8 +99,10 @@ define(['exports', '../lib/axios.min', '../lib/js.cookie'], function (exports, _
 
         if (this.demo) {
           return new Promise(function (resolve, reject) {
-            _axios2.default.get('/data/currently-playing.json').then(function (res) {
-              return resolve(_extends({}, res.data, { delay: window.performance.now() - delay }));
+            fetch('/data/currently-playing.json').then(function (res) {
+              return res.json();
+            }).then(function (res) {
+              return resolve(_extends({}, res, { delay: window.performance.now() - delay }));
             }).catch(function (err) {
               return reject(err);
             });
@@ -118,8 +110,10 @@ define(['exports', '../lib/axios.min', '../lib/js.cookie'], function (exports, _
         }
 
         return new Promise(function (resolve, reject) {
-          _this2.api.get('/me/player/currently-playing').then(function (res) {
-            return resolve(_extends({}, res.data, { delay: window.performance.now() - delay }));
+          fetch('https://api.spotify.com/v1/me/player/currently-playing', { headers: _this2.headers }).then(function (res) {
+            return res.json();
+          }).then(function (res) {
+            return resolve(_extends({}, res, { delay: window.performance.now() - delay }));
           }).catch(function (err) {
             return reject(err);
           });
@@ -132,8 +126,10 @@ define(['exports', '../lib/axios.min', '../lib/js.cookie'], function (exports, _
 
         if (this.demo) {
           return new Promise(function (resolve, reject) {
-            _axios2.default.get('/data/track-features.json').then(function (res) {
-              return resolve(res.data);
+            fetch('/data/track-features.json').then(function (res) {
+              return res.json();
+            }).then(function (res) {
+              return resolve(res);
             }).catch(function (err) {
               return reject(err);
             });
@@ -141,8 +137,10 @@ define(['exports', '../lib/axios.min', '../lib/js.cookie'], function (exports, _
         }
 
         return new Promise(function (resolve, reject) {
-          _this3.api.get('/audio-features/' + _this3.currentlyPlaying.item.id).then(function (res) {
-            return resolve(res.data);
+          fetch('https://api.spotify.com/v1/audio-features/' + _this3.currentlyPlaying.item.id, { headers: _this3.headers }).then(function (res) {
+            return res.json();
+          }).then(function (res) {
+            return resolve(res);
           }).catch(function (err) {
             return reject(err);
           });
@@ -155,8 +153,10 @@ define(['exports', '../lib/axios.min', '../lib/js.cookie'], function (exports, _
 
         if (this.demo) {
           return new Promise(function (resolve, reject) {
-            _axios2.default.get('/data/track-analysis.json').then(function (res) {
-              return resolve(res.data);
+            fetch('/data/track-analysis.json').then(function (res) {
+              return res.json();
+            }).then(function (res) {
+              return resolve(res);
             }).catch(function (err) {
               return reject(err);
             });
@@ -164,8 +164,10 @@ define(['exports', '../lib/axios.min', '../lib/js.cookie'], function (exports, _
         }
 
         return new Promise(function (resolve, reject) {
-          _this4.api.get('/audio-analysis/' + _this4.currentlyPlaying.item.id).then(function (res) {
-            return resolve(res.data);
+          fetch('https://api.spotify.com/v1/audio-analysis/' + _this4.currentlyPlaying.item.id, { headers: _this4.headers }).then(function (res) {
+            return res.json();
+          }).then(function (res) {
+            return resolve(res);
           }).catch(function (err) {
             return reject(err);
           });
