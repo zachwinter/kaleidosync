@@ -31,7 +31,10 @@ define(['exports', './pages/index', './kaleidosync/kaleidoscope'], function (exp
     }
 
     if (bodyClass.contains('visualizer')) {
-      window.KALEIDOSYNC = new _kaleidoscope2.default(false, false);
+      window.KALEIDOSYNC = new _kaleidoscope2.default(false);
+      window.KALEIDOSYNC.duration = 100;
+      window.KALEIDOSYNC.buildSingleState(true);
+      document.body.classList.add('loaded');
     }
   };
 

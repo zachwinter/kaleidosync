@@ -52,12 +52,10 @@ define(['exports', '../lib/js.cookie'], function (exports, _js) {
   }();
 
   var SpotifyConnect = function () {
-    function SpotifyConnect(demo) {
+    function SpotifyConnect() {
       var _this = this;
 
       _classCallCheck(this, SpotifyConnect);
-
-      this.demo = demo;
 
       this.accessToken = _js2.default.get('KALEIDOSYNC_ACCESS_TOKEN');
       this.refreshToken = _js2.default.get('KALEIDOSYNC_REFRESH_TOKEN');
@@ -88,31 +86,45 @@ define(['exports', '../lib/js.cookie'], function (exports, _js) {
         _this.intervals.initial[type] = {};
         _this.intervals.hooks[type] = function () {};
       });
+
+      this.onTrackComplete = function () {};
     }
 
     _createClass(SpotifyConnect, [{
+      key: 'GetJSON',
+      value: function GetJSON(url) {
+        var _this2 = this;
+
+        return new Promise(function (resolve, reject) {
+          var request = new XMLHttpRequest();
+          request.open('GET', url, true);
+          for (var header in _this2.headers) {
+            if (_this2.headers.hasOwnProperty(header)) {
+              request.setRequestHeader(header, _this2.headers[header]);
+            }
+          }
+          request.onload = function () {
+            if (request.status !== 200) {
+              reject('ERROR');
+            } else {
+              resolve(JSON.parse(request.responseText));
+            }
+          };
+          request.onerror = function () {
+            return reject('ERROR');
+          };
+          request.send();
+        });
+      }
+    }, {
       key: 'getCurrentlyPlaying',
       value: function getCurrentlyPlaying() {
-        var _this2 = this;
+        var _this3 = this;
 
         var delay = window.performance.now();
 
-        if (this.demo) {
-          return new Promise(function (resolve, reject) {
-            fetch('/data/currently-playing.json').then(function (res) {
-              return res.json();
-            }).then(function (res) {
-              return resolve(_extends({}, res, { delay: window.performance.now() - delay }));
-            }).catch(function (err) {
-              return reject(err);
-            });
-          });
-        }
-
         return new Promise(function (resolve, reject) {
-          fetch('https://api.spotify.com/v1/me/player/currently-playing', { headers: _this2.headers }).then(function (res) {
-            return res.json();
-          }).then(function (res) {
+          _this3.GetJSON('https://api.spotify.com/v1/me/player/currently-playing').then(function (res) {
             return resolve(_extends({}, res, { delay: window.performance.now() - delay }));
           }).catch(function (err) {
             return reject(err);
@@ -122,56 +134,12 @@ define(['exports', '../lib/js.cookie'], function (exports, _js) {
     }, {
       key: 'getTrackFeatures',
       value: function getTrackFeatures() {
-        var _this3 = this;
-
-        if (this.demo) {
-          return new Promise(function (resolve, reject) {
-            fetch('/data/track-features.json').then(function (res) {
-              return res.json();
-            }).then(function (res) {
-              return resolve(res);
-            }).catch(function (err) {
-              return reject(err);
-            });
-          });
-        }
-
-        return new Promise(function (resolve, reject) {
-          fetch('https://api.spotify.com/v1/audio-features/' + _this3.currentlyPlaying.item.id, { headers: _this3.headers }).then(function (res) {
-            return res.json();
-          }).then(function (res) {
-            return resolve(res);
-          }).catch(function (err) {
-            return reject(err);
-          });
-        });
+        return this.GetJSON('https://api.spotify.com/v1/audio-features/' + this.currentlyPlaying.item.id);
       }
     }, {
       key: 'getTrackAnalysis',
       value: function getTrackAnalysis() {
-        var _this4 = this;
-
-        if (this.demo) {
-          return new Promise(function (resolve, reject) {
-            fetch('/data/track-analysis.json').then(function (res) {
-              return res.json();
-            }).then(function (res) {
-              return resolve(res);
-            }).catch(function (err) {
-              return reject(err);
-            });
-          });
-        }
-
-        return new Promise(function (resolve, reject) {
-          fetch('https://api.spotify.com/v1/audio-analysis/' + _this4.currentlyPlaying.item.id, { headers: _this4.headers }).then(function (res) {
-            return res.json();
-          }).then(function (res) {
-            return resolve(res);
-          }).catch(function (err) {
-            return reject(err);
-          });
-        });
+        return this.GetJSON('https://api.spotify.com/v1/audio-analysis/' + this.currentlyPlaying.item.id);
       }
     }, {
       key: 'updateTrackProgress',
@@ -179,7 +147,7 @@ define(['exports', '../lib/js.cookie'], function (exports, _js) {
         if (reset) {
           this.trackProgress = {
             progress: 0,
-            timestamp: window.performance.now()
+            timestamp: 0
           };
           return;
         }
@@ -189,13 +157,12 @@ define(['exports', '../lib/js.cookie'], function (exports, _js) {
             progress: this.currentlyPlaying.progress_ms + delay,
             timestamp: window.performance.now()
           };
-          return;
+        } else {
+          this.trackProgress = {
+            progress: this.trackProgress.progress + (window.performance.now() - this.trackProgress.timestamp),
+            timestamp: window.performance.now()
+          };
         }
-
-        this.trackProgress = {
-          progress: this.trackProgress.progress + (window.performance.now() - this.trackProgress.timestamp),
-          timestamp: window.performance.now()
-        };
       }
     }, {
       key: 'determineInitialIntervals',
@@ -228,16 +195,24 @@ define(['exports', '../lib/js.cookie'], function (exports, _js) {
     }, {
       key: 'executeIntervalHooks',
       value: function executeIntervalHooks(type, interval, index, initialize) {
-        var _this5 = this;
+        var _this4 = this;
 
         this.intervals.active[type] = interval;
         this.intervals.next[type] = this.trackAnalysis[type][index + 1] || null;
         this.intervals.last[type] = this.trackAnalysis[type][index - 1] || null;
+        this.intervals.active[type].index = index;
 
         if (typeof this.intervals.hooks[type] === 'function') {
           this.updateTrackProgress();
-          this.intervals.hooks[type].bind(this, index).call();
+          this.intervals.hooks[type].call();
           this.updateTrackProgress();
+        }
+
+        if (!this.intervals.next[type]) {
+          if (type === 'tatums') {
+            this.onTrackComplete.bind(this).call();
+          }
+          return;
         }
 
         var recursionDelay = 0;
@@ -247,32 +222,36 @@ define(['exports', '../lib/js.cookie'], function (exports, _js) {
         } else {
           recursionDelay = interval.duration * 1000 - (this.trackProgress.progress - interval.start * 1000);
         }
-        this.intervals.active[type].timeout = setTimeout(function () {
-          _this5.executeIntervalHooks(type, _this5.intervals.next[type], index + 1, false);
-        }, recursionDelay);
+
+        if (this.intervals.next[type] !== null) {
+          this.intervals.active[type].timeout = setTimeout(function () {
+            _this4.executeIntervalHooks(type, _this4.intervals.next[type], index + 1, false);
+          }, recursionDelay);
+        }
       }
     }, {
       key: 'removeHooks',
       value: function removeHooks() {
-        var _this6 = this;
+        var _this5 = this;
 
         this.intervals.types.forEach(function (type) {
-          delete _this6.intervals.hooks[type];
+          clearTimeout(_this5.intervals.active[type].timeout);
+          delete _this5.intervals.hooks[type];
         });
       }
     }, {
       key: 'initializeHooks',
       value: function initializeHooks() {
-        var _this7 = this;
+        var _this6 = this;
 
         this.intervals.types.forEach(function (type) {
-          _this7.trackAnalysis[type][0] = _extends({}, _this7.trackAnalysis[type][0], {
+          _this6.trackAnalysis[type][0] = _extends({}, _this6.trackAnalysis[type][0], {
             start: 0,
-            duration: _this7.trackAnalysis[type][0].start + _this7.trackAnalysis[type][0].duration
+            duration: _this6.trackAnalysis[type][0].start + _this6.trackAnalysis[type][0].duration
           });
 
-          _this7.determineInitialIntervals(type);
-          _this7.executeIntervalHooks(type, _this7.intervals.active[type], _this7.intervals.active[type].index, true);
+          _this6.determineInitialIntervals(type);
+          _this6.executeIntervalHooks(type, _this6.intervals.active[type], _this6.intervals.active[type].index, true);
         });
       }
     }]);

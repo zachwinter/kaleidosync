@@ -1,9 +1,7 @@
 import Cookies from '../lib/js.cookie'
 
 class SpotifyConnect {
-  constructor(demo) {
-    this.demo = demo
-
+  constructor() {
     this.accessToken = Cookies.get('KALEIDOSYNC_ACCESS_TOKEN')
     this.refreshToken = Cookies.get('KALEIDOSYNC_REFRESH_TOKEN')
     this.refreshCode = Cookies.get('KALEIDOSYNC_REFRESH_CODE')
@@ -20,7 +18,7 @@ class SpotifyConnect {
     this.intervals = {
       types: ['tatums', 'segments', 'beats', 'bars', 'sections'],
       active: {},
-      next: {},
+      next: {}, 
       last: {},
       initial: {},
       hooks: {}
@@ -33,69 +31,54 @@ class SpotifyConnect {
       this.intervals.initial[type] = {}
       this.intervals.hooks[type] = () => {}
     })
+
+    this.onTrackComplete = () => {}
+  }
+
+  GetJSON(url) {
+    return new Promise((resolve, reject) => {
+      let request = new XMLHttpRequest()
+      request.open('GET', url, true)
+      for (var header in this.headers) {
+        if (this.headers.hasOwnProperty(header)) {
+          request.setRequestHeader(header, this.headers[header])
+        }
+      }
+      request.onload = function() {
+        if (request.status !== 200) {
+          reject('ERROR')
+        } else {
+          resolve(JSON.parse(request.responseText))
+        }
+      }
+      request.onerror = () => reject('ERROR')
+      request.send()
+    })
   }
 
   getCurrentlyPlaying() {
     const delay = window.performance.now()
 
-    if (this.demo) {
-       return new Promise((resolve, reject) => {
-         fetch('/data/currently-playing.json')
-          .then((res) => res.json())
-          .then((res) => resolve({...res, delay: window.performance.now() - delay}))
-          .catch((err) => reject(err))
-       })
-    }
-
     return new Promise((resolve, reject) => {
-      fetch('https://api.spotify.com/v1/me/player/currently-playing', { headers: this.headers })
-        .then((res) => res.json())
+      this.GetJSON('https://api.spotify.com/v1/me/player/currently-playing')
         .then((res) => resolve({...res, delay: window.performance.now() - delay}))
         .catch((err) => reject(err))
     })
   }
 
   getTrackFeatures() {
-    if (this.demo) {
-      return new Promise((resolve, reject) => {
-        fetch(`/data/track-features.json`)
-          .then((res) => res.json())
-          .then((res) => resolve(res))
-          .catch((err) => reject(err))
-      })
-    }
-
-    return new Promise((resolve, reject) => {
-      fetch(`https://api.spotify.com/v1/audio-features/${this.currentlyPlaying.item.id}`, { headers: this.headers })
-        .then((res) => res.json())
-        .then((res) => resolve(res))
-        .catch((err) => reject(err))
-    })
+    return this.GetJSON(`https://api.spotify.com/v1/audio-features/${this.currentlyPlaying.item.id}`)
   }
 
   getTrackAnalysis() {
-    if (this.demo) {
-      return new Promise((resolve, reject) => {
-        fetch(`/data/track-analysis.json`)
-          .then((res) => res.json())
-          .then((res) => resolve(res))
-          .catch((err) => reject(err))
-      })
-    }
-
-    return new Promise((resolve, reject) => {
-      fetch(`https://api.spotify.com/v1/audio-analysis/${this.currentlyPlaying.item.id}`, { headers: this.headers })
-        .then((res) => res.json())
-        .then((res) => resolve(res))
-        .catch((err) => reject(err))
-    })
+    return this.GetJSON(`https://api.spotify.com/v1/audio-analysis/${this.currentlyPlaying.item.id}`)
   }
 
   updateTrackProgress(delay, reset) {
     if (reset) {
       this.trackProgress = {
         progress: 0,
-        timestamp: window.performance.now()
+        timestamp: 0
       }
       return
     }
@@ -105,12 +88,11 @@ class SpotifyConnect {
         progress: this.currentlyPlaying.progress_ms + delay,
         timestamp: window.performance.now()
       }
-      return
-    } 
-
-    this.trackProgress = { 
-      progress: this.trackProgress.progress + (window.performance.now() - this.trackProgress.timestamp),
-      timestamp: window.performance.now()
+    } else {
+      this.trackProgress = {
+        progress: this.trackProgress.progress + (window.performance.now() - this.trackProgress.timestamp),
+        timestamp: window.performance.now()
+      }
     }
   }
 
@@ -141,17 +123,25 @@ class SpotifyConnect {
     }
   }
 
-  executeIntervalHooks(type, interval, index, initialize) {       
+  executeIntervalHooks(type, interval, index, initialize) {   
     this.intervals.active[type] = interval
     this.intervals.next[type] = this.trackAnalysis[type][index + 1] || null
     this.intervals.last[type] = this.trackAnalysis[type][index - 1] || null
-
+    this.intervals.active[type].index = index
+    
     if (typeof this.intervals.hooks[type] === 'function') {
       this.updateTrackProgress()
-      this.intervals.hooks[type].bind(this, index).call()
+      this.intervals.hooks[type].call()
       this.updateTrackProgress()
     }
 
+    if (!this.intervals.next[type]) {
+      if (type === 'tatums') {
+        this.onTrackComplete.bind(this).call()
+      }
+      return
+    }
+    
     let recursionDelay = 0
 
     if (initialize === true) {      
@@ -159,13 +149,17 @@ class SpotifyConnect {
     } else {
       recursionDelay = (interval.duration * 1000) - (this.trackProgress.progress - (interval.start * 1000))
     }
-    this.intervals.active[type].timeout = setTimeout(() => {
-      this.executeIntervalHooks(type, this.intervals.next[type], index + 1, false)
-    }, recursionDelay)
+
+    if (this.intervals.next[type] !== null) {
+      this.intervals.active[type].timeout = setTimeout(() => {
+        this.executeIntervalHooks(type, this.intervals.next[type], index + 1, false)
+      }, recursionDelay)
+    }
   }
 
   removeHooks() {
     this.intervals.types.forEach((type) => {
+      clearTimeout(this.intervals.active[type].timeout)
       delete this.intervals.hooks[type]
     });
   }

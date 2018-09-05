@@ -1,5 +1,0 @@
-{
-    "eslint.enable": true,
-    "jest.autoEnable": true,
-    "jest.showCoverageOnLoad": true
-}

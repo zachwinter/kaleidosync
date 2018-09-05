@@ -1,4 +1,4 @@
-define(['exports', './visualizer', './canvas', './star', './rectangle'], function (exports, _visualizer, _canvas, _star, _rectangle) {
+define(['exports', './visualizer', './canvas', './star', './rectangle', './colors'], function (exports, _visualizer, _canvas, _star, _rectangle, _colors) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -12,6 +12,8 @@ define(['exports', './visualizer', './canvas', './star', './rectangle'], functio
   var _star2 = _interopRequireDefault(_star);
 
   var _rectangle2 = _interopRequireDefault(_rectangle);
+
+  var _colors2 = _interopRequireDefault(_colors);
 
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : {
@@ -88,30 +90,28 @@ define(['exports', './visualizer', './canvas', './star', './rectangle'], functio
   var Kaleidoscope = function (_Visualizer) {
     _inherits(Kaleidoscope, _Visualizer);
 
-    function Kaleidoscope(demo, interval) {
+    function Kaleidoscope(halt) {
       _classCallCheck(this, Kaleidoscope);
 
-      var _this = _possibleConstructorReturn(this, (Kaleidoscope.__proto__ || Object.getPrototypeOf(Kaleidoscope)).call(this, demo, interval));
+      var _this = _possibleConstructorReturn(this, (Kaleidoscope.__proto__ || Object.getPrototypeOf(Kaleidoscope)).call(this, halt));
 
-      _this.interval = interval;
-      _this.intervalTimeout = _this.interval ? {} : false;
+      _this.halt = halt;
       _this.canvas = new _canvas2.default('kaleidoscope');
       _this.totalStars = 16;
       _this.maxSize = (_this.canvas.isMobile ? 1.2 : .5) * (window.innerHeight > window.innerWidth ? window.innerHeight : window.innerWidth);
       _this.minSize = _this.maxSize / 5;
-      _this.activeSize = _this.intervalTimeout !== false ? _this.maxSize : _this.minSize;
+      _this.activeSize = _this.halt ? _this.maxSize : _this.minSize;
       _this.sizeStep = [_this.maxSize / _this.totalStars * 0.4, _this.maxSize / _this.totalStars * 0.6, _this.maxSize / _this.totalStars * 0.8];
       _this.radiusStep = [.1, .2, .3, .4, .5, .6, .7, .8, .9, 1, 1.1, 1.2];
-      _this.colorSchemes = [['rgb(255,159,28)', 'rgb(255,191,105)', 'rgb(203,243,240)', 'rgb(46,196,182)', 'rgb(255,255,255)'], ['rgb(229,99,153)', 'rgb(210,241,228)', 'rgb(251,202,239)', 'rgb(72,48,77)', 'rgb(255,255,255)'], ['rgb(198,0,66)', 'rgb(255,119,168)', 'rgb(226,206,239)', 'rgb(255,198,217)', 'rgb(255,255,255)'], ['rgb(118,229,252)', 'rgb(27,154,170)', 'rgb(157,172,255)', 'rgb(61,52,139)', 'rgb(238,251,255)'], ['rgb(10,36,99)', 'rgb(62,146,204)', 'rgb(255,250,255)', 'rgb(216,49,91)', 'rgb(39,27,24)']];
-      _this.duration = 6000;
+      _this.colorSchemes = _colors2.default;
+      _this.activeColorScheme = [];
+      _this.duration = 5000;
       _this.radiusDuration = _this.duration;
       _this.colorDuration = _this.duration;
       _this.backgroundDuration = _this.duration;
       _this.refreshRate = 1000 / 60;
-
       _this.model = {
-        stars: {
-          last: [],
+        stars: { last: [],
           active: []
         },
         background: {
@@ -120,27 +120,66 @@ define(['exports', './visualizer', './canvas', './star', './rectangle'], functio
         }
       };
 
-      var colors = _this.colorSchemes.randomElement(),
-          negative = colors.randomElement(),
-          negArray = [negative, negative, negative, negative];
+      _this.setEventHooks();
 
-      _this.activeColorScheme = colors.concat(negArray);
-
-      if (_this.demo === true) {
-        if (_this.interval !== true) {
-          _this.setEventHooks();
-          _this.initializeVisualizer();
-        } else {
-          _this.buildSingleState(true);
-        }
+      if (_this.halt === true) {
+        _this.buildSingleState(true);
       } else {
-        _this.setEventHooks();
-        _this.initializeVisualizer();
+        _this.pingSpotify(true);
       }
       return _this;
     }
 
     _createClass(Kaleidoscope, [{
+      key: 'setEventHooks',
+      value: function setEventHooks() {
+        var _this2 = this;
+
+        this.events.beforeInit = function () {
+          _this2.setActiveColorScheme();
+          _this2.initElements();
+        };
+
+        this.events.beforeStart = function () {
+          _this2.canvas.startPaint();
+        };
+
+        this.events.afterStop = function () {
+          _this2.clearTweeningIntervals();
+          _this2.canvas.stopPaint();
+        };
+      }
+    }, {
+      key: 'buildSingleState',
+      value: function buildSingleState(init) {
+        var _this3 = this;
+
+        this.activeSize = this.maxSize;
+
+        if (init) {
+          this.initElements();
+        }
+
+        this.setActiveColorScheme();
+        this.setColorState();
+        this.setRadiusState();
+
+        if (!init) {
+          this.tweenStarRadius();
+          this.tweenStarColor();
+          this.tweenBackgroundColor();
+        }
+
+        if (init) {
+          this.buildSingleState();
+
+          setTimeout(function () {
+            _this3.clearTweeningIntervals();
+            _this3.canvas.stopPaint();
+          }, this.duration);
+        }
+      }
+    }, {
       key: 'initElements',
       value: function initElements() {
         if (this.initialized === true) {
@@ -150,9 +189,15 @@ define(['exports', './visualizer', './canvas', './star', './rectangle'], functio
         for (var i = 0; i < this.totalStars; i++) {
           var numPoints = 16;
 
-          if ((i + 1) % 2 === 0) numPoints = 24;
-          if ((i + 1) % 3 === 0) numPoints = 8;
-          if ((i + 1) % 4 === 0) numPoints = 32;
+          if ((i + 1) % 2 === 0) {
+            numPoints = 24;
+          }
+          if ((i + 1) % 3 === 0) {
+            numPoints = 8;
+          }
+          if ((i + 1) % 4 === 0) {
+            numPoints = 32;
+          }
 
           var starState = {
             x: this.canvas.width / 2,
@@ -167,7 +212,6 @@ define(['exports', './visualizer', './canvas', './star', './rectangle'], functio
 
           this.model.stars.active[i] = starState;
           this.model.stars.last[i] = starState;
-
           this.canvas.addStar(star);
         }
 
@@ -179,11 +223,8 @@ define(['exports', './visualizer', './canvas', './star', './rectangle'], functio
 
         this.model.background.active = backgroundState;
         this.model.background.last = backgroundState;
-
         this.canvas.addBackground(new _rectangle2.default(backgroundState));
-
         this.canvas.init();
-
         this.initialized = true;
       }
     }, {
@@ -202,7 +243,6 @@ define(['exports', './visualizer', './canvas', './star', './rectangle'], functio
 
           this.model.stars.last[i].innerRadius = this.model.stars.active[i].innerRadius;
           this.model.stars.last[i].outerRadius = this.model.stars.active[i].outerRadius;
-
           this.model.stars.active[i].innerRadius = size * this.radiusStep.randomElement();
           this.model.stars.active[i].outerRadius = size;
         }
@@ -223,6 +263,8 @@ define(['exports', './visualizer', './canvas', './star', './rectangle'], functio
     }, {
       key: 'setBackgroundState',
       value: function setBackgroundState(negative) {
+        clearInterval(this.canvas.background.colorTween);
+
         this.model.background.last = _extends({}, this.model.background.last, {
           color: this.model.background.active.color
         });
@@ -234,34 +276,35 @@ define(['exports', './visualizer', './canvas', './star', './rectangle'], functio
     }, {
       key: 'tweenStarRadius',
       value: function tweenStarRadius(ms) {
-        var _this2 = this;
+        var _this4 = this;
 
         var duration = ms ? ms : this.radiusDuration;
 
         var _loop = function _loop(i) {
-          var star = _this2.canvas.stars[i];
-
-          var nextState = _this2.model.stars.active[i],
-              lastState = _this2.model.stars.last[i];
-
-          var innerRadiusStep = (nextState.innerRadius - lastState.innerRadius) / (duration / _this2.refreshRate),
-              outerRadiusStep = (nextState.outerRadius - lastState.outerRadius) / (duration / _this2.refreshRate);
-
-          var tweeningInnerRadius = lastState.innerRadius,
-              tweeningOuterRadius = lastState.outerRadius;
+          var star = _this4.canvas.stars[i];
+          var next = _this4.model.stars.active[i];
+          var last = _this4.model.stars.last[i];
+          var innerStep = (next.innerRadius - last.innerRadius) / (duration / _this4.refreshRate);
+          var outerStep = (next.outerRadius - last.outerRadius) / (duration / _this4.refreshRate);
+          var innerTween = last.innerRadius;
+          var outerTween = last.outerRadius;
 
           star.radiusTween = setInterval(function () {
-            tweeningInnerRadius = tweeningInnerRadius + innerRadiusStep;
-            tweeningOuterRadius = tweeningOuterRadius + outerRadiusStep;
+            innerTween = innerTween + innerStep;
+            outerTween = outerTween + outerStep;
 
-            nextState.innerRadius = tweeningInnerRadius;
-            nextState.outerRadius = tweeningOuterRadius;
+            next.innerRadius = innerTween;
+            next.outerRadius = outerTween;
 
-            star.update({
-              innerRadius: tweeningInnerRadius,
-              outerRadius: tweeningOuterRadius
-            });
-          }, _this2.refreshRate);
+            if (!isNaN(innerTween)) {
+              star.update({
+                innerRadius: innerTween,
+                outerRadius: outerTween
+              });
+            } else {
+              clearInterval(star.radiusTween);
+            }
+          }, _this4.refreshRate);
         };
 
         for (var i = 0; i < this.totalStars; i++) {
@@ -269,35 +312,39 @@ define(['exports', './visualizer', './canvas', './star', './rectangle'], functio
         }
       }
     }, {
+      key: 'tweenRGB',
+      value: function tweenRGB(duration, next, last, element, setColor) {
+        var stepR = (parseInt(next[0]) - parseInt(last[0])) / (duration / this.refreshRate);
+        var stepG = (parseInt(next[1]) - parseInt(last[1])) / (duration / this.refreshRate);
+        var stepB = (parseInt(next[2]) - parseInt(last[2])) / (duration / this.refreshRate);
+
+        var tweenR = parseInt(last[0]);
+        var tweenG = parseInt(last[1]);
+        var tweenB = parseInt(last[2]);
+
+        element.colorTween = setInterval(function () {
+          tweenR = parseInt(tweenR + stepR);
+          tweenG = parseInt(tweenG + stepG);
+          tweenB = parseInt(tweenB + stepB);
+
+          setColor('rgb(' + tweenR + ', ' + tweenG + ', ' + tweenB + ')');
+        }, this.refreshRate);
+      }
+    }, {
       key: 'tweenStarColor',
       value: function tweenStarColor(ms) {
-        var _this3 = this;
+        var _this5 = this;
 
         var duration = ms ? ms : this.colorDuration;
 
         var _loop2 = function _loop2(i) {
-          var nextColor = _this3.model.stars.active[i].color.slice(4, -1).split(','),
-              lastColor = _this3.model.stars.last[i].color.slice(4, -1).split(',');
+          var next = _this5.model.stars.active[i].color.slice(4, -1).split(',');
+          var last = _this5.model.stars.last[i].color.slice(4, -1).split(',');
 
-          var stepR = (parseInt(nextColor[0]) - parseInt(lastColor[0])) / (duration / _this3.refreshRate),
-              stepG = (parseInt(nextColor[1]) - parseInt(lastColor[1])) / (duration / _this3.refreshRate),
-              stepB = (parseInt(nextColor[2]) - parseInt(lastColor[2])) / (duration / _this3.refreshRate);
-
-          var tweenR = parseInt(lastColor[0]),
-              tweenG = parseInt(lastColor[1]),
-              tweenB = parseInt(lastColor[2]);
-
-          _this3.canvas.stars[i].colorTween = setInterval(function () {
-            tweenR = parseInt(tweenR + stepR);
-            tweenG = parseInt(tweenG + stepG);
-            tweenB = parseInt(tweenB + stepB);
-
-            var color = 'rgb(' + tweenR + ', ' + tweenG + ', ' + tweenB + ')';
-
-            _this3.model.stars.active[i].color = color;
-
-            _this3.canvas.stars[i].update({ color: color });
-          }, _this3.refreshRate);
+          _this5.tweenRGB(duration, next, last, _this5.canvas.stars[i], function (color) {
+            _this5.model.stars.active[i].color = color;
+            _this5.canvas.stars[i].update({ color: color });
+          });
         };
 
         for (var i = 0; i < this.totalStars; i++) {
@@ -307,41 +354,23 @@ define(['exports', './visualizer', './canvas', './star', './rectangle'], functio
     }, {
       key: 'tweenBackgroundColor',
       value: function tweenBackgroundColor(ms) {
-        var _this4 = this;
+        var _this6 = this;
 
         var duration = ms ? ms : this.backgroundDuration;
+        var next = this.model.background.active.color.slice(4, -1).split(',');
+        var last = this.model.background.last.color.slice(4, -1).split(',');
 
-        var nextColor = this.model.background.active.color.slice(4, -1).split(','),
-            lastColor = this.model.background.last.color.slice(4, -1).split(',');
-
-        var stepR = (parseInt(nextColor[0]) - parseInt(lastColor[0])) / (duration / this.refreshRate),
-            stepG = (parseInt(nextColor[1]) - parseInt(lastColor[1])) / (duration / this.refreshRate),
-            stepB = (parseInt(nextColor[2]) - parseInt(lastColor[2])) / (duration / this.refreshRate);
-
-        var tweenR = parseInt(lastColor[0]),
-            tweenG = parseInt(lastColor[1]),
-            tweenB = parseInt(lastColor[2]);
-
-        this.canvas.background.tweenInterval = setInterval(function () {
-          tweenR = parseInt(tweenR + stepR);
-          tweenG = parseInt(tweenG + stepG);
-          tweenB = parseInt(tweenB + stepB);
-
-          var color = 'rgb(' + tweenR + ', ' + tweenG + ', ' + tweenB + ')';
-
-          _this4.model.background.active.color = color;
-
-          _this4.canvas.background.update({ color: color });
-        }, this.refreshRate);
+        this.tweenRGB(duration, next, last, this.canvas.background, function (color) {
+          _this6.model.background.active.color = color;
+          _this6.canvas.background.update({ color: color });
+        });
       }
     }, {
       key: 'setActiveColorScheme',
-      value: function setActiveColorScheme(ms) {
-        clearInterval(this.canvas.background.tweenInterval);
-
-        var colors = ms ? this.colorSchemes[0] : this.colorSchemes.randomElement(),
-            negative = colors.randomElement(),
-            negArray = [negative, negative, negative, negative];
+      value: function setActiveColorScheme() {
+        var colors = this.colorSchemes.randomElement();
+        var negative = colors.randomElement();
+        var negArray = [negative, negative, negative, negative];
 
         this.activeColorScheme = colors.concat(negArray);
         this.setBackgroundState(negative);
@@ -349,106 +378,44 @@ define(['exports', './visualizer', './canvas', './star', './rectangle'], functio
     }, {
       key: 'clearTweeningIntervals',
       value: function clearTweeningIntervals() {
-        for (var i = 0; i < this.totalStars; i++) {
-          clearInterval(this.canvas.stars[i].radiusTween);
-          clearInterval(this.canvas.stars[i].colorTween);
-        }
-
-        clearInterval(this.canvas.background.tweenInterval);
-      }
-    }, {
-      key: 'buildSingleState',
-      value: function buildSingleState(init) {
-        var _this5 = this;
-
-        this.activeSize = this.maxSize;
-
-        if (init) {
-          this.initElements();
-        }
-
-        this.setActiveColorScheme(this.duration);
-        this.setColorState();
-        this.setRadiusState();
-
-        this.tweenStarRadius(this.duration);
-        this.tweenStarColor(this.duration);
-        this.tweenBackgroundColor(this.duration);
-
-        if (init) {
-          this.buildSingleState();
-
-          if (this.demo === true && this.interval === true) {
-            setTimeout(function () {
-              _this5.clearTweeningIntervals();
-              _this5.canvas.stopPaint();
-            }, this.duration);
+        if (this.initialized) {
+          for (var i = 0; i < this.totalStars; i++) {
+            clearInterval(this.canvas.stars[i].radiusTween);
+            clearInterval(this.canvas.stars[i].colorTween);
           }
+
+          clearInterval(this.canvas.background.colorTween);
         }
-      }
-    }, {
-      key: 'setEventHooks',
-      value: function setEventHooks() {
-        var _this6 = this;
-
-        this.events.beforeInit = function () {
-          _this6.initElements();
-
-          if (_this6.interval === true) {
-            clearTimeout(_this6.intervalTimeout.timer);
-          }
-        };
-
-        this.events.afterStop = function () {
-          _this6.clearTweeningIntervals();
-        };
       }
     }, {
       key: 'setIntervalHooks',
       value: function setIntervalHooks() {
         var _this7 = this;
 
-        var tatums = document.getElementById('tatums');
-        var segments = document.getElementById('segments');
-        var beats = document.getElementById('beats');
-        var bars = document.getElementById('bars');
-        var sections = document.getElementById('sections');
-
-        var metrics = false;
-
-        this.intervals.hooks.tatums = function (i) {
-          metrics ? tatums.innerHTML = 'TATUM: <i>' + i + '/' + _this7.trackAnalysis.tatums.length + '</i>' : null;
+        this.intervals.hooks.tatums = function () {
           _this7.radiusDuration = _this7.intervals.active.tatums.duration * 1000;
           _this7.setRadiusState();
           _this7.tweenStarRadius();
         };
 
-        this.intervals.hooks.segments = function (i) {
-          metrics ? segments.innerHTML = 'SEGMENT: <i>' + i + '/' + _this7.trackAnalysis.segments.length + '</i>' : null;
-          var nextLoudness = _this7.intervals.next.segments ? _this7.intervals.next.segments.loudness_max : _this7.intervals.active.segments.loudness_max,
-              lastLoudness = _this7.intervals.last.segments ? _this7.intervals.last.segments.loudness_max : _this7.intervals.active.segments.loudness_max,
-              activeLoudness = (_this7.intervals.active.segments.loudness_max + nextLoudness + lastLoudness) / 3;
+        this.intervals.hooks.segments = function () {
+          var nextLoudness = _this7.intervals.next.segments ? _this7.intervals.next.segments.loudness_max : _this7.intervals.active.segments.loudness_max;
+          var lastLoudness = _this7.intervals.last.segments ? _this7.intervals.last.segments.loudness_max : _this7.intervals.active.segments.loudness_max;
+          var activeLoudness = (_this7.intervals.active.segments.loudness_max + nextLoudness + lastLoudness) / 3;
 
           _this7.activeSize = _this7.maxSize - activeLoudness * -25 + _this7.trackFeatures.loudness * -10;
         };
 
-        this.intervals.hooks.beats = function (i) {
-          metrics ? beats.innerHTML = 'BEAT: <i>' + i + '/' + _this7.trackAnalysis.beats.length + '</i>' : null;
+        this.intervals.hooks.beats = function () {
           _this7.colorDuration = _this7.intervals.active.beats.duration * 1000;
           _this7.setColorState();
           _this7.tweenStarColor();
         };
 
-        this.intervals.hooks.bars = function (i) {
-          metrics ? bars.innerHTML = 'BAR: <i>' + i + '/' + _this7.trackAnalysis.bars.length + '</i>' : null;
+        this.intervals.hooks.bars = function () {
           _this7.backgroundDuration = _this7.intervals.active.bars.duration * 1000;
-
           _this7.setActiveColorScheme();
           _this7.tweenBackgroundColor();
-        };
-
-        this.intervals.hooks.sections = function (i) {
-          metrics ? sections.innerHTML = 'SECTION: <i>' + i + '/' + _this7.trackAnalysis.sections.length + '</i>' : null;
         };
       }
     }]);

@@ -5,6 +5,20 @@ define(['exports'], function (exports) {
     value: true
   });
 
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
@@ -31,33 +45,66 @@ define(['exports'], function (exports) {
 
   var Toast = function () {
     function Toast() {
+      var _this = this;
+
       _classCallCheck(this, Toast);
 
-      this.duration = 5000;
+      this.duration = 6000;
       this.el = document.createElement('div');
       this.el.id = 'toast';
       document.body.appendChild(this.el);
+      this.visible = false;
+
+      this.typedOptions = {
+        showCursor: false,
+        typeSpeed: 40,
+        onComplete: function onComplete() {
+          return setTimeout(function () {
+            _this.hide();
+            _this.visible = false;
+          }, _this.duration);
+        }
+      };
     }
 
     _createClass(Toast, [{
       key: 'notPlaying',
       value: function notPlaying() {
-        this.el.innerHTML = '\n      <h1><i>No song currently playing.</i></h1>\n    ';
+        if (this.visible === false) {
+          this.el.innerHTML = '\n        <h1><i id="typed"></i></h1>\n      ';
+
+          this.show();
+
+          this.typed = new Typed('#typed', _extends({}, this.typedOptions, {
+            strings: ['No song detected! Play a song in Spotify to get started.'],
+            onComplete: function onComplete() {}
+          }));
+
+          this.visible = true;
+        }
+      }
+    }, {
+      key: 'syncing',
+      value: function syncing() {
+        this.el.innerHTML = '\n      <h1><i id="typed"></i></h1>\n    ';
 
         this.show();
+
+        this.typed = new Typed('#typed', _extends({}, this.typedOptions, {
+          strings: ['Syncing . . .'],
+          typeSpeed: 200
+        }));
       }
     }, {
       key: 'nowPlaying',
       value: function nowPlaying(track) {
-        var _this = this;
-
-        this.el.innerHTML = '\n      <img src="' + track.artwork + '" />\n      <h1>' + track.title + ' <span>' + track.artist + '</span></h1>\n    ';
+        this.el.innerHTML = '\n      <img src="' + track.artwork + '" />\n      <h1><i id="typed"></i> <span>' + track.artist + '</span></h1>\n    ';
 
         this.show();
 
-        setTimeout(function () {
-          _this.hide();
-        }, this.duration);
+        this.typed = new Typed('#typed', _extends({}, this.typedOptions, {
+          strings: [track.title]
+        }));
       }
     }, {
       key: 'show',

@@ -11,20 +11,22 @@
 
   .content {
     position: relative;
+    z-index: 500;
   }
 
   #shade {
     @include position(fixed, 0 0 0 0);
+    z-index: 0;
     background: $white;
-    transition: opacity 2s linear;  
+    transition: all 5s $base-easing;
     opacity: 1;
+    z-index: 400;
   }
 
   &.loaded #shade {
-    opacity: 0;
+    background: $red;
+    opacity: .7;
   }
-
-  #shade.hide { display: none; }
 
   h1 {
     @include heading;
@@ -41,47 +43,22 @@
     )
   }
 
-  %initial-state {
-    transform: translateY(50px);
-    opacity: 0;
-  }
-
-  @keyframes button {
-    0% {
-      @extend %initial-state;
-    }
-
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
   .buttons {
     @include position(absolute, null 0 -100px 0);
     align-items: center;
-    z-index: 100;
-    
-    &.show button {
-      animation: button 1s $base-easing;
-      animation-fill-mode: forwards;
-
-      &:last-child {
-        animation-delay: .2s;
-      }
-    }
   }
 
   button {
     @include button;
     @include scale(margin-top modular-scale(2) modular-scale(5));
-    @extend %initial-state;
+    opacity: 0;
+  }
 
-    &:first-child { margin-right: modular-scale(1); }
+  &.loaded button { 
+    opacity: 1;
   }
 
   #kaleidoscope {
-    @include position(fixed, 0 null null 0);
     z-index: -1;
   }
 }  

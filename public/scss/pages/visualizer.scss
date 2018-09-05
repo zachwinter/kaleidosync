@@ -1,25 +1,82 @@
 @import 'global';
 
+#shade {
+  @include position(fixed, 0 0 0 0);
+  z-index: 0;
+  background: $white;
+  transition: all 2s $base-easing;
+  opacity: 1;
+}
+
 .visualizer {
-  #kaleidoscope {
-    @include position(fixed, 0 null null 0);
+  #shade {
+    background: $white;
+    opacity: 1;
+    z-index: 1000;
   }
+
+  &.loaded #shade { opacity: 0; }
 }
 
-#metrics {
-  @include position(fixed, 20px null null 20px);
-  background: rgba(0, 0, 0, .5);
-  padding: 10px;
-  display: none;
+#kaleidoscope {
+  @include position(fixed, 0 null null 0);
+  z-index: 100;
+}
 
-  div {
+#toast {
+  @include position(fixed, null 0 0 0);
+  background: linear-gradient(to top, rgba($black, .6), transparent);
+  transition: opacity 1s $base-easing;
+  z-index: 100;
+  opacity: 0;
+  display: flex;
+  text-align: center;
+  flex-wrap: wrap;
+  padding: 30px;
+  align-items: center;
+  justify-content: center;
+  height: 247px;
+  
+  @keyframes scale-up {
+    0% { transform: scale(0); }
+
+    100% { transform: scale(1); }
+  }
+
+  img {
+    @include size(120px);
+    display: block;
+    margin: 0 auto 20px;
+    transform: scale(0);
+    animation: scale-up .5s $base-easing;
+    animation-fill-mode: forwards;
+  }
+
+  h1 {
     @include all-caps;
-    width: 200px;
+    min-width: 100%;
     color: $white;
-  }
+    font-weight: $normal;
 
-  i {
-    float: right;
-    font-style: normal;
+    i {
+      height: 30px;
+      line-height: 30px;
+      display: block;
+      font-style: normal;
+      font-size: 24px;
+    }
+
+    @keyframes fade-in {
+      0% { opacity: 0; }
+
+      100% { opacity: 1; }
+    }
+    
+    span {
+      @include base-text;
+      animation: fade-in .5s $base-easing;
+      display: block;
+      font-size: .7em;
+    }
   }
-}
+} 
