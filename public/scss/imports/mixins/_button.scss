@@ -1,15 +1,17 @@
-@mixin button($color: $white) {
+@mixin button() {
   @include all-caps;
   @include padding(15px);
   display: inline-block;
   border-radius: 100px;
-  color: $black;
+  color: $white;
   transition: all $hover-transition;
-  background: $white;
+  background: transparent;
+  font-size: 24px;
+  border: 2px solid $white;
 
   &:hover {
-    background: $black;
-    color: $white;
+    background: $white;
+    color: $black;
   }
 
   &:active, &:focus { outline: 0; }

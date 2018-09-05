@@ -15,6 +15,12 @@ define(['exports', './spotify-connect', './toast'], function (exports, _spotifyC
     };
   }
 
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  };
+
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
@@ -66,17 +72,15 @@ define(['exports', './spotify-connect', './toast'], function (exports, _spotifyC
   var Visualizer = function (_SpotifyConnect) {
     _inherits(Visualizer, _SpotifyConnect);
 
-    function Visualizer(demo, interval) {
+    function Visualizer() {
       _classCallCheck(this, Visualizer);
 
-      var _this = _possibleConstructorReturn(this, (Visualizer.__proto__ || Object.getPrototypeOf(Visualizer)).call(this, demo, interval));
+      var _this = _possibleConstructorReturn(this, (Visualizer.__proto__ || Object.getPrototypeOf(Visualizer)).call(this));
 
-      _this.audio = document.querySelector('audio');
       _this.active = false;
       _this.initialized = false;
+      _this.loadingNext = false;
       _this.toast = new _toast2.default();
-      _this.pinging = false;
-      _this.pingInterval = {};
       _this.events = {
         beforeInit: function beforeInit() {},
         afterInit: function afterInit() {},
@@ -85,60 +89,37 @@ define(['exports', './spotify-connect', './toast'], function (exports, _spotifyC
         beforeStop: function beforeStop() {},
         afterStop: function afterStop() {}
       };
+
+      _this.onTrackComplete = function () {
+        _this.loadingNext = true;
+        _this.stopVisualizer();
+      };
       return _this;
     }
 
     _createClass(Visualizer, [{
-      key: 'initializeVisualizer',
-      value: function initializeVisualizer() {
-        var _this2 = this;
-
-        this.getCurrentlyPlaying().then(function (response) {
-          return _this2.processResponse(response);
-        }).catch(function (err) {
-          return console.log(err);
-        });
-      }
-    }, {
       key: 'startVisualizer',
-      value: function startVisualizer() {
-        this.toast.nowPlaying({
-          title: this.currentlyPlaying.item.name,
-          album: this.currentlyPlaying.item.album.name,
-          artist: this.currentlyPlaying.item.artists[0].name,
-          artwork: this.currentlyPlaying.item.album.images[0].url
-        });
-
-        if (this.initialized === false) {
-          this.events.beforeInit.bind(this).call();
-          this.initialized = true;
-          this.events.afterInit.bind(this).call();
+      value: function startVisualizer(hideToast) {
+        if (!hideToast) {
+          this.toast.nowPlaying({
+            title: this.currentlyPlaying.item.name,
+            album: this.currentlyPlaying.item.album.name,
+            artist: this.currentlyPlaying.item.artists[0].name,
+            artwork: this.currentlyPlaying.item.album.images[0].url
+          });
         }
 
-        this.events.beforeStart.bind(this).call();
+        if (this.initialized === false) {
+          this.events.beforeInit.call();
+          this.initialized = true;
+          this.events.afterInit.call();
+        }
+
         this.setIntervalHooks();
+        this.events.beforeStart.call();
+        this.events.afterStart.call();
         this.initializeHooks();
         this.active = true;
-        this.events.afterStart.bind(this).call();
-      }
-    }, {
-      key: 'startVisualizerDemo',
-      value: function startVisualizerDemo() {
-        var _this3 = this;
-
-        this.audio.src = '/data/song.mp3';
-        this.audio.play();
-
-        var canPlayThrough = function canPlayThrough() {
-          _this3.trackProgress = {
-            progress: _this3.audio.currentTime * 100,
-            timestamp: window.performance.now()
-          };
-          _this3.startVisualizer();
-          _this3.audio.removeEventListener('canplaythrough', canPlayThrough);
-        };
-
-        this.audio.addEventListener('canplaythrough', canPlayThrough);
       }
     }, {
       key: 'stopVisualizer',
@@ -152,78 +133,72 @@ define(['exports', './spotify-connect', './toast'], function (exports, _spotifyC
     }, {
       key: 'processResponse',
       value: function processResponse(response) {
-        var _this4 = this;
+        var _this2 = this;
 
-        if (!response.item) {
-          this.toast.notPlaying();
+        this.updateTrackProgress();
+
+        var songsInSync = JSON.stringify(this.currentlyPlaying.item) === JSON.stringify(response.item);
+        var syncError = Math.abs(this.trackProgress.progress - (response.progress_ms + response.delay));
+
+        console.log('Sync error: ' + (parseInt(syncError) || '0') + 'ms');
+
+        var getData = function getData(noToast) {
+          _this2.toast.syncing();
+          var timestamp = window.performance.now();
+          _this2.currentlyPlaying = response;
+          Promise.all([_this2.getTrackFeatures(), _this2.getTrackAnalysis()]).then(function (responses) {
+            _this2.loadingNext = false;
+            _this2.stopVisualizer();
+            _this2.trackFeatures = responses[0];
+            _this2.trackAnalysis = responses[1];
+            _this2.updateTrackProgress(response.delay + (window.performance.now() - timestamp));
+            _this2.startVisualizer(noToast);
+            _this2.pingSpotify();
+          });
+        };
+
+        if (this.active && response.is_playing && songsInSync && syncError > 1500) {
+          return getData(true);
+        }
+
+        if ((typeof response === 'undefined' ? 'undefined' : _typeof(response)) !== 'object' || !response.is_playing) {
+          if (!this.loadingNext) {
+            this.toast.notPlaying();
+          }
 
           if (this.active) {
             this.stopVisualizer();
           }
 
-          return;
+          return this.pingSpotify();
         }
 
-        var getData = function getData(timestamp) {
-          clearInterval(_this4.pingInterval);
-          Promise.all([_this4.getTrackFeatures(), _this4.getTrackAnalysis()]).then(function (responses) {
-            _this4.trackFeatures = responses[0];
-            _this4.trackAnalysis = responses[1];
-            _this4.updateTrackProgress(response.delay + (window.performance.now() - timestamp));
-            if (_this4.demo === true) {
-              _this4.startVisualizerDemo();
-            } else {
-              _this4.startVisualizer();
-              _this4.startPing();
-            }
-          });
-        };
-
-        if (this.active) {
-          if (response.is_playing === false) {
-            this.stopVisualizer();
-            this.toast.notPlaying();
-            if (!this.pinging) {
-              this.startPing();
-            }
-            return;
+        if (!this.active) {
+          if (songsInSync && this.loadingNext) {
+            return this.pingSpotify();
           }
 
-          if (JSON.stringify(this.currentlyPlaying.item) !== JSON.stringify(response.item)) {
-            this.stopVisualizer();
-            this.currentlyPlaying = response;
-            getData(window.performance.now());
-            return;
+          return getData();
+        } else {
+          if (songsInSync) {
+            return this.pingSpotify();
           }
-        }
 
-        if (!this.active && response.is_playing === false) {
-          this.toast.notPlaying();
-        }
-
-        if (!this.active && response.is_playing === true) {
-          this.currentlyPlaying = response;
-          getData(window.performance.now());
-        }
-
-        if (!this.pinging && !this.demo) {
-          this.startPing();
+          getData();
         }
       }
     }, {
-      key: 'startPing',
-      value: function startPing() {
-        var _this5 = this;
+      key: 'pingSpotify',
+      value: function pingSpotify(skipDelay) {
+        var _this3 = this;
 
-        clearInterval(this.pingInterval);
-        this.pingInterval = setInterval(function () {
-          console.log('Ping...');
-          _this5.getCurrentlyPlaying().then(function (response) {
-            return _this5.processResponse(response);
+        setTimeout(function () {
+          _this3.getCurrentlyPlaying().then(function (response) {
+            return _this3.processResponse(response);
           }).catch(function (err) {
-            return console.log(err);
+            return _this3.processResponse(err);
           });
-        }, 5000);
+        }, skipDelay ? 0 : 1000);
       }
     }]);
 

@@ -77,14 +77,18 @@ define(['exports'], function (exports) {
     }, {
       key: 'startPaint',
       value: function startPaint() {
-        this.paint();
-        this.isPainting = true;
+        if (!this.isPainting) {
+          this.paint();
+          this.isPainting = true;
+        }
       }
     }, {
       key: 'stopPaint',
       value: function stopPaint() {
-        cancelAnimationFrame(this.raf);
-        this.isPainting = false;
+        if (this.isPainting) {
+          cancelAnimationFrame(this.raf);
+          this.isPainting = false;
+        }
       }
     }, {
       key: 'init',

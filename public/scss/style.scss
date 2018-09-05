@@ -4,7 +4,7 @@
 @import 'global';
 @import 'imports/reset';
 @import 'pages/index'; 
-@import 'kaleidosync/toast';
+@import 'pages/visualizer';
 
 body {
   @include base-text;

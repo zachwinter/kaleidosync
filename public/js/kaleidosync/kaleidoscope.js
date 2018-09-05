@@ -2,44 +2,37 @@ import Visualizer from './visualizer'
 import Canvas from './canvas'
 import Star from './star'
 import Rectangle from './rectangle'
+import Colors from './colors'
 
 Array.prototype.randomElement = function() {
   return this[Math.floor(Math.random() * this.length)]
 }
 
 class Kaleidoscope extends Visualizer {
-  constructor(demo, interval) {
-    super(demo, interval)
+  constructor(halt) {
+    super(halt)
         
-    this.interval = interval
-    this.intervalTimeout = this.interval ? {} : false
+    this.halt = halt
     this.canvas = new Canvas('kaleidoscope')
     this.totalStars = 16 
     this.maxSize = (this.canvas.isMobile ? 1.2 : .5) * (window.innerHeight > window.innerWidth ? window.innerHeight : window.innerWidth)
     this.minSize = this.maxSize / 5
-    this.activeSize = this.intervalTimeout !== false ? this.maxSize : this.minSize
+    this.activeSize = this.halt ? this.maxSize : this.minSize
     this.sizeStep = [
       ((this.maxSize / this.totalStars) * 0.4),
       ((this.maxSize / this.totalStars) * 0.6),
       ((this.maxSize / this.totalStars) * 0.8)
     ]
     this.radiusStep = [.1, .2, .3, .4, .5, .6, .7, .8, .9, 1, 1.1, 1.2]
-    this.colorSchemes = [
-      ['rgb(255,159,28)',  'rgb(255,191,105)', 'rgb(203,243,240)', 'rgb(46,196,182)',  'rgb(255,255,255)'],
-      ['rgb(229,99,153)',  'rgb(210,241,228)', 'rgb(251,202,239)', 'rgb(72,48,77)',    'rgb(255,255,255)'],
-      ['rgb(198,0,66)',    'rgb(255,119,168)', 'rgb(226,206,239)', 'rgb(255,198,217)', 'rgb(255,255,255)'],
-      ['rgb(118,229,252)', 'rgb(27,154,170)',  'rgb(157,172,255)', 'rgb(61,52,139)',   'rgb(238,251,255)'],
-      ['rgb(10,36,99)',    'rgb(62,146,204)',  'rgb(255,250,255)', 'rgb(216,49,91)',   'rgb(39,27,24)']
-    ]
-    this.duration = 6000 
+    this.colorSchemes = Colors
+    this.activeColorScheme = []
+    this.duration = 5000 
     this.radiusDuration = this.duration
     this.colorDuration = this.duration
     this.backgroundDuration = this.duration
     this.refreshRate = 1000/60
-
     this.model = {
-      stars: {
-        last: [],
+      stars: { last: [],
         active: []
       },
       background: {
@@ -48,23 +41,56 @@ class Kaleidoscope extends Visualizer {
       }
     }
 
-    let colors   = this.colorSchemes.randomElement(),
-        negative = colors.randomElement(),
-        negArray = [negative, negative, negative, negative]
+    this.setEventHooks()
 
-    this.activeColorScheme = colors.concat(negArray)
-
-    if (this.demo === true) {
-      if (this.interval !== true) {
-        this.setEventHooks()
-        this.initializeVisualizer()
-      } else {
-        this.buildSingleState(true)
-      }
+    if (this.halt === true) {
+      this.buildSingleState(true)
     } else {
-      this.setEventHooks()
-      this.initializeVisualizer()
+      this.pingSpotify(true)
     } 
+  }
+
+  setEventHooks() {
+    this.events.beforeInit = () => {
+      this.setActiveColorScheme()
+      this.initElements()
+    }
+
+    this.events.beforeStart = () => {
+      this.canvas.startPaint()
+    }
+
+    this.events.afterStop = () => {
+      this.clearTweeningIntervals()
+      this.canvas.stopPaint()
+    }
+  }
+
+  buildSingleState(init) {
+    this.activeSize = this.maxSize
+
+    if (init) {
+      this.initElements()
+    } 
+
+    this.setActiveColorScheme()
+    this.setColorState()
+    this.setRadiusState()
+
+    if (!init) {
+      this.tweenStarRadius()
+      this.tweenStarColor() 
+      this.tweenBackgroundColor()
+    }
+
+    if (init) { 
+      this.buildSingleState()
+
+      setTimeout(() => {
+        this.clearTweeningIntervals()
+        this.canvas.stopPaint()
+      }, this.duration)
+    }
   }
 
   initElements() {
@@ -75,12 +101,9 @@ class Kaleidoscope extends Visualizer {
     for (var i = 0; i < this.totalStars; i++) {
       let numPoints = 16
 
-      if ((i + 1) % 2 === 0)
-        numPoints = 24
-      if ((i + 1) % 3 === 0)
-        numPoints = 8
-      if ((i + 1) % 4 === 0)
-        numPoints = 32
+      if ((i + 1) % 2 === 0) { numPoints = 24 }
+      if ((i + 1) % 3 === 0) { numPoints = 8  }
+      if ((i + 1) % 4 === 0) { numPoints = 32 }
 
       let starState = {
         x: this.canvas.width/2,
@@ -95,7 +118,6 @@ class Kaleidoscope extends Visualizer {
 
       this.model.stars.active[i] = starState
       this.model.stars.last[i] = starState
-
       this.canvas.addStar(star)
     }
 
@@ -107,11 +129,8 @@ class Kaleidoscope extends Visualizer {
 
     this.model.background.active = backgroundState
     this.model.background.last = backgroundState
-
     this.canvas.addBackground(new Rectangle(backgroundState))
-
     this.canvas.init()
-
     this.initialized = true
   }
 
@@ -129,7 +148,6 @@ class Kaleidoscope extends Visualizer {
 
       this.model.stars.last[i].innerRadius = this.model.stars.active[i].innerRadius
       this.model.stars.last[i].outerRadius = this.model.stars.active[i].outerRadius
-
       this.model.stars.active[i].innerRadius = size * this.radiusStep.randomElement()
       this.model.stars.active[i].outerRadius = size
     }
@@ -149,6 +167,8 @@ class Kaleidoscope extends Visualizer {
   }
 
   setBackgroundState(negative) {
+    clearInterval(this.canvas.background.colorTween)
+
     this.model.background.last = {
       ...this.model.background.last,
       color: this.model.background.active.color
@@ -165,190 +185,120 @@ class Kaleidoscope extends Visualizer {
 
     for (let i = 0; i < this.totalStars; i++) {
       let star = this.canvas.stars[i]
-
-      let nextState = this.model.stars.active[i],
-          lastState = this.model.stars.last[i]
-
-      let innerRadiusStep = (nextState.innerRadius - lastState.innerRadius) / (duration / this.refreshRate),
-          outerRadiusStep = (nextState.outerRadius - lastState.outerRadius) / (duration / this.refreshRate)
-
-      let tweeningInnerRadius = lastState.innerRadius,
-          tweeningOuterRadius = lastState.outerRadius
+      let next = this.model.stars.active[i]
+      let last = this.model.stars.last[i]
+      let innerStep = (next.innerRadius - last.innerRadius) / (duration / this.refreshRate)
+      let outerStep = (next.outerRadius - last.outerRadius) / (duration / this.refreshRate)
+      let innerTween = last.innerRadius
+      let outerTween = last.outerRadius
 
       star.radiusTween = setInterval(() => {
-        tweeningInnerRadius = tweeningInnerRadius + innerRadiusStep
-        tweeningOuterRadius = tweeningOuterRadius + outerRadiusStep
+        innerTween = innerTween + innerStep
+        outerTween = outerTween + outerStep
 
-        nextState.innerRadius = tweeningInnerRadius
-        nextState.outerRadius = tweeningOuterRadius
+        next.innerRadius = innerTween
+        next.outerRadius = outerTween
 
-        star.update({
-          innerRadius: tweeningInnerRadius,
-          outerRadius: tweeningOuterRadius
-        })
+        if (!isNaN(innerTween)) {
+          star.update({
+            innerRadius: innerTween,
+            outerRadius: outerTween
+          })
+        } else {
+          clearInterval(star.radiusTween)
+        }
       }, this.refreshRate)
     }
+  }
+
+  tweenRGB(duration, next, last, element, setColor) {
+    let stepR = (parseInt(next[0]) - parseInt(last[0])) / (duration / this.refreshRate)
+    let stepG = (parseInt(next[1]) - parseInt(last[1])) / (duration / this.refreshRate)
+    let stepB = (parseInt(next[2]) - parseInt(last[2])) / (duration / this.refreshRate)
+    
+    let tweenR = parseInt(last[0])
+    let tweenG = parseInt(last[1])
+    let tweenB = parseInt(last[2])
+
+    element.colorTween = setInterval(() => {
+      tweenR = parseInt(tweenR + stepR)
+      tweenG = parseInt(tweenG + stepG)
+      tweenB = parseInt(tweenB + stepB)
+
+      setColor(`rgb(${tweenR}, ${tweenG}, ${tweenB})`)
+    }, this.refreshRate)
   }
 
   tweenStarColor(ms) {
     let duration = ms ? ms : this.colorDuration
 
     for (let i = 0; i < this.totalStars; i++) {
-      let nextColor = this.model.stars.active[i].color.slice(4, -1).split(','),
-          lastColor = this.model.stars.last[i].color.slice(4, -1).split(',')
-
-      let stepR = (parseInt(nextColor[0]) - parseInt(lastColor[0])) / (duration / this.refreshRate),
-          stepG = (parseInt(nextColor[1]) - parseInt(lastColor[1])) / (duration / this.refreshRate),
-          stepB = (parseInt(nextColor[2]) - parseInt(lastColor[2])) / (duration / this.refreshRate)
-
-      let tweenR = parseInt(lastColor[0]),
-          tweenG = parseInt(lastColor[1]),
-          tweenB = parseInt(lastColor[2])
-
-      this.canvas.stars[i].colorTween = setInterval(() => {
-        tweenR = parseInt(tweenR + stepR)
-        tweenG = parseInt(tweenG + stepG)
-        tweenB = parseInt(tweenB + stepB)
-
-        let color = `rgb(${tweenR}, ${tweenG}, ${tweenB})`
-
+      let next = this.model.stars.active[i].color.slice(4, -1).split(',')
+      let last = this.model.stars.last[i].color.slice(4, -1).split(',')
+      
+      this.tweenRGB(duration, next, last, this.canvas.stars[i], (color) => {
         this.model.stars.active[i].color = color
-
-        this.canvas.stars[i].update({ color: color })
-      }, this.refreshRate)
+        this.canvas.stars[i].update({ color })
+      })
     }
   }
 
   tweenBackgroundColor(ms) {
     let duration = ms ? ms : this.backgroundDuration
+    let next = this.model.background.active.color.slice(4, -1).split(',')
+    let last = this.model.background.last.color.slice(4, -1).split(',')
 
-    let nextColor = this.model.background.active.color.slice(4, -1).split(','),
-        lastColor = this.model.background.last.color.slice(4, -1).split(',')
-
-    let stepR = (parseInt(nextColor[0]) - parseInt(lastColor[0])) / (duration / this.refreshRate),
-        stepG = (parseInt(nextColor[1]) - parseInt(lastColor[1])) / (duration / this.refreshRate),
-        stepB = (parseInt(nextColor[2]) - parseInt(lastColor[2])) / (duration / this.refreshRate)
-
-    let tweenR = parseInt(lastColor[0]),
-        tweenG = parseInt(lastColor[1]),
-        tweenB = parseInt(lastColor[2])
-
-    this.canvas.background.tweenInterval = setInterval(() => {
-      tweenR = parseInt(tweenR + stepR)
-      tweenG = parseInt(tweenG + stepG)
-      tweenB = parseInt(tweenB + stepB)
-
-      let color = `rgb(${tweenR}, ${tweenG}, ${tweenB})`
-
+    this.tweenRGB(duration, next, last, this.canvas.background, (color) => {
       this.model.background.active.color = color 
-
-      this.canvas.background.update({ color: color })
-    }, this.refreshRate)
+      this.canvas.background.update({ color })
+    })
   }
 
-  setActiveColorScheme(ms) {
-    clearInterval(this.canvas.background.tweenInterval)
-
-    let colors   = ms ? this.colorSchemes[0] : this.colorSchemes.randomElement(),
-        negative = colors.randomElement(),
-        negArray = [negative, negative, negative, negative]
+  setActiveColorScheme() {
+    let colors = this.colorSchemes.randomElement()
+    let negative = colors.randomElement()
+    let negArray = [negative, negative, negative, negative]
 
     this.activeColorScheme = colors.concat(negArray)
     this.setBackgroundState(negative)
   }
 
   clearTweeningIntervals() {
-    for (var i = 0; i < this.totalStars; i++) {
-      clearInterval(this.canvas.stars[i].radiusTween)
-      clearInterval(this.canvas.stars[i].colorTween)
-    }
-
-    clearInterval(this.canvas.background.tweenInterval)
-  }
-
-  buildSingleState(init) {
-    this.activeSize = this.maxSize
-
-    if (init) {
-      this.initElements()
-    } 
-
-    this.setActiveColorScheme(this.duration)
-    this.setColorState()
-    this.setRadiusState()
-
-    this.tweenStarRadius(this.duration)
-    this.tweenStarColor(this.duration) 
-    this.tweenBackgroundColor(this.duration)
-
-    if (init) { 
-      this.buildSingleState()
-
-      if (this.demo === true && this.interval === true) {
-        setTimeout(() => {
-          this.clearTweeningIntervals()
-          this.canvas.stopPaint()
-        }, this.duration)
+    if (this.initialized) {
+      for (var i = 0; i < this.totalStars; i++) {
+        clearInterval(this.canvas.stars[i].radiusTween)
+        clearInterval(this.canvas.stars[i].colorTween)
       }
-    }
-  }
 
-  setEventHooks() {
-    this.events.beforeInit = () => {
-      this.initElements()
-
-      if (this.interval === true) {
-        clearTimeout(this.intervalTimeout.timer)
-      }
-    }
-
-    this.events.afterStop = () => {
-      this.clearTweeningIntervals()
+      clearInterval(this.canvas.background.colorTween)
     }
   }
   
   setIntervalHooks() {
-    const tatums = document.getElementById('tatums')
-    const segments = document.getElementById('segments')
-    const beats = document.getElementById('beats')
-    const bars = document.getElementById('bars')
-    const sections = document.getElementById('sections')
-
-    const metrics = false
-
-    this.intervals.hooks.tatums = (i) => {
-      metrics ? tatums.innerHTML = `TATUM: <i>${i}/${this.trackAnalysis.tatums.length}</i>` : null
+    this.intervals.hooks.tatums = () => {
       this.radiusDuration = this.intervals.active.tatums.duration * 1000
       this.setRadiusState()  
       this.tweenStarRadius() 
     }
 
-    this.intervals.hooks.segments = (i) => {
-      metrics ? segments.innerHTML = `SEGMENT: <i>${i}/${this.trackAnalysis.segments.length}</i>` : null
-      const nextLoudness = this.intervals.next.segments ? this.intervals.next.segments.loudness_max : this.intervals.active.segments.loudness_max,
-            lastLoudness = this.intervals.last.segments ? this.intervals.last.segments.loudness_max : this.intervals.active.segments.loudness_max,
-            activeLoudness = (this.intervals.active.segments.loudness_max + nextLoudness + lastLoudness)/3
+    this.intervals.hooks.segments = () => {
+      const nextLoudness = this.intervals.next.segments ? this.intervals.next.segments.loudness_max : this.intervals.active.segments.loudness_max
+      const lastLoudness = this.intervals.last.segments ? this.intervals.last.segments.loudness_max : this.intervals.active.segments.loudness_max
+      const activeLoudness = (this.intervals.active.segments.loudness_max + nextLoudness + lastLoudness)/3
 
       this.activeSize = (this.maxSize - (activeLoudness * -25)) + (this.trackFeatures.loudness * -10)
     }
 
-    this.intervals.hooks.beats = (i) => {  
-      metrics ? beats.innerHTML = `BEAT: <i>${i}/${this.trackAnalysis.beats.length}</i>` : null  
+    this.intervals.hooks.beats = () => {  
       this.colorDuration = this.intervals.active.beats.duration * 1000
       this.setColorState() 
       this.tweenStarColor()
     }
 
-    this.intervals.hooks.bars = (i) => {
-      metrics ? bars.innerHTML = `BAR: <i>${i}/${this.trackAnalysis.bars.length}</i>` : null
+    this.intervals.hooks.bars = () => {
       this.backgroundDuration = this.intervals.active.bars.duration * 1000
-
       this.setActiveColorScheme()
       this.tweenBackgroundColor()
-    }
-
-    this.intervals.hooks.sections = (i) => {
-      metrics ? sections.innerHTML = `SECTION: <i>${i}/${this.trackAnalysis.sections.length}</i>` : null
     }
   } 
 }

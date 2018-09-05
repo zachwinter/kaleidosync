@@ -6,7 +6,7 @@ const sass = require('gulp-sass')
 
 const globs = {
   sass: 'public/scss/**/*.scss',
-  js: 'public/js/**/*.js'
+  js: ['public/js/**/*.js', '!public/js/lib/*.js']
 }
 
 gulp.task('sass', () => {

@@ -10,7 +10,10 @@ class App {
     }
 
     if (bodyClass.contains('visualizer')) {
-      window.KALEIDOSYNC = new Kaleidoscope(false, false)
+      window.KALEIDOSYNC = new Kaleidoscope(false)
+      window.KALEIDOSYNC.duration = 100
+      window.KALEIDOSYNC.buildSingleState(true)
+      document.body.classList.add('loaded')
     }
   }
 }

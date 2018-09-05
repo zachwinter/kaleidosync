@@ -21,20 +21,22 @@ body {
   min-height: 100vh;
   text-align: center; }
   .index .content {
-    position: relative; }
+    position: relative;
+    z-index: 500; }
   .index #shade {
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+    z-index: 0;
     background: #f0f0f0;
-    transition: opacity 2s linear;
-    opacity: 1; }
+    transition: all 5s cubic-bezier(0.81, 0.14, 0.22, 0.86);
+    opacity: 1;
+    z-index: 400; }
   .index.loaded #shade {
-    opacity: 0; }
-  .index #shade.hide {
-    display: none; }
+    background: #eb5a4f;
+    opacity: .7; }
   .index h1 {
     font-size: 38px;
     font-family: "Share", sans-serif;
@@ -93,27 +95,12 @@ body {
       .index p {
         font-size: 32px;
         line-height: 32px; } }
-  .index .index, .index button {
-    transform: translateY(50px);
-    opacity: 0; }
-
-@keyframes button {
-  0% { }
-  100% {
-    transform: translateY(0);
-    opacity: 1; } }
   .index .buttons {
     position: absolute;
     right: 0;
     bottom: -100px;
     left: 0;
-    align-items: center;
-    z-index: 100; }
-    .index .buttons.show button {
-      animation: button 1s cubic-bezier(0.81, 0.14, 0.22, 0.86);
-      animation-fill-mode: forwards; }
-      .index .buttons.show button:last-child {
-        animation-delay: .2s; }
+    align-items: center; }
   .index button {
     font-size: 18px;
     font-family: "Share", sans-serif;
@@ -122,13 +109,16 @@ body {
     padding: 15px;
     display: inline-block;
     border-radius: 100px;
-    color: #010B13;
+    color: #f0f0f0;
     transition: all 0.15s linear;
-    background: #f0f0f0;
-    margin-top: 1.5625em; }
+    background: transparent;
+    font-size: 24px;
+    border: 2px solid #f0f0f0;
+    margin-top: 1.5625em;
+    opacity: 0; }
     .index button:hover {
-      background: #010B13;
-      color: #f0f0f0; }
+      background: #f0f0f0;
+      color: #010B13; }
     .index button:active, .index button:focus {
       outline: 0; }
     .index button:active {
@@ -151,49 +141,94 @@ body {
     @media all and (min-width: 1280px) {
       .index button {
         margin-top: 3.05176em; } }
-    .index button:first-child {
-      margin-right: 1.25em; }
+  .index.loaded button {
+    opacity: 1; }
   .index #kaleidoscope {
-    position: fixed;
-    top: 0;
-    left: 0;
     z-index: -1; }
+
+#shade {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  background: #f0f0f0;
+  transition: all 2s cubic-bezier(0.81, 0.14, 0.22, 0.86);
+  opacity: 1; }
+
+.visualizer #shade {
+  background: #f0f0f0;
+  opacity: 1;
+  z-index: 1000; }
+
+.visualizer.loaded #shade {
+  opacity: 0; }
+
+#kaleidoscope {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100; }
 
 #toast {
   position: fixed;
-  bottom: 20px;
-  left: 20px;
-  height: 120px;
-  transition: opacity 300ms cubic-bezier(0.81, 0.14, 0.22, 0.86);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(to top, rgba(1, 11, 19, 0.6), transparent);
+  transition: opacity 1s cubic-bezier(0.81, 0.14, 0.22, 0.86);
   z-index: 100;
-  background: rgba(1, 11, 19, 0.6);
+  opacity: 0;
   display: flex;
+  text-align: center;
+  flex-wrap: wrap;
+  padding: 30px;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  text-align: left; }
+  height: 247px; }
+
+@keyframes scale-up {
+  0% {
+    transform: scale(0); }
+  100% {
+    transform: scale(1); } }
   #toast img {
     height: 120px;
-    width: 120px; }
+    width: 120px;
+    display: block;
+    margin: 0 auto 20px;
+    transform: scale(0);
+    animation: scale-up 0.5s cubic-bezier(0.81, 0.14, 0.22, 0.86);
+    animation-fill-mode: forwards; }
   #toast h1 {
     font-size: 18px;
     font-family: "Share", sans-serif;
     text-transform: uppercase;
     font-weight: 300;
-    font-size: 28px;
-    line-height: 30px;
+    min-width: 100%;
     color: #f0f0f0;
-    padding: 0 30px;
     font-weight: 300; }
     #toast h1 i {
-      font-style: normal; }
+      height: 30px;
+      line-height: 30px;
+      display: block;
+      font-style: normal;
+      font-size: 24px; }
+
+@keyframes fade-in {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
     #toast h1 span {
       font-family: "Open Sans", sans-serif;
       font-size: 18px;
       font-weight: 300;
       line-height: 1.5;
+      animation: fade-in 0.5s cubic-bezier(0.81, 0.14, 0.22, 0.86);
       display: block;
-      font-size: .5em; }
+      font-size: .7em; }
 
 body {
   font-family: "Open Sans", sans-serif;
@@ -213,42 +248,6 @@ body {
   max-width: 100%;
   overflow-x: hidden; }
 
-#toast {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  height: 120px;
-  transition: opacity 300ms cubic-bezier(0.81, 0.14, 0.22, 0.86);
-  z-index: 100;
-  background: rgba(1, 11, 19, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  text-align: left; }
-  #toast img {
-    height: 120px;
-    width: 120px; }
-  #toast h1 {
-    font-size: 18px;
-    font-family: "Share", sans-serif;
-    text-transform: uppercase;
-    font-weight: 300;
-    font-size: 28px;
-    line-height: 30px;
-    color: #f0f0f0;
-    padding: 0 30px;
-    font-weight: 300; }
-    #toast h1 i {
-      font-style: normal; }
-    #toast h1 span {
-      font-family: "Open Sans", sans-serif;
-      font-size: 18px;
-      font-weight: 300;
-      line-height: 1.5;
-      display: block;
-      font-size: .5em; }
-
 .index {
   background: #5fc49e;
   color: #f0f0f0;
@@ -258,20 +257,22 @@ body {
   min-height: 100vh;
   text-align: center; }
   .index .content {
-    position: relative; }
+    position: relative;
+    z-index: 500; }
   .index #shade {
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+    z-index: 0;
     background: #f0f0f0;
-    transition: opacity 2s linear;
-    opacity: 1; }
+    transition: all 5s cubic-bezier(0.81, 0.14, 0.22, 0.86);
+    opacity: 1;
+    z-index: 400; }
   .index.loaded #shade {
-    opacity: 0; }
-  .index #shade.hide {
-    display: none; }
+    background: #eb5a4f;
+    opacity: .7; }
   .index h1 {
     font-size: 38px;
     font-family: "Share", sans-serif;
@@ -330,27 +331,12 @@ body {
       .index p {
         font-size: 32px;
         line-height: 32px; } }
-  .index .index, .index button {
-    transform: translateY(50px);
-    opacity: 0; }
-
-@keyframes button {
-  0% { }
-  100% {
-    transform: translateY(0);
-    opacity: 1; } }
   .index .buttons {
     position: absolute;
     right: 0;
     bottom: -100px;
     left: 0;
-    align-items: center;
-    z-index: 100; }
-    .index .buttons.show button {
-      animation: button 1s cubic-bezier(0.81, 0.14, 0.22, 0.86);
-      animation-fill-mode: forwards; }
-      .index .buttons.show button:last-child {
-        animation-delay: .2s; }
+    align-items: center; }
   .index button {
     font-size: 18px;
     font-family: "Share", sans-serif;
@@ -359,13 +345,16 @@ body {
     padding: 15px;
     display: inline-block;
     border-radius: 100px;
-    color: #010B13;
+    color: #f0f0f0;
     transition: all 0.15s linear;
-    background: #f0f0f0;
-    margin-top: 1.5625em; }
+    background: transparent;
+    font-size: 24px;
+    border: 2px solid #f0f0f0;
+    margin-top: 1.5625em;
+    opacity: 0; }
     .index button:hover {
-      background: #010B13;
-      color: #f0f0f0; }
+      background: #f0f0f0;
+      color: #010B13; }
     .index button:active, .index button:focus {
       outline: 0; }
     .index button:active {
@@ -388,36 +377,94 @@ body {
     @media all and (min-width: 1280px) {
       .index button {
         margin-top: 3.05176em; } }
-    .index button:first-child {
-      margin-right: 1.25em; }
+  .index.loaded button {
+    opacity: 1; }
   .index #kaleidoscope {
-    position: fixed;
-    top: 0;
-    left: 0;
     z-index: -1; }
 
-.visualizer #kaleidoscope {
+#shade {
   position: fixed;
   top: 0;
-  left: 0; }
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  background: #f0f0f0;
+  transition: all 2s cubic-bezier(0.81, 0.14, 0.22, 0.86);
+  opacity: 1; }
 
-#metrics {
+.visualizer #shade {
+  background: #f0f0f0;
+  opacity: 1;
+  z-index: 1000; }
+
+.visualizer.loaded #shade {
+  opacity: 0; }
+
+#kaleidoscope {
   position: fixed;
-  top: 20px;
-  left: 20px;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 10px;
-  display: none; }
-  #metrics div {
+  top: 0;
+  left: 0;
+  z-index: 100; }
+
+#toast {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(to top, rgba(1, 11, 19, 0.6), transparent);
+  transition: opacity 1s cubic-bezier(0.81, 0.14, 0.22, 0.86);
+  z-index: 100;
+  opacity: 0;
+  display: flex;
+  text-align: center;
+  flex-wrap: wrap;
+  padding: 30px;
+  align-items: center;
+  justify-content: center;
+  height: 247px; }
+
+@keyframes scale-up {
+  0% {
+    transform: scale(0); }
+  100% {
+    transform: scale(1); } }
+  #toast img {
+    height: 120px;
+    width: 120px;
+    display: block;
+    margin: 0 auto 20px;
+    transform: scale(0);
+    animation: scale-up 0.5s cubic-bezier(0.81, 0.14, 0.22, 0.86);
+    animation-fill-mode: forwards; }
+  #toast h1 {
     font-size: 18px;
     font-family: "Share", sans-serif;
     text-transform: uppercase;
     font-weight: 300;
-    width: 200px;
-    color: #f0f0f0; }
-  #metrics i {
-    float: right;
-    font-style: normal; }
+    min-width: 100%;
+    color: #f0f0f0;
+    font-weight: 300; }
+    #toast h1 i {
+      height: 30px;
+      line-height: 30px;
+      display: block;
+      font-style: normal;
+      font-size: 24px; }
+
+@keyframes fade-in {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+    #toast h1 span {
+      font-family: "Open Sans", sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.5;
+      animation: fade-in 0.5s cubic-bezier(0.81, 0.14, 0.22, 0.86);
+      display: block;
+      font-size: .7em; }
 
 
 
