@@ -23,8 +23,8 @@ class Kaleidoscope extends SpotifyConnect {
       this.setEventHooks() 
       this.pingSpotify(true)
     } else {
-			this.setStaticIntervals()
-			console.log('START requestAnimationFrame() – this.staticTween()')
+      this.setStaticIntervals()
+      console.log('START requestAnimationFrame() – this.staticTween()')
       this.state.raf = requestAnimationFrame(this.staticTween.bind(this))
     }
 
@@ -54,8 +54,8 @@ class Kaleidoscope extends SpotifyConnect {
     this.state.active.background.set({
       width: this.canvas.width,
       height: this.canvas.height
-		}).draw(this.ctx)
-		
+    }).draw(this.ctx)
+    
     for (var i = 0; i < this.totalStars; i++) {
       this.state.active.stars[i].set({
         x: this.canvas.width/2,
@@ -68,18 +68,18 @@ class Kaleidoscope extends SpotifyConnect {
    * Set initial visual parameters.
    */
   setParameters() {
-		this.setSizeRange()
-		this.setSingleTweenDuration()
-		this.activeSize = this.static ? this.maxSize : this.minSize
+    this.setSizeRange()
+    this.setSingleTweenDuration()
+    this.activeSize = this.static ? this.maxSize : this.minSize
     this.totalStars = 20
     this.radiusStep = [.3, .4, .5, .6, .7, .8, .9, 1, 1.1, 1.2]
     this.sizeStep = [
       ((this.maxSize / this.totalStars) * 0.4),
       ((this.maxSize / this.totalStars) * 0.6),
       ((this.maxSize / this.totalStars) * 0.8),
-			((this.maxSize / this.totalStars) * 1.0),
-			((this.maxSize / this.totalStars) * 1.2),
-			((this.maxSize / this.totalStars) * 1.4)
+      ((this.maxSize / this.totalStars) * 1.0),
+      ((this.maxSize / this.totalStars) * 1.2),
+      ((this.maxSize / this.totalStars) * 1.4)
     ]
     this.setState('color-scheme')
   }
@@ -108,8 +108,8 @@ class Kaleidoscope extends SpotifyConnect {
     this.state = {}
     this.state.last = this.buildSingleState()
     this.state.active = this.buildSingleState()
-		this.state.next = this.buildSingleState()
-		this.state.static = 0
+    this.state.next = this.buildSingleState()
+    this.state.static = 0
     this.initialStart = 0
   }
 
@@ -166,56 +166,56 @@ class Kaleidoscope extends SpotifyConnect {
    * @param {string} type – Type of state to set.
    */
   setState(type) {
-		const setColors = (colors, negative) => {
-			this.colors = {
-				original: [...colors]
-			}
-			let i = 0
-			while (i < (Math.random() * 80 - 25) + 25) { 
-				colors.push(negative)
-				i++
-			}
-			this.colors.scheme = colors
-			this.colors.negative = negative
-			document.getElementById('shade').style.background = this.colors.negative
-		}
+    const setColors = (colors, negative) => {
+      this.colors = {
+        original: [...colors]
+      }
+      let i = 0
+      while (i < (Math.random() * 80 - 25) + 25) { 
+        colors.push(negative)
+        i++
+      }
+      this.colors.scheme = colors
+      this.colors.negative = negative
+      document.getElementById('shade').style.background = this.colors.negative
+    }
 
     switch(type) {
 
       /** Active size of kaleidoscope. */
-			case 'size':
-				const segment = this.intervals.active.segments
-				const last = this.trackAnalysis.segments[segment.index - 1] ? this.trackAnalysis.segments[segment.index - 1].loudness_max : segment.loudness_max
-				const next = this.trackAnalysis.segments[segment.index + 1] ? this.trackAnalysis.segments[segment.index + 1].loudness_max : segment.loudness_max
-				const active = (segment.loudness_max + last + next)/3
-				this.activeSize = (this.maxSize + (active * 25)) + (this.trackFeatures.loudness * -15)
+      case 'size':
+        const segment = this.intervals.active.segments
+        const last = this.trackAnalysis.segments[segment.index - 1] ? this.trackAnalysis.segments[segment.index - 1].loudness_max : segment.loudness_max
+        const next = this.trackAnalysis.segments[segment.index + 1] ? this.trackAnalysis.segments[segment.index + 1].loudness_max : segment.loudness_max
+        const active = (segment.loudness_max + last + next)/3
+        this.activeSize = (this.maxSize + (active * 25)) + (this.trackFeatures.loudness * -15)
         break
 
       /** Active color scheme. */
-			case 'color-scheme':
-				let scheme = Colors.randomElement()
-				setColors([...scheme], scheme.randomElement())
-				break
-				
-			/** Active negative (main/background) color. */
-			case 'negative-color':
-				scheme = [...this.colors.original]
-				setColors(scheme, scheme.randomElement())
-				break
+      case 'color-scheme':
+        let scheme = Colors.randomElement()
+        setColors([...scheme], scheme.randomElement())
+        break
+        
+      /** Active negative (main/background) color. */
+      case 'negative-color':
+        scheme = [...this.colors.original]
+        setColors(scheme, scheme.randomElement())
+        break
 
       /** Inner and outer radius of each star. */
       case 'star-radius':
-				let size = this.activeSize
+        let size = this.activeSize
         for (var i = 0; i < this.totalStars; i++) {
           size = parseInt(size - this.sizeStep.randomElement())
           if (size < this.minSize ) {
             size = this.minSize
-					} 
-				
+          } 
+        
           this.state.last.stars[i].innerRadius = this.state.active.stars[i].innerRadius
           this.state.last.stars[i].outerRadius = this.state.active.stars[i].outerRadius
           this.state.next.stars[i].innerRadius = size * this.radiusStep.randomElement()
-					this.state.next.stars[i].outerRadius = size
+          this.state.next.stars[i].outerRadius = size
         }
         break
 
@@ -247,18 +247,18 @@ class Kaleidoscope extends SpotifyConnect {
    * @param {number} i – Index of interval.
    * @returns {number}
    */
-	easing(t, i, override) {
-		if (override === true) { return t }
+  easing(t, i, override) {
+    if (override === true) { return t }
 
-		if (this.static === true) {
-			if (i) {
-				if (i % 2 === 0) { return BezierEasing(0.67,1.32,.35,-0.82)(t) }
-				if (i % 3 === 0) { return BezierEasing(0.76,1.93,.81,-0.57)(t) }
-				if (i % 5 === 0) { return BezierEasing(.53,0.65,.81,-0.57)(t) }
-			} else {
-				return BezierEasing(.19,1.77,.78,-1.36)(t)
-			}
-		}
+    if (this.static === true) {
+      if (i) {
+        if (i % 2 === 0) { return BezierEasing(0.67,1.32,.35,-0.82)(t) }
+        if (i % 3 === 0) { return BezierEasing(0.76,1.93,.81,-0.57)(t) }
+        if (i % 5 === 0) { return BezierEasing(.53,0.65,.81,-0.57)(t) }
+      } else {
+        return BezierEasing(.19,1.77,.78,-1.36)(t)
+      }
+    }
 
     if ((i && (i % 2 === 0))) {
       return BezierEasing(.2,.5,.8,1)(t)
@@ -278,15 +278,15 @@ class Kaleidoscope extends SpotifyConnect {
       case 'background-color':
         let progress = Math.min((this.trackProgress - this.intervals.active.beats.start) / this.intervals.active.beats.duration, 1)
         if (progress < 0 || isNaN(progress)) { progress = 0 } 
-				progress = this.easing(progress, i)
+        progress = this.easing(progress, i)
         let last = this.state.last.background.color.slice(4, -1).split(',')
         let next = this.state.next.background.color.slice(4, -1).split(',')
         return this.tweenRGB(progress, last, next)
 
       case 'star-radius':
-				progress = Math.min((this.trackProgress - this.intervals.active.tatums.start) / this.intervals.active.tatums.duration, 1)
-				if (progress < 0 || isNaN(progress)) { progress = 0 } 
-				progress = this.easing(progress, i)
+        progress = Math.min((this.trackProgress - this.intervals.active.tatums.start) / this.intervals.active.tatums.duration, 1)
+        if (progress < 0 || isNaN(progress)) { progress = 0 } 
+        progress = this.easing(progress, i)
         const innerDiff = this.state.next.stars[i].innerRadius - this.state.last.stars[i].innerRadius
         const outerDiff = this.state.next.stars[i].outerRadius - this.state.last.stars[i].outerRadius
         return {
@@ -332,9 +332,9 @@ class Kaleidoscope extends SpotifyConnect {
     console.log('setEventHooks()')
 
     this.events.beforeStart = () => {
-			this.static = false
-			this.initialStart = window.performance.now()
-			console.log('START requestAnimationFrame() – this.paint()')
+      this.static = false
+      this.initialStart = window.performance.now()
+      console.log('START requestAnimationFrame() – this.paint()')
       this.state.raf = requestAnimationFrame(this.paint.bind(this))
     }
 
@@ -343,16 +343,16 @@ class Kaleidoscope extends SpotifyConnect {
     }
     
     this.events.beforeStop = () => {
-			console.log('CANCEL requestAnimationFrame() – {any}')
-			cancelAnimationFrame(this.state.raf)
-		}
+      console.log('CANCEL requestAnimationFrame() – {any}')
+      cancelAnimationFrame(this.state.raf)
+    }
 
     this.events.setStatic = () => {
-			this.static = true
-			this.setParameters()
+      this.static = true
+      this.setParameters()
       this.setStaticIntervals()
-			document.body.classList.add('loaded')
-			console.log('START requestAnimationFrame() – this.staticTween()')
+      document.body.classList.add('loaded')
+      console.log('START requestAnimationFrame() – this.staticTween()')
       this.state.raf = requestAnimationFrame(this.staticTween.bind(this))
     }
   }
@@ -368,7 +368,7 @@ class Kaleidoscope extends SpotifyConnect {
      * If current track progress is equal to or greater than current track duration, canel paint.
      */
     if (this.trackProgress >= this.currentlyPlaying.item.duration_ms) {
-			console.log('CANCEL requestAnimationFrame() – this.paint()')
+      console.log('CANCEL requestAnimationFrame() – this.paint()')
       return cancelAnimationFrame(this.state.raf)
     }
 
@@ -407,41 +407,41 @@ class Kaleidoscope extends SpotifyConnect {
    */
   setStaticIntervals() {
 
-		// his.setState('star-radius')  
-		// this.setState('star-color')
-		// this.setState('background-color')
+    // his.setState('star-radius')  
+    // this.setState('star-color')
+    // this.setState('background-color')
 
-		console.log('setStaticIntervals()')
-		this.state.static++
+    console.log('setStaticIntervals()')
+    this.state.static++
 
-		this.setSingleTweenDuration()
+    this.setSingleTweenDuration()
 
-		this.initialStart = window.performance.now()
-		
+    this.initialStart = window.performance.now()
+    
     const interval = {
       start: 0,
       duration: this.singleTweenDuration
-		}
-		
+    }
+    
     this.intervals.active.tatums = interval
     this.intervals.active.beats = interval
     this.intervals.active.bars = interval
     this.intervals.active.sections = interval
-		this.intervals.active.segments = interval
+    this.intervals.active.segments = interval
 
-		this.setState('star-radius')  
-		if (this.state.static % 2 === 0) {
-			this.setState('negative-color')
-		}
-		this.setState('star-color')
-		this.setState('background-color')
+    this.setState('star-radius')  
+    if (this.state.static % 2 === 0) {
+      this.setState('negative-color')
+    }
+    this.setState('star-color')
+    this.setState('background-color')
 
-		this.activeSize = this.activeSize === this.maxSize ? this.maxSize / 1.5 : this.maxSize
-	}
-	
-	setSingleTweenDuration() {
-		this.singleTweenDuration = Math.random() * (6000 - 1000) + 1000
-	}
+    this.activeSize = this.activeSize === this.maxSize ? this.maxSize / 1.5 : this.maxSize
+  }
+  
+  setSingleTweenDuration() {
+    this.singleTweenDuration = Math.random() * (6000 - 1000) + 1000
+  }
 
   /**
    * Tween using static ("fake") interval data.
@@ -450,15 +450,15 @@ class Kaleidoscope extends SpotifyConnect {
   staticTween(timestamp) {
     this.trackProgress = (timestamp - this.initialStart)
 
-		if (this.static === false) {
-			console.log('CANCEL requestAnimationFrame() – this.staticTween()') 
-			return cancelAnimationFrame(this.staticTween)
-		}
+    if (this.static === false) {
+      console.log('CANCEL requestAnimationFrame() – this.staticTween()') 
+      return cancelAnimationFrame(this.staticTween)
+    }
 
     if (this.trackProgress >= this.singleTweenDuration) {
-			this.setStaticIntervals()
-			return this.state.raf = requestAnimationFrame(this.staticTween.bind(this))  
-		}
+      this.setStaticIntervals()
+      return this.state.raf = requestAnimationFrame(this.staticTween.bind(this))  
+    }
 
     /** Determine and set current background color. */
     this.state.active.background.set({
@@ -473,7 +473,7 @@ class Kaleidoscope extends SpotifyConnect {
       }).draw(this.ctx)
     })
 
-		
+    
     this.state.raf = requestAnimationFrame(this.staticTween.bind(this))
   }
 
@@ -496,7 +496,7 @@ class Kaleidoscope extends SpotifyConnect {
         this.setState('size')
         break
 
-			case 'beats':
+      case 'beats':
         this.setState('star-color')
         this.setState('background-color')
         break
@@ -505,8 +505,8 @@ class Kaleidoscope extends SpotifyConnect {
         if (index % 4 === 0) {
           this.setState('color-scheme')
         } else {
-					this.setState('negative-color')
-				}
+          this.setState('negative-color')
+        }
         break
 
       default:
