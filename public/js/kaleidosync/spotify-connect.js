@@ -123,8 +123,8 @@ class SpotifyConnect {
       this.fetch(`https://api.spotify.com/v1/audio-features/${track.item.id}`),
       this.fetch(`https://api.spotify.com/v1/audio-analysis/${track.item.id}`)
     ]).then((responses) => {
-			const offset = Math.abs((Date.now() - track.timestamp) - (track.progress_ms + (window.performance.now() - track.latency)))
-			this.trustServer = offset < this.errorThreshold
+      const offset = Math.abs((Date.now() - track.timestamp) - (track.progress_ms + (window.performance.now() - track.latency)))
+      this.trustServer = offset < this.errorThreshold
       this.stopVisualizer()
       this.currentlyPlaying = track
       this.trackFeatures = responses[0]
@@ -173,7 +173,7 @@ class SpotifyConnect {
         this.trustServer = false
         this.errorCount = 0
         this.stopVisualizer()
-				this.initialTrackProgress = response.progress_ms + ((window.performance.now() - response.latency))
+        this.initialTrackProgress = response.progress_ms + ((window.performance.now() - response.latency))
         this.startVisualizer(true)
         return this.pingSpotify()
       }
@@ -198,12 +198,12 @@ class SpotifyConnect {
         this.stopVisualizer()
       } else {
         this.toast.notPlaying()
-			}
-			
-			if (this.tempStatic === false) {
-				this.events.setStatic()
-				this.tempStatic = true
-			}
+      }
+      
+      if (this.tempStatic === false) {
+        this.events.setStatic()
+        this.tempStatic = true
+      }
 
       return this.pingSpotify()
     }
@@ -283,9 +283,9 @@ class SpotifyConnect {
    * Start visualizer and execute event hooks.
    */
   startVisualizer(hideToast) {  
-		if (this.active) {
-			return
-		}
+    if (this.active) {
+      return
+    }
 
     console.log('startVisualizer()')
 
@@ -299,8 +299,8 @@ class SpotifyConnect {
       this.events.beforeInit()
       this.initialized = true
       this.events.afterInit()
-		}
-		
+    }
+    
     if (hideToast === true) {
       return
     }
@@ -318,9 +318,9 @@ class SpotifyConnect {
    * Stop visualizer and execute event hooks.
    */
   stopVisualizer() { 
-		if (!this.active) {
-			return
-		}
+    if (!this.active) {
+      return
+    }
 
     console.log('stopVisualizer()')
 
