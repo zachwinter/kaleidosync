@@ -1,14 +1,11 @@
 class Toast {
   constructor() {
-    this.duration = 6000 
-    this.el = document.createElement('div')
-    this.el.id = 'toast'
-    document.body.appendChild(this.el)
+    this.createElement()
+    this.duration = 2500 
     this.visible = false
-
     this.typedOptions = {
       showCursor: false,
-      typeSpeed: 40,
+      typeSpeed: 30,
       onComplete: () => setTimeout(() => {
         this.hide()
         this.visible = false
@@ -16,17 +13,21 @@ class Toast {
     }
   }
 
+  createElement() {
+    this.el = document.createElement('div')
+    this.el.id = 'toast'
+    document.body.appendChild(this.el)
+  }
+
   notPlaying() {
     if (this.visible === false) {
-      this.el.innerHTML = `
-        <h1><i id="typed"></i></h1>
-      `
+      this.el.innerHTML = `<h1><i id="typed"></i></h1>`
 
       this.show()
 
       this.typed = new Typed('#typed', {
         ...this.typedOptions,
-        strings: ['No song detected! Play a song in Spotify to get started.'],
+        strings: ['No playback detected'],
         onComplete: () => {}
       })
 
@@ -35,24 +36,18 @@ class Toast {
   }
 
   syncing() {
-    this.el.innerHTML = `
-      <h1><i id="typed"></i></h1>
-    `
+    this.el.innerHTML = `<h1><i id="typed"></i></h1>`
 
     this.show()
 
     this.typed = new Typed('#typed', {
       ...this.typedOptions,
-      strings: ['Syncing . . .'],
-      typeSpeed: 200
+      strings: ['Syncing']
     })
   }
  
   nowPlaying(track) {
-    this.el.innerHTML = `
-      <img src="${track.artwork}" />
-      <h1><i id="typed"></i> <span>${track.artist}</span></h1>
-    `
+    this.el.innerHTML = `<img src="${track.artwork}" /><h1><i id="typed"></i> <span>${track.artist}</span></h1>`
 
     this.show()
 

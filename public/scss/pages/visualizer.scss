@@ -10,9 +10,8 @@
 
 .visualizer {
   #shade {
-    background: $white;
     opacity: 1;
-    z-index: 1000;
+    z-index: 125;
   }
 
   &.loaded #shade { opacity: 0; }
@@ -27,7 +26,7 @@
   @include position(fixed, null 0 0 0);
   background: linear-gradient(to top, rgba($black, .6), transparent);
   transition: opacity 1s $base-easing;
-  z-index: 100;
+  z-index: 150;
   opacity: 0;
   display: flex;
   text-align: center;

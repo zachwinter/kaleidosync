@@ -3,8 +3,8 @@ import Kaleidoscope from '../kaleidosync/kaleidoscope'
 class Index {
   constructor() {
     this.loginButton()
-    window.ZACH = new Kaleidoscope(true)
-    document.body.classList.add('loaded') 
+    window.KALEIDOSYNC = new Kaleidoscope(true)
+    setTimeout(() => document.body.classList.add('loaded'), 300)
   }
 
   loginButton() {

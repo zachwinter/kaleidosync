@@ -1,8 +1,6 @@
 @import 'global';
 
 .index {
-  background: $green; 
-  color: $white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,7 +16,7 @@
     @include position(fixed, 0 0 0 0);
     z-index: 0;
     background: $white;
-    transition: all 5s $base-easing;
+    transition: all 3s $base-easing;
     opacity: 1;
     z-index: 400;
   }
@@ -31,9 +29,10 @@
   h1 {
     @include heading;
     @include scale(
-      font-size 32px 120px,
-      line-height 32px 150px
+      font-size 32px 200px,
+      line-height 32px 220px
     );
+    color: $white;
   }
 
   p {
@@ -41,6 +40,7 @@
       font-size 24px 32px,
       line-height 24px 32px
     )
+    color: $white;
   }
 
   .buttons {
@@ -51,11 +51,6 @@
   button {
     @include button;
     @include scale(margin-top modular-scale(2) modular-scale(5));
-    opacity: 0;
-  }
-
-  &.loaded button { 
-    opacity: 1;
   }
 
   #kaleidoscope {
