@@ -1,19 +1,18 @@
-export const PI = Math.PI
-export const ROTATION = PI/2*3
+const PI = Math.PI
+const ROTATION = PI/2*3
 
 class Star {
   constructor(props) {
-    for (var prop in props) {
-      this[prop] = props[prop]
-    } 
-
+    this.set(props)
     this.step = PI/this.points
   }
 
-  update(props) {
+  set(props) {
     for (var prop in props) {
       this[prop] = props[prop]
     } 
+
+    return this
   }
 
   draw(ctx) {

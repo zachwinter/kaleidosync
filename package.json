@@ -1,9 +1,9 @@
 {
   "name": "kaleidosync",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"npm:serve\" \"npm:transpile\"",
+    "start": "concurrently \"npm:transpile\" \"npm:serve\"",
     "serve": "node ./bin/www",
     "transpile": "gulp"
   },
@@ -16,7 +16,8 @@
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
     "morgan": "~1.9.0",
-    "querystring": "^0.2.0"
+    "querystring": "^0.2.0",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

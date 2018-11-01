@@ -3,15 +3,16 @@
   @include padding(15px);
   display: inline-block;
   border-radius: 100px;
-  color: $white;
   transition: all $hover-transition;
   background: transparent;
-  font-size: 24px;
+  color: $white;  
   border: 2px solid $white;
+  font-size: 24px;
 
   &:hover {
     background: $white;
     color: $black;
+    
   }
 
   &:active, &:focus { outline: 0; }
