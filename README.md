@@ -14,7 +14,11 @@ Feel free to reach out if you have any questions – or, even better, constructi
 
 ##### Version 2.0
 • Re-implemented with `requestAnimationFrame()` 
+
 • Now mobile-friendly, even on older devices 
+
 • Improved tweening 
+
 • Adjusts itself on window resize
+
 • More accurate syncing with Spotify, including automatic self-correction
