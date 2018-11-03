@@ -1,6 +1,7 @@
 {
   "name": "kaleidosync",
   "version": "2.0.0",
+  "license" : "MIT",
   "private": true,
   "scripts": {
     "start": "concurrently \"npm:transpile\" \"npm:serve\"",
