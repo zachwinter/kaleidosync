@@ -288,19 +288,6 @@ export function setActiveSize ({ visualizer }) {
 }
 
 /**
- * @function setActiveInterval
- * @param state – Application state. 
- * @param type – Type of interval.
- * @param index – Index of interval tot set.
- */
-export function setActiveInterval ({ visualizer }, { type, index }) {
-  visualizer.activeIntervals[type] = {
-    ...visualizer.trackAnalysis[type][index],
-    index
-  }
-}
-
-/**
  * @function setTrackProgress
  * @param state – Application state. 
  * @param progress – Duration in milliseconds.
@@ -342,9 +329,7 @@ export function paint ({ visualizer }, { canvas, ctx }) {
  * @function setActiveIntervals – Determine and set active intervals of each type, based on track progress.
  * @param state – Application state.
  */
-export function setActiveIntervals (state) {
-  const { visualizer } = state
-
+export function setActiveIntervals ({ visualizer }) {
   const determineInterval = (type) => {
     for (let i = 0; i < visualizer.trackAnalysis[type].length; i++) {
       /** If last interval... */
@@ -367,7 +352,10 @@ export function setActiveIntervals (state) {
 
     /** Update active interval if it's different from last check. */
     if (!visualizer.activeIntervals[type].start || index !== visualizer.activeIntervals[type].index) {
-      setActiveInterval(state, { type, index })
+      visualizer.activeIntervals[type] = {
+        ...visualizer.trackAnalysis[type][index],
+        index
+      }
     }
   })
 }
