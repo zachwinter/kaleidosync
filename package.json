@@ -3,8 +3,7 @@
   "version": "3.0.0",
   "description": "HTML5 Spotify visualizer, powered by the Echo Nest.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"node server.js\" \"webpack-dev-server\""
+    "start": "concurrently \"node server.js\" \"webpack-dev-server\""
   },
   "keywords": [
     "scaffold",

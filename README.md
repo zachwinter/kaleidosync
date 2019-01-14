@@ -21,7 +21,7 @@ This is my take on using their data visually, created with the HTML5 `<canvas>` 
 
 ```bash
 npm i
-npm run dev
+npm run start
 ```
 
 5) Visit `http://localhost:8000` and log in with your Spotify account. 
