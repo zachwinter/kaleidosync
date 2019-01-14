@@ -1,19 +1,24 @@
-const config = {
-  default: {
-    client_id: 'XXXXXX',
-    client_secret: 'XXXXXX',
-    redirect_uri: 'http://localhost:3000/callback',
-    scope: 'user-read-playback-state',
-    state_key: 'SPOTIFY_VISUALIZER_AUTH_ID'
-  },
+module.exports = {
+  title: 'Kaleidosync',
 
-  production: {
-    client_id: 'XXXXXX',
-    client_secret: 'XXXXXX',
-    redirect_uri: 'https://kaleidosync.herokuapp.com/callback',
-    scope: 'user-read-playback-state',
-    state_key: 'SPOTIFY_VISUALIZER_AUTH_ID'
-  }
+  /**
+   * Your application `client_id` and `client_secret`.
+   * Manage in your Spotify developer dashboard.
+   */
+  client_id: 'YOUR CLIENT ID HERE',
+  client_secret: 'YOUR CLIENT SECRET HERE',
+
+  /**
+   * Set your application's Redirect URI to the following:
+   */
+  redirect_uri: 'http://localhost:8001/callback',
+
+  /**
+   * Don't change these.
+   */
+  scope: 'user-read-playback-state',
+  state_key: 'KALEIDOSYNC_AUTH_ID',
+  access_token: 'KALEIDOSYNC_ACCESS_TOKEN',
+  refresh_token: 'KALEIDOSYNC_REFRESH_TOKEN',
+  refresh_code: 'KALEIDOSYNC_REFRESH_CODE'
 }
-
-module.exports = config[process.env.NODE_ENV] || config.default

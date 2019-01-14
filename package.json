@@ -1,35 +1,39 @@
 {
   "name": "kaleidosync",
-  "version": "2.0.0",
-  "private": true,
+  "version": "3.0.0",
+  "description": "HTML5 Spotify visualizer, powered by the Echo Nest.",
   "scripts": {
-    "start": "concurrently \"npm:transpile\" \"npm:serve\"",
-    "serve": "node ./bin/www",
-    "transpile": "gulp"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"node server.js\" \"webpack-dev-server\""
   },
+  "keywords": [
+    "scaffold",
+    "webpack",
+    "babel",
+    "sass"
+  ],
+  "author": "Zach Winter",
+  "license": "MIT",
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
-    "concurrently": "^4.0.1",
-    "cookie-parser": "~1.4.3",
-    "debug": "~2.6.9",
-    "express": "~4.16.0",
-    "http-errors": "~1.6.2",
-    "jade": "~1.11.0",
-    "morgan": "~1.9.0",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.4",
     "querystring": "^0.2.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "serve-static": "^1.13.2"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-plugin-transform-es2015-modules-amd": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^7.0.1",
-    "gulp-concat": "^2.6.1",
-    "gulp-plumber": "^1.2.0",
-    "gulp-sass": "^4.0.1",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-watch": "^5.0.1"
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "babel-loader": "^8.0.5",
+    "concurrently": "^4.1.0",
+    "css-loader": "^2.1.0",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.5.0",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.28.4",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14"
   }
 }
