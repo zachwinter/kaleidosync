@@ -16,7 +16,7 @@ This is my take on using their data visually, created with the HTML5 `<canvas>` 
 
 1) Create a new Spotify app in your [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/).
 2) Add `http://localhost:8001/callback` to your app's Redirect URIs.
-2) Enter your app's `client_id` and `client_id` to `config.json` in the root directory.
+2) Enter your app's `client_id` and `client_secret` to `config.json` in the root directory.
 3) Install and run using NPM.
 
 ```bash
