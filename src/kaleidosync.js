@@ -88,7 +88,7 @@ export default class Kaleidosync {
   }
 
   /**
-   * @method stop – Stop animatiton loop with `cancelAnimationFrame`
+   * @method stop – Stop animation loop with `cancelAnimationFrame`
    */
   stop () {
     cancelAnimationFrame(this.paint)

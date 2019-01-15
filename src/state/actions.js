@@ -39,6 +39,7 @@ export function getCurrentlyPlaying (state) {
         progress: res.progress_ms
       })
     })
+    .catch(err => console.log(err))
 }
 
 /**
@@ -53,6 +54,7 @@ export function getNewToken (state) {
       setTokens(state)
       ping(state)
     })
+    .catch(err => console.log(err))
 }
 
 /**
@@ -91,7 +93,7 @@ export function getTrackData (state, { track, progress }) {
     })
 
     ping(state)
-  })
+  }).catch(err => console.log(err))
 }
 
 /**
