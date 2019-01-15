@@ -101,7 +101,6 @@ export function getTrackData (state, { track, progress }) {
  * @param state – Application state. 
  * @param track – Currently playing track.
  * @param playing – `is_playing` from Spotify response.
- * @param timestamp – `timestamp` from Spotify response.
  * @param progress – `progress_ms` from Spotify response.
  */
 export function processResponse (state, { track, playing, progress }) {
