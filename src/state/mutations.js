@@ -3,6 +3,7 @@ import { createPath, createStar } from '../util/canvas'
 import * as Util from '../util/array'
 import * as Cookie from '../util/cookie'
 import interpolate from '../util/interpolate'
+import ease from '../util/easing'
 
 /**
  * @function setTokens – Retrieve and store API access tokens.
@@ -40,9 +41,10 @@ export function setCurrentlyPlaying (state, {
   visualizer.trackFeatures = features
   visualizer.initialTrackProgress = progress
 
+  setInitialStart(state)
   startVisualizer(state)
   
-  console.log('Now playing: ', visualizer.currentlyPlaying)
+  console.log(`Now playing: ${visualizer.currentlyPlaying.album.artists[0].name} – ${visualizer.currentlyPlaying.name}`)
 }
 
 /**
@@ -195,7 +197,7 @@ export function updateStar ({ visualizer }, {
     star[key].get = (trackProgress) => {
       const start = interval.start
       const duration = interval.duration
-      const progress = Math.min((trackProgress - start) / duration)
+      const progress = ease(Math.min((trackProgress - start) / duration, 1))
       return interpolate(star[key].last, star[key].next)(progress)
     }
   }
@@ -273,7 +275,7 @@ export function setColorScheme ({ visualizer }, theme) {
 
   let i = 0
 
-  while (i < (Math.floor(Math.random() * 50) + 20)) { 
+  while (i < (Math.floor(Math.random() * 60) + 10)) { 
     COLORS.scheme.push(negative)
     i++
   }
@@ -357,7 +359,7 @@ export function setActiveSize ({ visualizer }) {
   const last = visualizer.trackAnalysis.segments[segment.index - 1] ? visualizer.trackAnalysis.segments[segment.index - 1].loudness_max : segment.loudness_max
   const next = visualizer.trackAnalysis.segments[segment.index + 1] ? visualizer.trackAnalysis.segments[segment.index + 1].loudness_max : segment.loudness_max
   const active = (segment.loudness_max + last + next)/3
-  visualizer.activeSize = (visualizer.maxSize + (active * 25)) + (visualizer.trackFeatures.loudness * -15)
+  visualizer.activeSize = (visualizer.maxSize + (active * 30)) + (visualizer.trackFeatures.loudness * -20)
 }
 
 /**
@@ -394,7 +396,7 @@ export function paint ({ visualizer }, { canvas, ctx }) {
     const color = star.color.get(progress)
     const inner = star.innerRadius.get(progress)
     const outer = star.outerRadius.get(progress)
-    const rotation = visualizer.trackProgress / 50
+    const rotation = progress / 50
     const vertices = createStar(star.points, inner, outer, canvas.width/2, canvas.height/2, rotation)    
 
     ctx.fillStyle = color

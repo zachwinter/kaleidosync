@@ -35,7 +35,7 @@ const state = {
     active: false,
     initialized: false,
     drawing: false,
-    totalStars: 20,
+    totalStars: 24,
     minSize: 0,
     maxSize: 0,
     activeSize: 0,
