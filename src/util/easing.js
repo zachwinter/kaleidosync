@@ -28,7 +28,7 @@ const easing = {
  * 2) Easing `in` increases impact and perceived connection to intervals.
  */
 export default function ease (t, method = 'easeInQuad', smoothing = 3) {
-  if (!easing[method]) throw new Error(`Unkown easing function "${method}"`) 
+  if (!easing[method]) throw new Error(`Unknown easing function "${method}"`) 
   
   let val = easing[method](t)
   
