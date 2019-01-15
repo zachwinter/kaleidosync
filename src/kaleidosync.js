@@ -23,6 +23,9 @@ export default class Kaleidosync {
     const { canvas, ctx } = initCanvas()
     this.canvas = canvas
     this.ctx = ctx
+
+    /** Append <canvas> to body. */
+    document.body.appendChild(this.canvas)
     
     /** Initialize reactive app state. */
     this.state = state
