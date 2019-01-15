@@ -1,9 +1,11 @@
+import * as Cookie from '../util/cookie'
 import {
   setCurrentlyPlaying, 
   startVisualizer, 
   stopVisualizer, 
   setTrackProgress,
-  normalizeIntervals
+  normalizeIntervals,
+  setTokens
 } from './mutations'
 
 /**
@@ -24,12 +26,32 @@ export function getCurrentlyPlaying (state) {
   fetch(request)
     .then(res => res.json())
     .then(res => {
+      /** If 401, get new API token. */
+      if (res.error && res.error.status === 401) {
+        return getNewToken(state)
+      }
+
+      /** Otherwise, process API response. */
       processResponse(state, {
         track: res.item,
         playing: res.is_playing,
         timestamp: res.timestamp,
         progress: res.progress_ms
       })
+    })
+}
+
+/**
+ * @function getNewToken – Get new API token from back end.
+ * @param state – Application state. 
+ */
+export function getNewToken (state) {
+  fetch('http://localhost:8001/refresh?token=' + state.tokens.refreshToken)
+    .then(res => res.json())
+    .then(res => {
+      Cookie.set('KALEIDOSYNC_ACCESS_TOKEN', res.access_token)
+      setTokens(state)
+      ping(state)
     })
 }
 
@@ -41,29 +63,35 @@ export function getCurrentlyPlaying (state) {
  */
 export function getTrackData (state, { track, progress }) {
   const { trackAnalysis, trackFeatures, headers } = state.api
+  
   const analysis = fetch(new Request(trackAnalysis + track.id, { headers })).then(res => res.json())
   const features = fetch(new Request(trackFeatures + track.id, { headers })).then(res => res.json()) 
+  
+  /** We need to keep track of how long these requests take so we can add latency to current track progress. */
   const now = window.performance.now()
 
-  Promise.all([ analysis, features ])
-    .then(responses => {
-      const analysis = {...responses[0]}
-      const features = {...responses[1]}
+  Promise.all([ analysis, features ]).then(responses => {
+    const analysis = {...responses[0]}
+    const features = {...responses[1]}
+    
+    /** If 401, get new API token. */
+    if (analysis.error && analysis.error.status === 401) { return getNewToken(state) }
+    if (features.error && features.error.status === 401) { return getNewToken(state) }
 
-      normalizeIntervals(state, {
-        track,
-        analysis
-      })
-
-      setCurrentlyPlaying(state, {
-        track,
-        analysis,
-        features,
-        progress: progress + (window.performance.now() - now)
-      })
-
-      ping(state)
+    normalizeIntervals(state, {
+      track,
+      analysis
     })
+
+    setCurrentlyPlaying(state, {
+      track,
+      analysis,
+      features,
+      progress: progress + (window.performance.now() - now) 
+    })
+
+    ping(state)
+  })
 }
 
 /**
@@ -85,7 +113,7 @@ export function processResponse (state, { track, playing, progress }) {
   
   console.log(`Sync error: ${Math.round(stats.error)}ms`)
 
-  if (track === null) {
+  if (track === null || track === undefined) {
     return ping(state)
   }
 
