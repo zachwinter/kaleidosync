@@ -47,6 +47,10 @@ export function getCurrentlyPlaying (state) {
  * @param state – Application state. 
  */
 export function getNewToken (state) {
+  if (!state.tokens.refreshToken) {
+    return window.location.href = ''
+  }
+
   fetch('http://localhost:8001/refresh?token=' + state.tokens.refreshToken)
     .then(res => res.json())
     .then(res => {

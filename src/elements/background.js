@@ -1,5 +1,5 @@
 import { interpolateRGB } from '../util/interpolate'
-import easing from '../util/easing'
+import ease from '../util/easing'
 
 export default class Background {
   constructor (color) {
@@ -19,9 +19,9 @@ export default class Background {
   getColor (trackProgress) {
     const start = this.color.interval.start
     const duration = this.color.interval.duration
-    const progress = Math.min((trackProgress - start) / duration, 1)
+    const progress = ease(Math.min((trackProgress - start) / duration, 1))
 
-    return interpolateRGB(this.color.last, this.color.next)(easing(progress))
+    return interpolateRGB(this.color.last, this.color.next)(progress)
   }
 
   draw ({ ctx, width, height, trackProgress }) {
