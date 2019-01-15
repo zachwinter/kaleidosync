@@ -254,9 +254,11 @@ export function setStarRadius ({ visualizer }, type) {
  */
 export function setStarColor ({ visualizer }, type) {
   visualizer.stars.forEach((star, i) => {
+    const color = (i === visualizer.totalStars - 1) ? visualizer.activeColorScheme.negative : Util.randomElement(visualizer.activeColorScheme.scheme)
+
     star.update({
       color: {
-        val: Util.randomElement(visualizer.activeColorScheme.scheme),
+        val:color,
         interval: visualizer.activeIntervals[type]
       }
     })

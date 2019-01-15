@@ -1,4 +1,5 @@
 import { interpolateNumber, interpolateRGB } from '../util/interpolate'
+import easing from '../util/easing'
 
 const PI = Math.PI
 const ROTATION = PI/2*3
@@ -69,9 +70,10 @@ export default class Star {
   }
 
   draw ({ ctx, trackProgress }) {
-    const outerRadiusProgress = Math.min((trackProgress - this.outerRadius.interval.start) / this.outerRadius.interval.duration, 1)
-    const innerRadiusProgress = Math.min((trackProgress - this.innerRadius.interval.start) / this.innerRadius.interval.duration, 1)
-    const colorProgress = Math.min((trackProgress - this.color.interval.start) / this.color.interval.duration, 1)
+    const outerRadiusProgress = easing( Math.min((trackProgress - this.outerRadius.interval.start) / this.outerRadius.interval.duration, 1) )
+    const innerRadiusProgress = easing( Math.min((trackProgress - this.innerRadius.interval.start) / this.innerRadius.interval.duration, 1) )
+		const colorProgress = easing( Math.min((trackProgress - this.color.interval.start) / this.color.interval.duration, 1) )
+		
     this.outerRadius.active = interpolateNumber(this.outerRadius.last, this.outerRadius.next)(outerRadiusProgress)
     this.innerRadius.active = interpolateNumber(this.innerRadius.last, this.innerRadius.next)(innerRadiusProgress)
     this.color.active = interpolateRGB(this.color.last, this.color.next)(colorProgress)
