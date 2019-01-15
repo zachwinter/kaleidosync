@@ -22,12 +22,8 @@ const easing = {
  * @function ease – Apply an easing function to a progress value [0 - 1].
  * @param { string } method – Selected easing function.
  * @param { integer } smoothing – Smoothing factor. Increase value to reduce the effect of the easing function.
- * 
- * NOTES:
- * 1) Subtle is better here. Anything too heavy takes away from the natural visual rhythm. 
- * 2) Easing `in` increases impact and perceived connection to intervals.
  */
-export default function ease (t, method = 'easeInQuad', smoothing = 3) {
+export default function ease (t, method = 'easeOutQuad', smoothing = 2) {
   if (!easing[method]) throw new Error(`Unknown easing function "${method}"`) 
   
   let val = easing[method](t)

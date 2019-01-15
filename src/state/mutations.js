@@ -208,7 +208,7 @@ export function setColorScheme ({ visualizer }, theme) {
 
   let i = 0
 
-  while (i < (Math.floor(Math.random() * 30) + 15)) { 
+  while (i < (Math.floor(Math.random() * 40) + 15)) { 
     COLORS.scheme.push(negative)
     i++
   }
