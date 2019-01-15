@@ -7,11 +7,13 @@
   },
   "keywords": [
     "spotify",
-    "Echo Nest",
+    "echo nest",
     "visualizer",
     "visualization",
     "canvas",
-    "HTML5"
+    "javascript",
+    "es6",
+    "html5"
   ],
   "author": "Zach Winter",
   "license": "MIT",
