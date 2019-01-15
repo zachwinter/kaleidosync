@@ -92,16 +92,16 @@ export function initParameters ({ visualizer }) {
   visualizer.minSize = visualizer.maxSize / 7
   visualizer.activeSize = visualizer.maxSize
 
-  const { maxSize, totalStars } = visualizer
+   const { maxSize, totalStars } = visualizer
 
   visualizer.sizeStep = [
-    (maxSize / totalStars) * 0.4,
     (maxSize / totalStars) * 0.6,
     (maxSize / totalStars) * 0.8,
     (maxSize / totalStars) * 1.0,
     (maxSize / totalStars) * 1.2,
-    (maxSize / totalStars) * 1.4
-  ]
+    (maxSize / totalStars) * 1.4,
+    (maxSize / totalStars) * 1.6
+  ] 
 }
 /**
  * @function initState – Set initial state. 
@@ -124,7 +124,7 @@ export function initState (state, canvas) {
 
     if ((i + 1) % 2 === 0) { numPoints = 18 }
     if ((i + 1) % 3 === 0) { numPoints = 12 }
-    if ((i + 1) % 4 === 0) { numPoints = 32 }
+    if ((i + 1) % 8 === 0) { numPoints = 32 }
     
     size = parseInt(size - Util.randomElement(visualizer.sizeStep))
 
@@ -142,14 +142,8 @@ export function initState (state, canvas) {
     }))
   }
 
-  const background = new Background({
-    color: visualizer.activeColorScheme.negative,
-    width: canvas.width,
-    height: canvas.height
-  })
-
   visualizer.stars = stars
-  visualizer.background = background
+  visualizer.background = new Background(visualizer.activeColorScheme.negative)
 }
 
 /**
@@ -208,7 +202,7 @@ export function setColorScheme ({ visualizer }, theme) {
 
   let i = 0
 
-  while (i < (Math.floor(Math.random() * 40) + 15)) { 
+  while (i < (Math.floor(Math.random() * 50) + 20)) { 
     COLORS.scheme.push(negative)
     i++
   }
@@ -319,7 +313,7 @@ export function paint ({ visualizer }, { canvas, ctx }) {
   })
   
   /** Pass <canvas> 2d context and current track progress to each star, then paint. */
-  visualizer.stars.forEach(star => {
+  visualizer.stars.forEach((star, i) => {
     star.draw({
       ctx,
       trackProgress: visualizer.trackProgress
