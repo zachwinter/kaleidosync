@@ -28,16 +28,16 @@ export function sizeCanvas (canvas) {
  * @param vertices – Array of { x, y } vertices. 
  */
 export function createPath (ctx, vertices) {
-	ctx.beginPath()
+  ctx.beginPath()
 
-	for (var i = 0; i < vertices.length; i++) {
-		const { x, y } = vertices[i]
+  for (var i = 0; i < vertices.length; i++) {
+    const { x, y } = vertices[i]
 
-		if (i === 0) {
-			ctx.moveTo(x, y)
-		} else {
-			ctx.lineTo(x, y)
-		}
+    if (i === 0) {
+      ctx.moveTo(x, y)
+    } else {
+      ctx.lineTo(x, y)
+    }
   }
   
   ctx.closePath()

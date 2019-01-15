@@ -7,31 +7,31 @@ export const PI180 = PI / 180
  * @param angle – Angle in degrees.
  */
 export function toRadians (angle) {
-	return PI * angle / 180
+  return PI * angle / 180
 }
 
 /**
  * @function x – Get Cartesian `x` coordinate.
  */
 export function x (radius, angle, cx = 0) {
-	return radius * Math.cos(angle) + cx
+  return radius * Math.cos(angle) + cx
 }
 
 /**
  * @function y – Get Cartesian `y` coordinate.
  */
 export function y (radius, angle, cy = 0) {
-	return radius * Math.sin(angle) + cy
+  return radius * Math.sin(angle) + cy
 }
 
 /**
  * @function coords – Get Cartesian coordinates.
  */
 export function coords (radius, angle, cx = 0, cy = 0) {
-	return {
-		x: x(radius, angle, cx),
-		y: y(radius, angle, cy)
-	}
+  return {
+    x: x(radius, angle, cx),
+    y: y(radius, angle, cy)
+  }
 }
 
 /**
@@ -43,15 +43,15 @@ export function coords (radius, angle, cx = 0, cy = 0) {
  * @param rotation – Rotation in degrees.
  */
 export function createPolygon (sides, radius, cx = 0, cy = 0, rotation = 0) {
-	const angle = 360/sides
-	const vertices = []
+  const angle = 360/sides
+  const vertices = []
 
-	for (var i = 0; i < sides; i++) {
-		const _coords = coords(radius, toRadians((angle * i) + rotation), cx, cy)
-		vertices.push(_coords)
-	}
+  for (var i = 0; i < sides; i++) {
+    const _coords = coords(radius, toRadians((angle * i) + rotation), cx, cy)
+    vertices.push(_coords)
+  }
 
-	return vertices
+  return vertices
 }
 
 /**
