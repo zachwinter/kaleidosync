@@ -6,10 +6,12 @@
     "start": "concurrently \"node server.js\" \"webpack-dev-server\""
   },
   "keywords": [
-    "scaffold",
-    "webpack",
-    "babel",
-    "sass"
+    "spotify",
+    "Echo Nest",
+    "visualizer",
+    "visualization",
+    "canvas",
+    "HTML5"
   ],
   "author": "Zach Winter",
   "license": "MIT",
