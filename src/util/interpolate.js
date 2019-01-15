@@ -1,3 +1,8 @@
+/**
+ * @function interpolateRGB – Interpolate between two RGB strings in the format `rgb(0,0,0)`
+ * @param a – Color A 
+ * @param b – Color B
+ */
 export function interpolateRGB (a, b) {
   if (!a || !b) {
     return function () {
@@ -5,23 +10,34 @@ export function interpolateRGB (a, b) {
     }
   }
 
-  const _last = a.slice(4, -1).split(',')
-  const _next = b.slice(4, -1).split(',')
-
-  const diffR = parseInt(_next[0], 10) - parseInt(_last[0], 10)
-  const diffG = parseInt(_next[1], 10) - parseInt(_last[1], 10)
-  const diffB = parseInt(_next[2], 10) - parseInt(_last[2], 10)
-
-  const R = parseInt(_last[0], 10)
-  const G = parseInt(_last[1], 10)
-  const B = parseInt(_last[2], 10)
+  /**
+   * Transform string to array of integers. 
+   * `"rgb(0,0,0)"` => `"0,0,0"` => `["0", "0", "0"]` => `[0, 0, 0]`
+   */
+  const last = a.slice(4, -1).split(',').map(val => parseInt(val, 10))
+  const next = b.slice(4, -1).split(',').map(val => parseInt(val, 10))
 
   return function (progress) {
-    return `rgb(${parseInt(R + (progress*diffR), 10)},${parseInt(G + (progress*diffG), 10)},${parseInt(B + (progress*diffB), 10)})`
+    const R = last[0] + (next[0] - last[0]) * progress
+    const G = last[1] + (next[1] - last[1]) * progress
+    const B = last[2] + (next[2] - last[2]) * progress
+
+    return `rgb(${R},${G},${B})`
   }	
 }
 
+/**
+ * @function interpolateNumber – Interpolate between two numbers.
+ * @param a – Number A
+ * @param b – Number B
+ */
 export function interpolateNumber (a, b) {
+  if (!a || !b) {
+    return function () {
+      return false
+    }
+  }
+  
   return a = +a, b -= a, function(t) {
     return a + b * t
   }
