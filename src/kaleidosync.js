@@ -1,5 +1,5 @@
 import state from './state'
-import { initCanvas } from './util/canvas'
+import { initCanvas, sizeCanvas } from './util/canvas'
 import {
   initParameters, 
   initState,
@@ -12,7 +12,6 @@ import {
   setActiveIntervals,
   setInitialStart,
   setTrackProgress,
-  resizeElements,
   paint
 } from './state/mutations'
 import { ping } from './state/actions'
@@ -40,8 +39,11 @@ export default class Kaleidosync {
     /** Watch for changes in state. */
     this.watch()
     
-    /** Adjust visualizer on window resize. */
-    window.addEventListener('resize', () => resizeElements(this.state, this.canvas))
+    /** Adjust to window resize. */
+    window.addEventListener('resize', () => {
+      initParameters(this.state)
+      sizeCanvas(canvas)
+    })
 
     /** Ping Spotify for currently playing track. */
     ping(this.state)

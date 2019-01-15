@@ -1,8 +1,8 @@
-import Star from '../elements/star'
 import Background from '../elements/background'
-import { sizeCanvas } from '../util/canvas'
+import { createPath, createStar } from '../util/canvas'
 import * as Util from '../util/array'
 import * as Cookie from '../util/cookie'
+import interpolate from '../util/interpolate'
 
 /**
  * @function setTokens – Retrieve and store API access tokens.
@@ -115,35 +115,106 @@ export function initState (state, canvas) {
 
   setColorScheme(state)
 
-  const stars = []
-
   let size = visualizer.activeSize
 
   for (var i = 0; i < visualizer.totalStars; i++) {
-    let numPoints = 24
+    let points = 24
 
-    if ((i + 1) % 2 === 0) { numPoints = 18 }
-    if ((i + 1) % 3 === 0) { numPoints = 12 }
-    if ((i + 1) % 8 === 0) { numPoints = 32 }
+    if ((i + 1) % 2 === 0) { points = 18 }
+    if ((i + 1) % 3 === 0) { points = 12 }
+    if ((i + 1) % 8 === 0) { points = 32 }
     
-    size = parseInt(size - Util.randomElement(visualizer.sizeStep))
+    size = Math.round(size - Util.randomElement(visualizer.sizeStep))
 
     if (size < visualizer.minSize ) {
       size = visualizer.minSize
     }
 
-    stars.push(new Star({
-      x: canvas.width/2,
-      y: canvas.height/2,
-      points: numPoints,
-      color: i === visualizer.totalStars - 1 ? visualizer.activeColorScheme.negative : Util.randomElement(visualizer.activeColorScheme.scheme),
-      innerRadius: size * Util.randomElement(visualizer.radiusStep),
-      outerRadius: size
-    }))
+    const color = (i === visualizer.totalStars - 1)
+      ? visualizer.activeColorScheme.negative
+      : Util.randomElement(visualizer.activeColorScheme.scheme)
+
+    addStar(state, { canvas, points, color, size })
   }
 
-  visualizer.stars = stars
   visualizer.background = new Background(visualizer.activeColorScheme.negative)
+}
+
+/**
+ * @function addStar – Add a new star to visualizer.
+ */
+export function addStar ({ visualizer }, { canvas, points, color, size }) {
+  const x = canvas.width/2
+  const y = canvas.height/2
+  const outerRadius = size
+  const innerRadius = size * Util.randomElement(visualizer.radiusStep)
+
+  const star = {
+    x,
+    y,
+    points,
+    outerRadius: {
+      last: outerRadius,
+      next: outerRadius,
+      interval: {},
+      get () { return outerRadius }
+    },
+    innerRadius: {
+      last: innerRadius,
+      next: innerRadius,
+      interval: {},
+      get () { return innerRadius }
+    },
+    color: {
+      last: color,
+      next: color,
+      interval: {},
+      get () { return color }
+    }
+  }
+
+  visualizer.stars.push(star)
+}
+
+/**
+ * @function updateStar – Update properties of a star.
+ */
+export function updateStar ({ visualizer }, {
+  index,
+  innerRadius = null,
+  outerRadius = null,
+  color = null,
+  points = null
+}) {
+  const star = visualizer.stars[index]
+
+  const update = (key, { val, interval }) => {
+    star[key].last = star[key].next
+    star[key].next = val
+    star[key].interval = interval
+    star[key].get = (trackProgress) => {
+      const start = interval.start
+      const duration = interval.duration
+      const progress = Math.min((trackProgress - start) / duration)
+      return interpolate(star[key].last, star[key].next)(progress)
+    }
+  }
+
+  if (color !== null) {
+    update('color', color)
+  }
+
+  if (innerRadius !== null) {
+    update('innerRadius', innerRadius)
+  }
+
+  if (outerRadius !== null) {
+    update('outerRadius', outerRadius)
+  }
+
+  if (points !== null) {
+    star.points = points
+  }
 }
 
 /**
@@ -215,10 +286,12 @@ export function setColorScheme ({ visualizer }, theme) {
  * @param state – Application state. 
  * @param type – Type of interval attacked to this tween.
  */
-export function setStarRadius ({ visualizer }, type) {
+export function setStarRadius (state, type) {
+  const { visualizer } = state
   let size = visualizer.activeSize
-  visualizer.stars.forEach((star) => {
-    size = parseInt(size - Util.randomElement(visualizer.sizeStep))
+
+  visualizer.stars.forEach((star, index) => {
+    size = Math.round(size - Util.randomElement(visualizer.sizeStep))
     
     if (size < visualizer.minSize ) {
       size = visualizer.minSize
@@ -234,9 +307,10 @@ export function setStarRadius ({ visualizer }, type) {
       interval: visualizer.activeIntervals[type]
     }
 
-    star.update({
+    updateStar(state, {
       innerRadius,
-      outerRadius
+      outerRadius,
+      index
     })
   })
 }
@@ -246,15 +320,18 @@ export function setStarRadius ({ visualizer }, type) {
  * @param state – Application state. 
  * @param type – Type of interval attacked to this tween.
  */
-export function setStarColor ({ visualizer }, type) {
-  visualizer.stars.forEach((star, i) => {
-    const color = (i === visualizer.totalStars - 1) ? visualizer.activeColorScheme.negative : Util.randomElement(visualizer.activeColorScheme.scheme)
+export function setStarColor (state, type) {
+  const { visualizer } = state
 
-    star.update({
+  visualizer.stars.forEach((star, index) => {
+    const color = (index === visualizer.totalStars - 1) ? visualizer.activeColorScheme.negative : Util.randomElement(visualizer.activeColorScheme.scheme)
+
+    updateStar(state, {
       color: {
-        val:color,
+        val: color,
         interval: visualizer.activeIntervals[type]
-      }
+      },
+      index
     })
   })
 }
@@ -312,12 +389,16 @@ export function paint ({ visualizer }, { canvas, ctx }) {
     trackProgress: visualizer.trackProgress
   })
   
-  /** Pass <canvas> 2d context and current track progress to each star, then paint. */
-  visualizer.stars.forEach((star, i) => {
-    star.draw({
-      ctx,
-      trackProgress: visualizer.trackProgress
-    })
+  visualizer.stars.forEach(star => {
+    const progress = visualizer.trackProgress
+    const color = star.color.get(progress)
+    const inner = star.innerRadius.get(progress)
+    const outer = star.outerRadius.get(progress)
+    const rotation = visualizer.trackProgress / 50
+    const vertices = createStar(star.points, inner, outer, canvas.width/2, canvas.height/2, rotation)    
+
+    ctx.fillStyle = color
+    createPath(ctx, vertices).fill()
   })
 }
 
@@ -353,20 +434,5 @@ export function setActiveIntervals ({ visualizer }) {
         index
       }
     }
-  })
-}
-
-/**
- * @function resizeElements – Resize <canvas> and adjust star positioning.
- * @param state - Application state.
- * @param canvas – Reference to <canvas> element.
- */
-export function resizeElements (state, canvas) {
-  initParameters(state)
-  sizeCanvas(canvas)
-
-  state.visualizer.stars.forEach(star => {
-    star.x = canvas.width / 2
-    star.y = canvas.height / 2
   })
 }
