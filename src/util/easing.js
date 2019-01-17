@@ -23,7 +23,7 @@ const easing = {
  * @param { string } method – Selected easing function.
  * @param { integer } smoothing – Smoothing factor. Increase value to reduce the effect of the easing function.
  */
-export default function ease (t, method = 'easeOutQuad', smoothing = 2) {
+export default function ease (t, method = 'easeOutQuint', smoothing = 3) {
   if (!easing[method]) throw new Error(`Unknown easing function "${method}"`) 
   
   let val = easing[method](t)
