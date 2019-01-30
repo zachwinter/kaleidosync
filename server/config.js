@@ -1,6 +1,4 @@
 module.exports = {
-  title: 'Kaleidosync',
-
   /**
    * Your application `client_id` and `client_secret`.
    * Manage in your Spotify developer dashboard.
