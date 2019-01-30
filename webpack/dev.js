@@ -5,12 +5,12 @@ const common = require('./common.js')
 module.exports = merge(common, {
   mode: 'development',
   output: {
-    path: path.resolve(__dirname, 'serve'),
+    path: path.resolve(__dirname, '../serve'),
     filename: 'bundle.js'
   },
   devtool: 'inline-source-map',
   devServer: {
-    contentBase: __dirname + '/build',
+    contentBase: path.resolve(__dirname, '../serve'),
     port: 8000
   }
 })

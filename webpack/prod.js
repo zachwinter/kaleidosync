@@ -5,7 +5,7 @@ const common = require('./common.js')
 module.exports = merge(common, {
   mode: 'production',
   output: {
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, '../build'),
     filename: 'bundle.js'
   },
 })
