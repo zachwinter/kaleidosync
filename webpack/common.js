@@ -1,16 +1,15 @@
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const config = require('./config')
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './client/index.js',
   plugins: [
     new MiniCssExtractPlugin({
       filename: 'style.css',
     }),
     new HtmlWebpackPlugin({
-      title: config.title
+      title: 'Kaleidosync'
     })
   ],
   module: {
