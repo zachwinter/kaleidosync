@@ -4,17 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const config = require('./config')
 
 module.exports = {
-  mode: 'development',
   entry: './src/index.js',
-  devtool: 'inline-source-map',
-  output: {
-    path: path.resolve(__dirname, 'build'),
-    filename: 'bundle.js'
-  },
-  devServer: {
-    contentBase: __dirname + '/build',
-    port: 8000
-  },
   plugins: [
     new MiniCssExtractPlugin({
       filename: 'style.css',

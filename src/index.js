@@ -1,5 +1,6 @@
+import './polyfills'
 import Kaleidosync from './kaleidosync'
-import styles from './style.scss'
+import './style.scss'
 
 export default new class App {
   constructor () {		

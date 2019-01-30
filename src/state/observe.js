@@ -1,5 +1,5 @@
 /**
- * @function ObservableObject – Returns a Proxy allowing mutation observation on objects.
+ * @function Observe – Returns a Proxy allowing mutation observation on objects.
  * @param {Object} target – Object to observe.
  * 
  * NOTE: Doesn't do deep watching. Any nested objects need to be wrapped as well.
@@ -18,13 +18,9 @@
  * // => 'lmao', 'bar'
  */
 export default function Observe (target) {
-  /** 
-   * Properties added to the object after wrapping in proxy aren't observable.
-   * Solution? No new properties for you.
-   */
   const _target = Object.seal({...target})
 
-  /** Store observers for the entirie object. */
+  /** Store observers for the entire object. */
   const _observers = {
     __all__: []
   }
