@@ -1,9 +1,10 @@
 {
   "name": "kaleidosync",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "HTML5 Spotify visualizer, powered by the Echo Nest.",
   "scripts": {
-    "start": "concurrently \"node server.js\" \"webpack-dev-server\""
+    "serve": "concurrently \"node server.js\" \"webpack-dev-server --config webpack.dev.js\"",
+    "build": "webpack --config webpack.prod.js"
   },
   "keywords": [
     "spotify",
@@ -37,6 +38,7 @@
     "style-loader": "^0.23.1",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1",
-    "webpack-dev-server": "^3.1.14"
+    "webpack-dev-server": "^3.1.14",
+    "webpack-merge": "^4.2.1"
   }
 }

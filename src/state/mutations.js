@@ -6,10 +6,10 @@ import interpolate from '../util/interpolate'
 import ease from '../util/easing'
 
 /**
- * @function setTokens – Retrieve and store API access tokens.
+ * @function setApiTokens – Retrieve and store API access tokens from cookies.
  * @param state – Application state. 
  */
-export function setTokens ({ tokens, api }) {
+export function setApiTokens ({ tokens, api }) {
   tokens.accessToken = Cookie.get('KALEIDOSYNC_ACCESS_TOKEN')
   tokens.refreshToken = Cookie.get('KALEIDOSYNC_REFRESH_TOKEN')
   tokens.refreshCode = Cookie.get('KALEIDOSYNC_REFRESH_CODE')
@@ -84,11 +84,12 @@ export function updateTrackProgress ({ visualizer }, { progress }) {
  */
 export function initParameters ({ visualizer }) {
   const landscape = window.innerHeight < window.innerWidth
+  const dpi = 1 // window.devicePixelRatio ? Math.min(window.devicePixelRatio, 1.5) : 1
 
   if (landscape) {
-    visualizer.maxSize = window.innerWidth / 2
+    visualizer.maxSize = (window.innerWidth * dpi) / 2
   } else {
-    visualizer.maxSize = window.innerHeight / 2
+    visualizer.maxSize = (window.innerHeight * dpi) / 2
   }
 
   visualizer.minSize = visualizer.maxSize / 7
@@ -396,7 +397,7 @@ export function paint ({ visualizer }, { canvas, ctx }) {
     const color = star.color.get(progress)
     const inner = star.innerRadius.get(progress)
     const outer = star.outerRadius.get(progress)
-    const rotation = progress / 50
+    const rotation = progress / 75
     const vertices = createStar(star.points, inner, outer, canvas.width/2, canvas.height/2, rotation)    
 
     ctx.fillStyle = color

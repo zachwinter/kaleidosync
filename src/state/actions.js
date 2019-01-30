@@ -5,7 +5,7 @@ import {
   stopVisualizer, 
   setTrackProgress,
   normalizeIntervals,
-  setTokens
+  setApiTokens
 } from './mutations'
 
 /**
@@ -55,7 +55,7 @@ export function getNewToken (state) {
     .then(res => res.json())
     .then(res => {
       Cookie.set('KALEIDOSYNC_ACCESS_TOKEN', res.access_token)
-      setTokens(state)
+      setApiTokens(state)
       ping(state)
     })
     .catch(err => console.log(err))

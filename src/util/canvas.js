@@ -3,23 +3,26 @@ export const PI = Math.PI
 export const PI2 = PI * 2
 
 /**
- * @function initCanvas – Create & return <canvas> and 2D context. 
+ * @function createCanvas – Create & return <canvas>. Optionally, insert into DOM.
  */
-export function initCanvas () {
+export function createCanvas (append = true, container = document.body) {
   const canvas = document.createElement('canvas')
-  const ctx = canvas.getContext('2d')
-  sizeCanvas(canvas)
-  return { canvas, ctx }
-}	
+
+  if (append) {
+    container.appendChild(canvas)
+  }
+
+  return canvas
+}
 
 /**
- * @function sizeCanvas – Set <canvas> artboard to window size. 
+ * @function sizeCanvasArtboard – Size inline <canvas> inline width/height values.
  * @param canvas – Reference to <canvas> element.
  */
-export function sizeCanvas (canvas) {
-  const dpi = 1
-  canvas.width = window.innerWidth * dpi
-  canvas.height = window.innerHeight * dpi
+export function sizeCanvasArtboard (canvas, width = window.innerWidth, height = window.innerHeight, hidpi = false) {
+  const dpi = window.devicePixelRatio ? window.devicePixelRatio : 1
+  canvas.width = width * (hidpi ? dpi : 1)
+  canvas.height = height * (hidpi ? dpi : 1)
   return canvas
 }
 

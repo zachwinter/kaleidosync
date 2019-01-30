@@ -1,9 +1,9 @@
 import state from './state'
-import { initCanvas, sizeCanvas } from './util/canvas'
+import { createCanvas, sizeCanvasArtboard } from './util/canvas'
 import {
   initParameters, 
   initState,
-  setTokens,
+  setApiTokens,
   setColorScheme, 
   setStarRadius, 
   setStarColor, 
@@ -18,34 +18,22 @@ import { ping } from './state/actions'
 
 export default class Kaleidosync {
   constructor () {
-    /** Initialize <canvas> and 2d context. */
-    const { canvas, ctx } = initCanvas()
-    this.canvas = canvas
-    this.ctx = ctx
-
-    /** Append <canvas> to body. */
-    document.body.appendChild(this.canvas)
-    
-    /** Initialize reactive app state. */
     this.state = state
+    this.canvas = createCanvas()
+    this.ctx = this.canvas.getContext('2d')
+    sizeCanvasArtboard(this.canvas)
 
-    /** Get API tokens from cookies. */
-    setTokens(this.state)
-    
-    /** Initialize visualizer parameters and initial state. */
+    setApiTokens(this.state)
     initParameters(this.state)
     initState(this.state, this.canvas)
 
-    /** Watch for changes in state. */
     this.watch()
     
-    /** Adjust to window resize. */
     window.addEventListener('resize', () => {
       initParameters(this.state)
-      sizeCanvas(canvas)
+      sizeCanvasArtboard(this.canvas)
     })
 
-    /** Ping Spotify for currently playing track. */
     ping(this.state)
   }
 
@@ -64,19 +52,12 @@ export default class Kaleidosync {
 
     const intervals = this.state.visualizer.activeIntervals
 
-    /** On every tatum change, set star radius. */
     intervals.watch('tatums', () => setStarRadius(this.state, 'tatums'))
-
-    /** On every segment change, set active size. */
     intervals.watch('segments', () => setActiveSize(this.state))
-
-    /** On every beat, set star & background color. */
     intervals.watch('beats', () => {
       setStarColor(this.state, 'beats')
       setBackgroundColor(this.state, 'beats')
     })
-
-    /** On every fourth bar, set active color scheme. */
     intervals.watch('bars', ({ index }) => {
       if (index % 4 === 0) {
         setColorScheme(this.state)
@@ -101,20 +82,16 @@ export default class Kaleidosync {
 
   /**
    * @method paint – Paint a single frame of animation loop.
-   * @param timestamp – High resolution timestamp.
+   * @param now – High resolution timestamp.
    */
-  paint (timestamp) {
+  paint (now) {
     if (this.state.visualizer.active === true) {
       requestAnimationFrame(this.paint.bind(this))
     }
       
-    /** progress = (now - initialStart) + initialTrackProgress */
-    setTrackProgress(this.state, (timestamp - this.state.visualizer.initialStart) + this.state.visualizer.initialTrackProgress)
-
-    /** Based on track progress, determine active intervals. */
+    const progress = (now - this.state.visualizer.initialStart) + this.state.visualizer.initialTrackProgress
+    setTrackProgress(this.state, progress)
     setActiveIntervals(this.state)
-
-    /** Paint elements based on track progress and active intervals. */
     paint(this.state, {
       canvas: this.canvas,
       ctx: this.ctx
