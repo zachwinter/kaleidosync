@@ -1,6 +1,4 @@
-import Background from '../elements/background'
-import { createPath, createStar } from '../util/canvas'
-import * as Util from '../util/array'
+import { getRandomElement } from '../util/array'
 import * as Cookie from '../util/cookie'
 import interpolate from '../util/interpolate'
 import ease from '../util/easing'
@@ -13,7 +11,7 @@ export function setApiTokens ({ tokens, api }) {
   tokens.accessToken = Cookie.get('KALEIDOSYNC_ACCESS_TOKEN')
   tokens.refreshToken = Cookie.get('KALEIDOSYNC_REFRESH_TOKEN')
   tokens.refreshCode = Cookie.get('KALEIDOSYNC_REFRESH_CODE')
-  
+
   api.headers = new Headers({
     'Authorization': 'Bearer ' + tokens.accessToken,
     'Accept': 'application/json'
@@ -36,12 +34,13 @@ export function setCurrentlyPlaying (state, {
 }) {
   const { visualizer } = state
 
+  stopVisualizer(state)
+
   visualizer.currentlyPlaying = track
   visualizer.trackAnalysis = analysis
   visualizer.trackFeatures = features
   visualizer.initialTrackProgress = progress
 
-  setInitialStart(state)
   startVisualizer(state)
   
   console.log(`Now playing: ${visualizer.currentlyPlaying.album.artists[0].name} – ${visualizer.currentlyPlaying.name}`)
@@ -52,10 +51,9 @@ export function setCurrentlyPlaying (state, {
  * @param state – Application state. 
  */
 export function startVisualizer ({ visualizer }) {
+  visualizer.initialStart = window.performance.now()
   visualizer.initialized = true
   visualizer.active = true
-
-  console.log('Visualizer started.')
 }
 
 /**
@@ -64,8 +62,6 @@ export function startVisualizer ({ visualizer }) {
  */
 export function stopVisualizer ({ visualizer }) {
   visualizer.active = false
-
-  console.log('Visualizer stopped.')
 }
 
 /**
@@ -79,12 +75,12 @@ export function updateTrackProgress ({ visualizer }, { progress }) {
 }
 
 /**
- * @function initParameters 
+ * @function setSizeParams 
  * @param state – Application state. 
  */
-export function initParameters ({ visualizer }) {
+export function setSizeParams ({ visualizer }) {
   const landscape = window.innerHeight < window.innerWidth
-  const dpi = 1 // window.devicePixelRatio ? Math.min(window.devicePixelRatio, 1.5) : 1
+  const dpi = visualizer.hidpi ? (window.devicePixelRatio ? window.devicePixelRatio : 1) : 1
 
   if (landscape) {
     visualizer.maxSize = (window.innerWidth * dpi) / 2
@@ -107,11 +103,11 @@ export function initParameters ({ visualizer }) {
   ] 
 }
 /**
- * @function initState – Set initial state. 
+ * @function setInitialModel – Build initial <canvas> model (color scheme, stars, and background).
  * @param state – Application state. 
  * @param canvas – Reference to <canvas> element.
  */
-export function initState (state, canvas) {
+export function setInitialModel (state, canvas) {
   const { visualizer } = state
 
   if (visualizer.initialized === true) return
@@ -127,7 +123,7 @@ export function initState (state, canvas) {
     if ((i + 1) % 3 === 0) { points = 12 }
     if ((i + 1) % 8 === 0) { points = 32 }
     
-    size = Math.round(size - Util.randomElement(visualizer.sizeStep))
+    size = Math.round(size - getRandomElement(visualizer.sizeStep))
 
     if (size < visualizer.minSize ) {
       size = visualizer.minSize
@@ -135,12 +131,17 @@ export function initState (state, canvas) {
 
     const color = (i === visualizer.totalStars - 1)
       ? visualizer.activeColorScheme.negative
-      : Util.randomElement(visualizer.activeColorScheme.scheme)
+      : getRandomElement(visualizer.activeColorScheme.scheme)
 
     addStar(state, { canvas, points, color, size })
   }
 
-  visualizer.background = new Background(visualizer.activeColorScheme.negative)
+  visualizer.background = {
+    last: visualizer.activeColorScheme.negative,
+    next: visualizer.activeColorScheme.negative,
+    interval: {},
+    get () { return visualizer.activeColorScheme.negative }
+  }
 }
 
 /**
@@ -150,7 +151,7 @@ export function addStar ({ visualizer }, { canvas, points, color, size }) {
   const x = canvas.width/2
   const y = canvas.height/2
   const outerRadius = size
-  const innerRadius = size * Util.randomElement(visualizer.radiusStep)
+  const innerRadius = size * getRandomElement(visualizer.radiusStep)
 
   const star = {
     x,
@@ -192,14 +193,14 @@ export function updateStar ({ visualizer }, {
   const star = visualizer.stars[index]
 
   const update = (key, { val, interval }) => {
-    star[key].last = star[key].next
+    star[key].last = star[key].get(visualizer.trackProgress)
     star[key].next = val
     star[key].interval = interval
     star[key].get = (trackProgress) => {
       const start = interval.start
       const duration = interval.duration
-      const progress = ease(Math.min((trackProgress - start) / duration, 1))
-      return interpolate(star[key].last, star[key].next)(progress)
+      const progress = Math.min(Math.max(0, (trackProgress - start) / duration), 1)
+      return interpolate(star[key].last, star[key].next)(ease(progress))
     }
   }
 
@@ -259,11 +260,11 @@ export function setColorScheme ({ visualizer }, theme) {
     }
   }
 
-  const scheme = (theme && theme !== 'shuffle') ? theme : Util.randomElement(visualizer.colorSchemes)
+  const scheme = (theme && theme !== 'shuffle') ? theme : getRandomElement(visualizer.colorSchemes)
 
   if (!scheme || !scheme.scheme) return 
   
-  const negative = Util.randomElement(scheme.scheme)
+  const negative = getRandomElement(scheme.scheme)
 
   visualizer.colorSchemes.forEach(scheme => scheme.selected = false)
   scheme.selected = true
@@ -294,14 +295,14 @@ export function setStarRadius (state, type) {
   let size = visualizer.activeSize
 
   visualizer.stars.forEach((star, index) => {
-    size = Math.round(size - Util.randomElement(visualizer.sizeStep))
+    size = Math.round(size - getRandomElement(visualizer.sizeStep))
     
     if (size < visualizer.minSize ) {
       size = visualizer.minSize
     } 
 
     const innerRadius = {
-      val: size * Util.randomElement(visualizer.radiusStep),
+      val: size * getRandomElement(visualizer.radiusStep),
       interval: visualizer.activeIntervals[type]
     }
 
@@ -327,7 +328,7 @@ export function setStarColor (state, type) {
   const { visualizer } = state
 
   visualizer.stars.forEach((star, index) => {
-    const color = (index === visualizer.totalStars - 1) ? visualizer.activeColorScheme.negative : Util.randomElement(visualizer.activeColorScheme.scheme)
+    const color = (index === visualizer.totalStars - 1) ? visualizer.activeColorScheme.negative : getRandomElement(visualizer.activeColorScheme.scheme)
 
     updateStar(state, {
       color: {
@@ -345,10 +346,18 @@ export function setStarColor (state, type) {
  * @param type – Type of interval attacked to this tween.
  */
 export function setBackgroundColor ({ visualizer }, type) {
-  visualizer.background.update({
-    val: visualizer.activeColorScheme.negative,
-    interval: visualizer.activeIntervals[type]
-  })
+  const val = visualizer.activeColorScheme.negative
+  const interval = visualizer.activeIntervals[type]
+
+  visualizer.background.last = visualizer.background.get(visualizer.trackProgress)
+  visualizer.background.next = val
+  visualizer.background.interval = interval
+  visualizer.background.get = (trackProgress) => {
+    const start = interval.start
+    const duration = interval.duration
+    const progress = Math.min(Math.max(0, (trackProgress - start) / duration), 1)
+    return interpolate(visualizer.background.last, visualizer.background.next)(ease(progress))
+  }
 }
 
 /**
@@ -381,36 +390,11 @@ export function setInitialStart ({ visualizer }) {
 }
 
 /**
- * @function paint – Paint a single frame.
- */
-export function paint ({ visualizer }, { canvas, ctx }) {
-  /** Pass <canvas> 2d context, <canvas> width & height, and current track progress to background, then paint. */
-  visualizer.background.draw({
-    ctx,
-    width: canvas.width,
-    height: canvas.height,
-    trackProgress: visualizer.trackProgress
-  })
-  
-  visualizer.stars.forEach(star => {
-    const progress = visualizer.trackProgress
-    const color = star.color.get(progress)
-    const inner = star.innerRadius.get(progress)
-    const outer = star.outerRadius.get(progress)
-    const rotation = progress / 75
-    const vertices = createStar(star.points, inner, outer, canvas.width/2, canvas.height/2, rotation)    
-
-    ctx.fillStyle = color
-    createPath(ctx, vertices).fill()
-  })
-}
-
-/**
  * @function setActiveIntervals – Determine and set active intervals of each type, based on track progress.
  * @param state – Application state.
  */
 export function setActiveIntervals ({ visualizer }) {
-  const determineInterval = (type) => {
+  const determineInterval = (type) => {    
     for (let i = 0; i < visualizer.trackAnalysis[type].length; i++) {
       /** If last interval... */
       if (i === (visualizer.trackAnalysis[type].length - 1)) {
@@ -422,8 +406,8 @@ export function setActiveIntervals ({ visualizer }) {
         return i
       }
     }
-  
-    return -1
+
+    throw new Error(`Error determining active ${type}.`)
   }
 
   /** For each interval type... */

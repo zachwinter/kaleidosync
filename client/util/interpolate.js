@@ -4,12 +4,6 @@
  * @param b – Color B
  */
 export function interpolateRGB (a, b) {
-  if (!a || !b) {
-    return function () {
-      return false
-    }
-  }
-
   /**
    * Transform string into an array of integers. 
    * `"rgb(0,0,0)"` => `"0,0,0"` => `["0", "0", "0"]` => `[0, 0, 0]`
@@ -21,7 +15,6 @@ export function interpolateRGB (a, b) {
     const R = interpolateNumber(last[0], next[0])(progress)
     const G = interpolateNumber(last[1], next[1])(progress)
     const B = interpolateNumber(last[2], next[2])(progress)
-
     return `rgb(${R},${G},${B})`
   }	
 }
@@ -32,14 +25,8 @@ export function interpolateRGB (a, b) {
  * @param b – Number B
  */
 export function interpolateNumber (a, b) {
-  if (!a || !b) {
-    return function () {
-      return false
-    }
-  }
-  
   return a = +a, b -= a, function(t) {
-    return a + b * t
+    return Math.round(a + b * t)
   }
 }
 

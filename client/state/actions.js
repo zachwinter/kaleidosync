@@ -69,7 +69,6 @@ export function getNewToken (state) {
  */
 export function getTrackData (state, { track, progress }) {
   const { trackAnalysis, trackFeatures, headers } = state.api
-  
   const analysis = fetch(new Request(trackAnalysis + track.id, { headers })).then(res => res.json())
   const features = fetch(new Request(trackFeatures + track.id, { headers })).then(res => res.json()) 
   
