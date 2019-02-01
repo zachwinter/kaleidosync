@@ -1,7 +1,7 @@
 /**
- * @function randomElement – Retrieve random element from array.
+ * @function getRandomElement – Retrieve random element from array.
  */
-export function randomElement (arr) {
+export function getRandomElement (arr) {
   const index = Math.floor(Math.random() * arr.length)
   return arr[index]
 }

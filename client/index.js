@@ -1,11 +1,12 @@
-import './polyfills'
+import polyfill from './util/polyfills'
 import Kaleidosync from './kaleidosync'
-import './style.scss'
+
+polyfill(['promise', 'fetch', 'proxy'])
 
 export default new class App {
   constructor () {		
     if (window.location.hash === '#start') {
-      this.kaleidosync = new Kaleidosync
+      window.__kaleidosync__ = new Kaleidosync
     } else {
       this.auth()
     }

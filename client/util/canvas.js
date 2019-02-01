@@ -27,6 +27,33 @@ export function sizeCanvasArtboard (canvas, width = window.innerWidth, height = 
 }
 
 /**
+ * @function getPixelBuffers – Get low-level pixel data from <canvas> 2d context.
+ * @param ctx – <canvas> 2d context.
+ */
+export function getPixelBuffers (ctx) {
+  const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
+  const buffer = new ArrayBuffer(imageData.length)
+  const buffer8 = new Uint8ClampedArray(buffer)
+  const buffer32 = new Uint32Array(buffer)
+
+  return {
+    imageData,
+    buffer8,
+    buffer32
+  }
+}
+
+/**
+ * @function fillCanvas – Fill <canvas> with specified color.
+ * @param ctx – <canvas> 2d context.
+ * @param color – Desired color.
+ */
+export function fillCanvas (ctx, color) {
+  ctx.fillStyle = color
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+}
+
+/**
  * @function createPath – Create a path given an array of vertices; returns 2D context. 
  * @param ctx – <canvas> 2D context.
  * @param vertices – Array of { x, y } vertices. 

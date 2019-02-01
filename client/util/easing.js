@@ -25,11 +25,13 @@ const easing = {
  */
 export default function ease (t, method = 'easeOutQuint', smoothing = 3) {
   if (!easing[method]) throw new Error(`Unknown easing function "${method}"`) 
+
+  const progress = Math.min(Math.max(0, t), 1)
   
-  let val = easing[method](t)
+  let val = easing[method](progress)
   
   for (var i = 0; i < smoothing; i++) {
-    val = val + t
+    val = val + progress
   }
 
   return val / (smoothing + 1)

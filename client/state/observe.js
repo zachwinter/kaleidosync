@@ -1,3 +1,8 @@
+export function isPrimitive (val) {
+  const type = typeof val
+  return val == null || (type != 'object' && type != 'function')
+}
+
 /**
  * @function Observe – Returns a Proxy allowing mutation observation on objects.
  * @param {Object} target – Object to observe.
@@ -33,12 +38,23 @@ export default function Observe (target) {
   /** Hijack the `set` method for sweet interception action. */
   const traps = {
     set (obj, key, val) {
-      const old = obj[key]
+      let old
+      
+      if (isPrimitive(obj[key])) {
+        old = obj[key]
+      } else if (Array.isArray(obj[key])) {
+        old = [...obj[key]]
+      } else {
+        old = {...obj[key]}
+      }
+
       obj[key] = val
-      if (_observers[key] && val !== old) {
+
+      if (_observers[key]) {
         _observers[key].map(observer => observer(val, old))
         _observers.__all__.map(observer => observer(val, old))
       }
+      
       return true
     }
   }
