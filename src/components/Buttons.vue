@@ -138,6 +138,9 @@ $angle: 45deg;
   background: black;
   padding: 30px;
   border: 0;
+  outline: 0;
+  
+  &:hover { outline: 0; }
 
   @include max-width(header) {
     @include size(40px);
@@ -147,7 +150,13 @@ $angle: 45deg;
 
   svg {
     @include size(100%);
-    * { fill: white; }
+
+    * {
+      fill: white;
+      transition: fill 100ms linear;
+    }
   }
+
+  &:hover svg * { fill: $blue; }
 }
 </style>

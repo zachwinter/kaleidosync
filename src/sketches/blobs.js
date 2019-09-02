@@ -17,7 +17,7 @@ function getColor (index, alpha = 1) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 
-class Circle {
+class Blob {
   constructor (interval, self, color) {
     this.self = self
     this.interval = interval
@@ -75,25 +75,25 @@ class Circle {
   }
 }
 
-export default class RoadTrip extends Visualizer {
+export default class Blobs extends Visualizer {
   constructor ({ parent = null, volumeSmoothing = 80 } = {}) {
     super({ volumeSmoothing, hidpi: true, parent })
-    this.circles = []
+    this.blobs = []
   }
 
   hooks () {
     this.sync.on('tatum', interval => {
       const index = randomNumber(0, 2, true)
       const color = getColor(index)
-      const circle = new Circle(interval, this, color)
-      this.circles.push(circle)
+      const blob = new Blob(interval, this, color)
+      this.blobs.push(blob)
     })
   }
 
   paint ({ width, height, now, ctx }) {
     this.sketch.fill = getColor(3, .8)
-    for (let i = this.circles.length - 1; i >= 0; i--) {
-      this.circles[i].paint({ width, height, now, ctx })
+    for (let i = this.blobs.length - 1; i >= 0; i--) {
+      this.blobs[i].paint({ width, height, now, ctx })
     }
   }
 }
