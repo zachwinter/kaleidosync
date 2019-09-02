@@ -8,8 +8,6 @@ import VueAnalytics from 'vue-analytics'
 
 // eslint-disable-next-line 
 if (PRODUCTION && GOOGLE_ANALYTICS) {
-  // eslint-disable-next-line 
-  console.log('GA: ' + GOOGLE_ANALYTICS)
   Vue.use(VueAnalytics, {
     // eslint-disable-next-line 
     id: GOOGLE_ANALYTICS

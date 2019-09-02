@@ -179,6 +179,7 @@ export default class Sync {
   async getCurrentlyPlaying () {
     try {
       const { data } = await get(this.state.api.currentlyPlaying, { headers: this.state.api.headers })
+      
       if (!data || !data.is_playing) {
         if (this.state.active === true) {
           this.state.active = false
@@ -219,7 +220,6 @@ export default class Sync {
   async getTrackInfo (data) {
     this.state.loadingNextSong = true
 
-    const tick = window.performance.now()
     const [ analysis, features ] = await Promise.all([
       get(this.state.api.trackAnalysis + data.item.id, { headers: this.state.api.headers }).then(res => res.data),
       get(this.state.api.trackFeatures + data.item.id, { headers: this.state.api.headers }).then(res => res.data),
@@ -239,13 +239,11 @@ export default class Sync {
       })
     })
 
-    const tock = window.performance.now() - tick
-
     this.state.currentlyPlaying = data.item
     this.state.trackAnalysis = analysis
     this.state.trackFeatures = features
-    this.state.initialTrackProgress = data.progress_ms + tock
-    this.state.trackProgress = data.progress_ms + tock
+    this.state.initialTrackProgress = Date.now() - data.timestamp
+    this.state.trackProgress = Date.now() - data.timestamp
     this.state.initialStart = window.performance.now()
     this.state.loadingNextSong = false
     
