@@ -38,7 +38,7 @@ class Blob {
     const EASING = 'easeOutQuart'
 
     const progress = Math.max(Math.min((now - this.birth) / (this.lifespan * LIFESPAN_MULTIPLIER), 1), 0)
-    if (progress === 1) return this.self.circles = this.self.circles.filter(c => c !== this)
+    if (progress === 1) return this.self.blobs = this.self.blobs.filter(c => c !== this)
 
     const iRadius = interpolateNumber(0,this.width)
     const iLineWidth = interpolateBasis([0, this.width/WIDTH_DIVIDER, 0]) 
