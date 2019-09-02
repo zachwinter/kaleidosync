@@ -1,10 +1,10 @@
-const express = require('express')
-const router = express.Router()
+module.exports = app => {
+  const auth = () => Math.random().toString(36).slice(5, 11).toUpperCase()
 
-router.get('/', (req, res) => {
-  const auth_id = Math.random().toString(36).slice(5, 11)
-  res.setHeader('Content-Type', 'application/json')
-  res.send(JSON.stringify({ auth_id }))
-})
-
-module.exports = router
+  app.get('/auth', (req, res) => {
+    let auth_id = auth()
+  
+    res.setHeader('Content-Type', 'application/json')
+    res.send(JSON.stringify({ auth_id }))
+  })
+}
