@@ -20,7 +20,7 @@ div.home(:style="{ color, transition: `all ${colorTransitionDuration}ms` }")
         button.button(@click="login" :style="{ color, borderColor: color, transition: `opacity ${colorTransitionDuration}ms, transform ${colorTransitionDuration}ms` }") Log In
         .github(:style="{ transition: `all ${colorTransitionDuration}ms` }")
           a(href="https://github.com/zachwinter/kaleidosync" target="_blank")
-          GitHub(:color="color", :colorTransitionDuration="colorTransitionDuration")
+            GitHub(:color="color", :colorTransitionDuration="colorTransitionDuration")
 </template>
 
 <script>
