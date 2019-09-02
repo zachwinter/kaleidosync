@@ -1,0 +1,9 @@
+@mixin min-width($bp) {
+  $breakpoint: map-get($breakpoints, $bp);
+  
+  @if (type-of($breakpoint) != 'number') {
+    $breakpoint: $bp;
+  }
+  
+  @media all and (min-width: #{$breakpoint}px) { @content; }
+}

@@ -1,0 +1,9 @@
+@mixin max-width($bp) {
+  $breakpoint: map-get($breakpoints, $bp);
+  
+  @if (type-of($breakpoint) != 'number') {
+    $breakpoint: $bp;
+  }
+  
+  @media all and (max-width: #{$breakpoint}px) { @content; }
+}

@@ -1,0 +1,10 @@
+@mixin share {
+  font-family: 'Share', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+@mixin open-sans {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+}

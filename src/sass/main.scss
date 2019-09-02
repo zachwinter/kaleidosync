@@ -1,0 +1,14 @@
+@import 'global/reset';
+@import 'global/fonts';
+@import 'imports';
+
+html, body {
+  @include size(100%);
+  overflow: hidden;
+}
+
+body {
+  @include flex;
+  @include open-sans;
+  text-align: center;
+}
