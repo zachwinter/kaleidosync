@@ -57,7 +57,7 @@ export default class Trails extends Visualizer {
   paint01 ({ ctx, width, height, now, smallest }) {
     const progress = (ease(this.sync.bar.progress, 'easeInOutQuint'))
     const bar = interpolateBasis([-(smallest*(5/8)), (smallest*(5/8)), -(smallest*(5/8))])(progress) * this.sync.volume
-    const radius = (Math.pow(this.sync.volume, 2) * (smallest / 2)) + bar
+    const radius = (Math.pow(this.sync.volume, 1) * (smallest / 2)) + bar
     const vertices = polygon(this.SIDES, radius, width/2, height/2, now/20)
     this.update(vertices, '_01')
     for (let i = this._01.length - 1; i >= 0; i--) {
@@ -67,7 +67,7 @@ export default class Trails extends Visualizer {
 
   paint02 ({ ctx, width, height, now, smallest }) {
     const beat = interpolateBasis([-smallest/8, smallest/8, -smallest/8])(ease(this.sync.beat.progress, 'easeOutQuint'))
-    const radius = Math.pow(this.sync.volume, 2) * smallest / 3 + beat
+    const radius = Math.pow(this.sync.volume, 1) * smallest / 3 + beat
     const vertices = polygon(Math.round(this.SIDES/2), radius, width/2, height/2, now/-10)
     this.update(vertices, '_02')
     for (let i = this._02.length - 1; i >= 0; i--) {
@@ -77,7 +77,7 @@ export default class Trails extends Visualizer {
 
   paint03 ({ ctx, width, height, now, smallest }) {
     const beat = interpolateBasis([-smallest/8, smallest/8, -smallest/8])(ease(this.sync.beat.progress, 'easeOutQuint'))
-    const radius =  Math.pow(this.sync.volume, 2) * smallest / 4 + beat
+    const radius =  Math.pow(this.sync.volume, 1) * smallest / 4 + beat
     const vertices = polygon(this.SIDES, radius, width/2, height/2, now/15)
     this.update(vertices, '_03')
     for (let i = this._03.length - 1; i >= 0; i--) {
