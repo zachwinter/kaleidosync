@@ -1,7 +1,7 @@
 {
   "name": "kaleidosync",
-  "version": "4.1.0",
-  "private": true,
+  "version": "4.0.2",
+  "private": false,
   "scripts": {
     "serve": "concurrently \"node ./server/index.js\" \"vue-cli-service serve\"",
     "build": "vue-cli-service build",

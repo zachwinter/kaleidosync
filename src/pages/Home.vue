@@ -10,14 +10,14 @@ div.home(:style="{ color, transition: `all ${colorTransitionDuration}ms` }")
       span(data-letter="6") d
       span(data-letter="7") o
       span(data-letter="8") s
-      span(data-letter="9") y
+      span(data-letter="9") y  
       span(data-letter="10") n
       span(data-letter="11" ref="last") c
     div.text
       h2 A Spotify visualizer
       noscript Please enable JavaScript before logging in.
       .buttons
-        button.button(@click="login" :style="{ color, borderColor: color, transition: `opacity ${colorTransitionDuration}ms, transform ${colorTransitionDuration}ms` }") Log In
+        button(@click="login" :style="{ color, borderColor: color, transition: `opacity ${colorTransitionDuration}ms, transform ${colorTransitionDuration}ms` }") Log In
         .github(:style="{ transition: `all ${colorTransitionDuration}ms` }")
           a(href="https://github.com/zachwinter/kaleidosync" target="_blank")
             GitHub(:color="color", :colorTransitionDuration="colorTransitionDuration")
