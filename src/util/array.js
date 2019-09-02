@@ -18,3 +18,7 @@ export function shuffle (arr) {
 
 	return array
 }
+
+export function average (arr) {
+	return arr.reduce((a, b) => (a + b)) / arr.length
+}

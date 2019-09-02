@@ -21,6 +21,8 @@ export default class Sketch {
     this.canvas = document.createElement('canvas')
     this.canvas.setAttribute('id', name)
     this.ctx = this.canvas.getContext('2d')
+    this.offscreenCanvas = document.createElement('canvas')
+    this.offscreenCtx = this.offscreenCanvas.getContext('2d')
     this.container.appendChild(this.canvas)
     this.setSize()
 
@@ -55,8 +57,10 @@ export default class Sketch {
     this.canvas.height = this.height * dpi
     this.canvas.style.width = this.width + 'px'
     this.canvas.style.height = this.height + 'px'
-
+    this.offscreenCanvas.width = this.width * dpi
+    this.offscreenCanvas.height = this.height * dpi
     this.ctx.scale(dpi, dpi) 
+    this.offscreenCtx.scale(dpi, dpi)
   }
   
   /**
@@ -119,6 +123,7 @@ export default class Sketch {
       height: this.height,
       largest: this.width > this.height ? this.width : this.height,
       smallest: this.width > this.height ? this.height : this.width,
+      offscreen: this.offscreenCtx,
       now,
       progress,
       duration,

@@ -1,7 +1,6 @@
 import Visualizer from '../util/visualizer'
 import { growingLine, polygon } from '../util/canvas'
 import { interpolateBasis, interpolateRgbBasis } from 'd3-interpolate'
-import ease from '../util/easing'
 
 export default class Trails extends Visualizer {
   constructor ({ parent = null, fixed = false, volumeSmoothing = 30 } = {}) {
@@ -13,24 +12,36 @@ export default class Trails extends Visualizer {
       name: 'trails'
     })
 
-    this.SIDES = 9
-    this.TRAIL_LENGTH = 30
+    this.sync.registerQueue({
+      name: 'volume',
+      totalSamples: 70,
+      smoothing: 30
+    })
+
+    this.sync.registerQueue({
+      name: 'beat',
+      totalSamples: 10,
+      smoothing: 1
+    })
+
+    this.SIDES = 6
+    this.TRAIL_LENGTH = 25
 
     this._01 = []
     this._02 = []
     this._03 = []
+    this._04 = []
 
     for (let i = 0; i < this.SIDES; i++) {
       this._01.push([])
       this._02.push([])
       this._03.push([])
+      this._04.push([])
     }
     
-    this.theme = ['#FF4242', '#18FF2A', '#7718FF', '#FF4242']
+    this.theme = ['#55FF84', '#A78BFF', '#67E9FF', '#55FF84']
     this.iTheme = interpolateRgbBasis(this.theme)
-    this.beat = interpolateBasis([-100, 100, -100])
-    this.bar = interpolateBasis([-500, 500, -500])
-    // this.sketch.ctx.lineCap = 'round'
+    this.sketch.ctx.lineCap = 'round'
   }
 
   drawLine (ctx, vertices, width) {
@@ -54,42 +65,78 @@ export default class Trails extends Visualizer {
     })
   }
 
-  paint01 ({ ctx, width, height, now, smallest }) {
-    const progress = (ease(this.sync.bar.progress, 'easeInOutQuint'))
-    const bar = interpolateBasis([-(smallest*(5/8)), (smallest*(5/8)), -(smallest*(5/8))])(progress) * this.sync.volume
-    const radius = (Math.pow(this.sync.volume, 1) * (smallest / 2)) + bar
-    const vertices = polygon(this.SIDES, radius, width/2, height/2, now/20)
+  clear ({ offscreen, width, height }) {
+    this.sketch.fill = 'rgba(12,8,50,.25)'
+    offscreen.clearRect(0, 0, width, height)
+  }
+
+  paint01 ({ offscreen, width, height, now, smallest }) {
+    const volume = (300 * Math.pow(this.sync.getVolumeQueue('volume'), 2))
+    const beat = volume/5 * Math.pow(this.sync.getVolumeQueue('beat'), 1) 
+    const radius = volume + beat
+    const vertices = polygon(this.SIDES, radius, width/2, height/2, now/15)
     this.update(vertices, '_01')
     for (let i = this._01.length - 1; i >= 0; i--) {
-      this.drawLine(ctx, this._01[i], (smallest/50) * this.sync.volume)
+      this.drawLine(offscreen, this._01[i], (smallest/40) * this.sync.getVolumeQueue('volume'))
     }
   }
 
-  paint02 ({ ctx, width, height, now, smallest }) {
-    const beat = interpolateBasis([-smallest/8, smallest/8, -smallest/8])(ease(this.sync.beat.progress, 'easeOutQuint'))
-    const radius = Math.pow(this.sync.volume, 1) * smallest / 3 + beat
-    const vertices = polygon(Math.round(this.SIDES/2), radius, width/2, height/2, now/-10)
+  paint02 ({ offscreen, width, height, now, smallest }) {
+    const volume = (300 * Math.pow(this.sync.getVolumeQueue('volume'), 2))
+    const beat = volume/5 * Math.pow(this.sync.getVolumeQueue('beat'), 1)
+    const radius = volume + beat
+    const vertices = polygon(Math.round(this.SIDES), radius, width/2, height/2, now/-15)
     this.update(vertices, '_02')
     for (let i = this._02.length - 1; i >= 0; i--) {
-      this.drawLine(ctx, this._02[i], (smallest/32) * this.sync.volume)
+      this.drawLine(offscreen, this._02[i], (smallest/30) * this.sync.getVolumeQueue('volume'))
     }
   }
 
-  paint03 ({ ctx, width, height, now, smallest }) {
-    const beat = interpolateBasis([-smallest/8, smallest/8, -smallest/8])(ease(this.sync.beat.progress, 'easeOutQuint'))
-    const radius =  Math.pow(this.sync.volume, 1) * smallest / 4 + beat
-    const vertices = polygon(this.SIDES, radius, width/2, height/2, now/15)
+  paint03 ({ offscreen, width, height, now, smallest }) {
+    const volume = (100 * Math.pow(this.sync.getVolumeQueue('volume'), 1))
+    const beat = volume/5 * Math.pow(this.sync.getVolumeQueue('beat'), 1)
+    const radius = volume + beat
+    const vertices = polygon(this.SIDES, radius, width/2, height/2, now/-15)
     this.update(vertices, '_03')
     for (let i = this._03.length - 1; i >= 0; i--) {
-      this.drawLine(ctx, this._03[i], (smallest/50) * this.sync.volume)
+      this.drawLine(offscreen, this._03[i], (smallest/40) * this.sync.getVolumeQueue('volume'))
     }
+  }
+
+  paint04 ({ offscreen, width, height, now, smallest }) {
+    const volume = (100 * Math.pow(this.sync.getVolumeQueue('volume'), 1))
+    const beat = volume/5 * Math.pow(this.sync.getVolumeQueue('beat'), 1)
+    const radius = volume + beat
+    const vertices = polygon(this.SIDES, radius, width/2, height/2, now/15)
+    this.update(vertices, '_04')
+    for (let i = this._03.length - 1; i >= 0; i--) {
+      this.drawLine(offscreen, this._04[i], (smallest/30) * this.sync.getVolumeQueue('volume'))
+    }
+  }
+
+  applyOffscreen({ ctx, offscreen, width, height }) {
+    ctx.save()
+    // const beat = interpolateBasis([1, 3, 1])(ease(this.sync.beat.progress, 'easeOutQuint'))
+    ctx.shadowBlur = 40 * this.sync.getVolumeQueue('volume') //* beat
+    ctx.shadowColor = this.iTheme(this.sync.bar.progress)
+    ctx.globalCompositeOperation = 'lighter'
+    ctx.drawImage(offscreen.canvas, 0, 0, width, height)
+    ctx.restore()
+
+    ctx.save()
+    ctx.shadowBlur = 20
+    ctx.shadowColor = this.iTheme(this.sync.bar.progress)
+    ctx.globalCompositeOperation = 'lighter'
+    ctx.drawImage(offscreen.canvas, 0, 0, width, height)
+    ctx.restore()
   }
 
   paint (args) {
-    this.sketch.fill = 'rgba(0, 0, 0, 1)'
-    const beat = this.beat()
+    this.clear(args)
     this.paint01(args)
-    this.paint02(args, beat)
-    this.paint03(args, beat)
+    this.paint02(args)
+    this.paint03(args)
+    this.paint04(args)
+    this.applyOffscreen(args)
   }
 } 

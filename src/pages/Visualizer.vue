@@ -78,8 +78,8 @@ export default {
 
       this.multiviz.selectedVisualizer = val
     
-      if (val === 'trails') {
-        this.multiviz.sketch.setSize(true)
+      if (val === 'trails') { 
+        this.multiviz.sketch.setSize(isMobile)
       }
       
       if (val === 'kaleidosync') {
@@ -102,7 +102,7 @@ export default {
       canvas.remove()
     } 
 
-    this.multiviz = new MultiViz(this.selectedVisualizer)
+    this.multiviz = new MultiViz(this.$store)
 
     this.$store.dispatch('toast', {
       message: 'Connecting to Spotify'
