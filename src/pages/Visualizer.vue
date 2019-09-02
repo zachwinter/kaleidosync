@@ -41,7 +41,7 @@ export default {
   },
   watch: {
     selectedVisualizer (val) {
-      this.configSelectedVisualizer(val)
+      this.setVisualizerSize(val)
     }
   },
   methods: {
@@ -72,7 +72,7 @@ export default {
       })
     },
 
-    configSelectedVisualizer (val) {
+    setVisualizerSize (val) {
       const MAX_PIXELS = 400 * 900
       const isMobile = (window.innerWidth * window.innerHeight) <= MAX_PIXELS
 
@@ -80,32 +80,27 @@ export default {
     
       if (val === 'trails') {
         this.multiviz.sketch.setSize(true)
-        this.multiviz.sync.state.volumeSmoothing = 15
-        this.multiviz.sync.state.volumeAverage = 200
       }
       
       if (val === 'kaleidosync') {
         this.multiviz.sketch.setSize(isMobile)
-        this.multiviz.sync.state.volumeSmoothing = 40
-        this.multiviz.sync.state.volumeAverage = 400
-
       }
 
       if (val === 'wavesync') {
         this.multiviz.sketch.setSize(isMobile)
-        this.multiviz.sync.state.volumeSmoothing = 60
-        this.multiviz.sync.state.volumeAverage = 400
       }
 
       if (val === 'blobs') {
         this.multiviz.sketch.setSize(true)
-        this.multiviz.sync.state.volumeSmoothing = 5
-        this.multiviz.sync.state.volumeAverage = 400
       }
     }
   },
   mounted () {
-    if (document.getElementsByTagName('canvas')[0]) return 
+    const canvas = document.getElementsByTagName('canvas')[0]
+
+    if (canvas) {
+      canvas.remove()
+    } 
 
     this.multiviz = new MultiViz(this.selectedVisualizer)
 
@@ -113,10 +108,10 @@ export default {
       message: 'Connecting to Spotify'
     })
 
-    this.configSelectedVisualizer(this.selectedVisualizer)
+    this.setVisualizerSize(this.selectedVisualizer)
 
     window.addEventListener('resize', () => {
-      this.configSelectedVisualizer(this.selectedVisualizer)
+      this.setVisualizerSize(this.selectedVisualizer)
     })
 
     this.watchers()

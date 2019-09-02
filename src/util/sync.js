@@ -376,16 +376,14 @@ export default class Sync {
     /** Add volume value to the beginning of the volume queue. */
     queues.volume.unshift(volume)
 
-    /** If the queue is larger than 400 values, remove the last value. */
-    if (queues.volume.length > this.state.volumeAverage) {
+    while (queues.volume.length > this.state.volumeAverage) {
       queues.volume.pop()
     }
 
     /** Add volume value to the beginning of the beat queue. */
     queues.beat.unshift(volume)
 
-    /** If the queue is larger than our defined smoothing value, remove the last value. */
-    if (queues.beat.length > this.state.volumeSmoothing) {
+    while (queues.beat.length > this.state.volumeSmoothing) {
       queues.beat.pop()
     }
 
@@ -408,13 +406,13 @@ export default class Sync {
 
     queues.volume.unshift(loudness)
 
-    if (queues.volume.length > this.state.volumeAverage) {
+    while (queues.volume.length > this.state.volumeAverage) {
       queues.volume.pop()
     }
 
     queues.beat.unshift(loudness)
 
-    if (queues.beat.length > this.state.volumeSmoothing) {
+    while (queues.beat.length > this.state.volumeSmoothing) {
       queues.beat.pop()
     }
 
