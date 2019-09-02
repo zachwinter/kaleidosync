@@ -7,11 +7,6 @@ import ease from '../util/easing'
 const TWO_PI = Math.PI * 2
 const PI_OVER_180 = Math.PI / 180
 
-/**
- * @author Zach Winter
- * @date 6/17/2019
- * https://github.com/zachwinter
- */
 export default class WaveSync extends Visualizer {
   constructor ({ 
     fixed = false, 
