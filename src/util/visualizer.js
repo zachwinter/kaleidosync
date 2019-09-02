@@ -14,8 +14,9 @@ export default class Visualizer {
     syncOnly = false,
     parent = null,
     name = '',
+    $store = null,
     staticFactory = function (i) { return i }
-  }) {
+  } = {}) {
     /** Initialize Sync class. */
 
     if (parent) {
@@ -29,7 +30,8 @@ export default class Visualizer {
       fixed,
       staticIntervalBaseDuration,
       staticFactory,
-      volumeAverage
+      volumeAverage,
+      $store
     })
 
     if (syncOnly === false) {

@@ -3,7 +3,9 @@ import * as cookies from '../util/cookie'
 import { get } from '../util/network'
 import { interpolateNumber } from 'd3-interpolate'
 import { scaleLog } from 'd3-scale'
-import { min } from 'd3-array'
+import { min, max } from 'd3-array'
+import { average } from '../util/array'
+import { pause } from '../util/timing'
 
 /**
  * @class Sync
@@ -17,7 +19,8 @@ export default class Sync {
     volumeAverage = 200,
     pingDelay = 2500,
     fixed = false,
-    staticIntervalBaseDuration = 2000
+    staticIntervalBaseDuration = 2000,
+    $store = null
   } = {}) {
     // eslint-disable-next-line 
     const accessToken = cookies.get(ACCESS_TOKEN)
@@ -25,6 +28,10 @@ export default class Sync {
     const refreshToken = cookies.get(REFRESH_TOKEN)
     // eslint-disable-next-line 
     const refreshCode = cookies.get(REFRESH_CODE)
+
+    if ($store) {
+      this.$store = $store
+    }
 
     this.fixed = fixed
 
@@ -68,6 +75,9 @@ export default class Sync {
       queues: {
         volume: [],
         beat: []
+      },
+      volumeQueues: {
+
       }
     })
 
@@ -151,7 +161,15 @@ export default class Sync {
       }
       this.ping()
     } catch (e) {
-      window.location.href = '/'
+      if (this.$store) {
+        this.$store.dispatch('toast', {
+          message: 'Something went wrong. Reconnecting...'
+        })
+
+        await pause(2000)
+      }
+
+      auth()
     }
   }
 
@@ -358,6 +376,42 @@ export default class Sync {
   }
 
   /**
+   * @method registerVolumeQueue - Register a volume analysis stream.
+   */
+  registerQueue ({ name, totalSamples, smoothing }) {
+    this.state.volumeQueues[name] = {
+      totalSamples,
+      smoothing,
+      values: [0,1],
+      volume: .5,
+      average: .5,
+      min: 0,
+      max: 1
+    }
+  }
+
+  processVolumeQueues (volume) {
+    for (let key in this.state.volumeQueues) {
+      const queue = this.state.volumeQueues[key]
+      queue.values.unshift(volume)
+      while (queue.values.length > queue.totalSamples) {
+        queue.values.pop()
+      }
+      queue.average = average(queue.values)
+      queue.min = min(queue.values)
+      queue.max = max(queue.values)
+      const sizeScale = scaleLog()
+        .domain([min(queue.values), average(queue.values)])
+      const latest = average(queue.values.slice(0, queue.smoothing))
+      queue.volume = sizeScale(latest)
+    }
+  }
+
+  getVolumeQueue (name) {
+    return this.state.volumeQueues[name].volume
+  }
+
+  /**
    * @method tick - A single update tick from the Sync loop. 
    * @param {DOMHighResTimeStamp} now 
    */
@@ -372,6 +426,8 @@ export default class Sync {
     /** Get current volume. */
     const volume = this.getVolume()
     const queues = this.state.queues
+
+    this.processVolumeQueues(volume)
 
     /** Add volume value to the beginning of the volume queue. */
     queues.volume.unshift(volume)

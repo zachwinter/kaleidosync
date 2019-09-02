@@ -4,16 +4,10 @@ import Trails from '../sketches/trails'
 import Wavesync from '../sketches/wavesync'
 import Blobs from '../sketches/blobs'
 
-function isMobile () {
-  return window.innerWidth * window.innerHeight <= 400 * 900
-}
-
 export default class MultiViz extends Visualizer {
-  constructor (initial = 'kaleidosync') {
-    super({ hidpi: isMobile() })
-
-    this.selectedVisualizer = initial
-
+  constructor ($store) {
+    super({ $store })
+    this.selectedVisualizer = $store.state.selectedVisualizer
     this.kaleidosync = new Kaleidosync({ parent: this })
     this.trails = new Trails({ parent: this })
     this.wavesync = new Wavesync({ parent: this })
@@ -23,8 +17,8 @@ export default class MultiViz extends Visualizer {
   paint (args) {
     switch (this.selectedVisualizer) { 
       case 'trails':
-        this.sync.state.volumeSmoothing = 15
-        this.sync.state.volumeAverage = 200
+        this.sync.state.volumeSmoothing = 5
+        this.sync.state.volumeAverage = 50
         this.trails.paint(args)
         break
       case 'kaleidosync':
@@ -39,7 +33,7 @@ export default class MultiViz extends Visualizer {
         break
       case 'blobs':
         this.sync.state.volumeSmoothing = 5
-        this.sync.state.volumeAverage = 400
+        this.sync.state.volumeAverage = 50
         this.blobs.paint(args)
         break
       default:
