@@ -1,5 +1,5 @@
 # kaleidosync
-> An HTML5 Spotify visualizer, built with [spotify-viz](https://[kaleidosync.herokuapp.com](https://github.com/zachwinter/spotify-viz)/) and [Vue](https://github.com/vuejs/vue).
+> An HTML5 Spotify visualizer, built with [spotify-viz](https://github.com/zachwinter/spotify-viz) and [Vue](https://github.com/vuejs/vue).
 
 ####  Try it out at [www.kaleidosync.com](https://www.kaleidosync.com)!
 
@@ -43,7 +43,7 @@ npm serve
 ## Changelog
 
 > #### Version 4.0
-* Project backbone has been abstracted away into its own library, [spotify-viz](https://[kaleidosync.herokuapp.com](https://github.com/zachwinter/spotify-viz)/).
+* Project backbone has been abstracted away into its own library, [spotify-viz](https://github.com/zachwinter/spotify-viz).
 * Adoped [@vue/cli](https://cli.vuejs.org) for the UI layer.
 * There are now 4 visualizers to choose from.
 * User settings now persist when revisiting the site. 
