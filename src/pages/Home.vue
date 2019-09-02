@@ -52,7 +52,7 @@ export default {
   created () {
     this.kaleidosync = new Kaleidosync({
       fixed: true,
-      hidpi: true,
+      hidpi: false,
       volumeSmoothing: 30
     })
 

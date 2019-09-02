@@ -376,7 +376,7 @@ export default class Sync {
   /**
    * @method registerVolumeQueue - Register a volume analysis stream.
    */
-  registerQueue ({ name, totalSamples, smoothing }) {
+  registerQueue ({ name, totalSamples, smoothing, mode = 'average' }) {
     this.state.volumeQueues[name] = {
       totalSamples,
       smoothing,
@@ -384,7 +384,8 @@ export default class Sync {
       volume: .5,
       average: .5,
       min: 0,
-      max: 1
+      max: 1,
+      mode
     }
   }
 
@@ -399,7 +400,7 @@ export default class Sync {
       queue.min = min(queue.values)
       queue.max = max(queue.values)
       const sizeScale = scaleLog()
-        .domain([min(queue.values), average(queue.values)])
+        .domain([queue.min, queue.mode === 'average' ? queue.average : queue.max])
       const latest = average(queue.values.slice(0, queue.smoothing))
       queue.volume = sizeScale(latest)
     }
