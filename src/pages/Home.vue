@@ -1,6 +1,6 @@
 <template lang="pug">
-div.home(:style="{ color, transition: `all ${colorTransitionDuration}ms` }")
-  div.splash(:class="{ hide }")
+div.home(:class="{ hide: hidePage }")
+  div.splash(:class="{ hide: hideSplash }")
     h1(ref="logo")
       span(data-letter="1") K
       span(data-letter="2") a
@@ -10,60 +10,50 @@ div.home(:style="{ color, transition: `all ${colorTransitionDuration}ms` }")
       span(data-letter="6") d
       span(data-letter="7") o
       span(data-letter="8") s
-      span(data-letter="9") y  
+      span(data-letter="9" ref="animate") y  
       span(data-letter="10") n
-      span(data-letter="11" ref="last") c
+      span(data-letter="11") c
     div.text
-      h2 A Spotify visualizer
+      h2 a collection of Spotify visualizers
       noscript Please enable JavaScript before logging in.
       .buttons
-        button(@click="login" :style="{ color, borderColor: color, transition: `opacity ${colorTransitionDuration}ms, transform ${colorTransitionDuration}ms` }") Log In
-        .github(:style="{ transition: `all ${colorTransitionDuration}ms` }")
-          a(href="https://github.com/zachwinter/kaleidosync" target="_blank")
-            GitHub(:color="color", :colorTransitionDuration="colorTransitionDuration")
+        button(@click="login")
+          span Log In
+          Spotify
+  .github
+    a(href="https://github.com/zachwinter/kaleidosync" target="_blank")
+      GitHub
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import Kaleidosync from '@/sketches/kaleidosync'
 import GitHub from '@/components/GitHub'
-import { SET_COLOR } from '@/vuex/mutation-types'
+import Star from '@/components/Star'
+import Spotify from '@/components/Spotify'
 
 export default {
   name: 'home',
-  components: { GitHub },
+  components: { GitHub, Star, Spotify },
   data () {
     return {
-      hide: false
+      hideSplash: false,
+      hidePage: false,
+      stars: null,
+      starsLoaded: true
     }
   },
-  computed: {
-    ...mapState(['color', 'colorTransitionDuration'])
-  },
   methods: {
-    login () {
-      this.hide = true
-      this.kaleidosync.sketch.canvas.classList.add('fade-out')
-      this.$refs.last.addEventListener('animationend', () => {
+    async login () {
+      this.hideSplash = true
+      this.hidePage = true
+      this.$refs.animate.addEventListener('animationend', () => {
         this.$store.dispatch('login')
       })
     } 
   },
-  created () {
-    this.kaleidosync = new Kaleidosync({
-      fixed: true,
-      hidpi: false,
-      volumeSmoothing: 30
-    })
-
-    this.kaleidosync.sketch.canvas.classList.add('fade')
-
-    this.kaleidosync.state.watch('activeColorTheme', (val, old) => {
-      if (val.primary === old.primary) return 
-      this.$store.commit(SET_COLOR, val.primary)
-    })
-
-    this.$store.commit(SET_COLOR, this.kaleidosync.state.activeColorTheme.primary)
+  async created () { 
+    const data = await fetch('https://api.github.com/users/zachwinter/repos').then(res => res.json())
+    const { stargazers_count } = data.find(d => d.id === 114038493)
+    this.stars = stargazers_count
   },
   mounted () {
     if (this.$ga) {
@@ -76,54 +66,66 @@ export default {
 <style lang="scss" scoped>
 $splash-hide-duration: 300ms;
 
-@keyframes fade-in {
-  0% { opacity: 0; }
-  100% { opacity: 1; } 
+@keyframes fade-to-white {
+  0% { background: #55FF93; }
+  100% { background: #ffffff; }
 }
 
 .splash {
   z-index: 100;
-  animation: fade-in 1000ms linear forwards;
-  animation-delay: $splash-hide-duration;
-  opacity: 0;
   position: relative;
+  // animation: fade-in 500ms ease-out forwards;
+  // animation-delay: 100ms;
+  // opacity: 0;
+}
+
+.home {
+  @include position(fixed, 0 0 0 0);
+  @include flex;
 }
 
 .text {
-  @include position(absolute, null 0 0 0);
-  transform: translateY(100%);
-  text-align: center;
+  // @include position(absolute, null 0 0 0);
 }
 
 h1 {
-  @include share;
-  @include scale(font-size 170px 56px, line-height 170px 56px);
-
+  @include scale(font-size 170px 56px, line-height 120px 56px);
+  font-family: 'Gochi Hand', cursive;
+  font-weight: 400;
+  
   span { display: inline-block; }
 }
 
 h2 {
-  @include scale(font-size 32px 16px, line-height 32px 16px);
+  @include scale(font-size 24px 16px, line-height 24px 16px);
   transition: transform $splash-hide-duration $bounce-easing, opacity $splash-hide-duration $bounce-easing;
 }
 
 .buttons {
   @include flex;
-  margin-top: 30px;
+  margin-top: 30px
 }
 
 button {
-  @include button;
+  @include button(#65D36E);
   @include flex;
-  background: transparent;
+  background: #65D36E;
+  color: white;
   position: relative;
+  font-size: 24px;
+  border: 0;
 
   &:hover {
-    background: transparent;
+    background: darken(#65D36E, 20%);
+  }
+
+  svg {
+    @include size(24px);
+    margin-left: 10px;
   }
 }
 
-.hide {
+.splash.hide {
   @for $i from 1 through 11 {
     @keyframes shwoop-#{$i} {
       0% {
@@ -133,7 +135,7 @@ button {
 
       100% {
         opacity: 0;
-        transform: translateY(#{random(600) - 300}px) scale(#{random(10)/10});
+        transform: translateY(#{random(200) - 100}px) scale(#{random(10)/10});
       }
     }
 
@@ -150,15 +152,28 @@ button {
 }
 
 .github {
-  margin-left: 15px;
-
+  @include position(fixed, null null 30px null);
+  
   a {
-    text-align: right;
+    @include flex;
+    text-decoration: none;
+    font-weight: bold;
+    @include share;
   }
 
   svg {
     @include size(40px);
+    margin-right: 8px;
+    transition: fill 200ms ease-in-out;
+
+    &:hover {
+      fill: rgba(0, 0, 0, .5);
+    }
   }
+}
+
+.hide .github {
+  animation: fade-out $splash-hide-duration forwards;
 }
 </style>
 

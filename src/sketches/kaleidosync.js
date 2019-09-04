@@ -51,7 +51,7 @@ export default class Kaleidosync extends Visualizer {
       this.state.maxSize = this.sketch.height / 2
     }
   
-    this.state.minSize = this.state.maxSize / 10
+    this.state.minSize = this.state.maxSize / 5
     this.state.activeSize = this.state.maxSize
   
     const { maxSize, totalStars } = this.state
@@ -225,13 +225,7 @@ export default class Kaleidosync extends Visualizer {
       star[key].last = star[key].next
       star[key].next = val
       star[key].interval = interval
-      star[key].get = () => {
-        if (key === 'innerRadius' || key === 'outerRadius') {
-          return interpolate(star[key].last, star[key].next)(ease(this.sync[interval].progress, this.state.easing, true))
-        } else {
-          return interpolate(star[key].last, star[key].next)(ease(this.sync[interval].progress, this.state.easing, true))
-        }
-      }
+      star[key].get = () => interpolate(star[key].last, star[key].next)(ease(this.sync[interval].progress, this.state.easing, true))
     }
   
     if (color !== null) {

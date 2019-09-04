@@ -4,14 +4,18 @@ import Trails from '../sketches/trails'
 import Wavesync from '../sketches/wavesync'
 import Blobs from '../sketches/blobs'
 
+const MAX_PIXELS = 400 * 900
+const hidpi = (window.innerWidth * window.innerHeight) <= MAX_PIXELS
+
 export default class MultiViz extends Visualizer {
   constructor ($store) {
-    super({ $store })
+    super({ $store, hidpi })
+
     this.selectedVisualizer = $store.state.selectedVisualizer
-    this.kaleidosync = new Kaleidosync({ parent: this })
-    this.trails = new Trails({ parent: this })
-    this.wavesync = new Wavesync({ parent: this })
-    this.blobs = new Blobs({ parent: this })
+    this.kaleidosync = new Kaleidosync({ parent: this, hidpi })
+    this.trails = new Trails({ parent: this, hidpi })
+    this.wavesync = new Wavesync({ parent: this, hidpi })
+    this.blobs = new Blobs({ parent: this, hidpi })
   }
 
   paint (args) {
@@ -23,7 +27,7 @@ export default class MultiViz extends Visualizer {
         break
       case 'kaleidosync':
         this.sync.state.volumeSmoothing = 50
-        this.sync.state.volumeAverage = 200
+        this.sync.state.volumeAverage = 400
         this.kaleidosync.paint(args)
         break
       case 'wavesync':

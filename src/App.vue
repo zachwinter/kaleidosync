@@ -15,14 +15,26 @@ html, body {
 body {
   @include open-sans;
   text-align: center;
+   
+   * { font-family: inherit; }
 
   #app, #router-view, #router-view > * {
-    @include size(100%);
+    @include size(100%, 100%);
     @include flex;
   }
 }
 
 $transition-duration: 400ms ease-in-out;
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; } 
+}
+
+@keyframes fade-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity $transition-duration;

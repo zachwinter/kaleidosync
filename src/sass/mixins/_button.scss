@@ -1,7 +1,7 @@
 @mixin button($color: $black) {
-  @include size(auto, 40px);
-  @include share;
-	line-height: 40px;
+  @include size(auto, 50px);
+  font-family: 'Share';
+  font-weight: 400;
   display: inline-block;
   background: transparent;
   color: $color;
@@ -11,6 +11,7 @@
   border: 2px solid $color;
   font-size: 20px;
   transition: all .2s ease-in-out;
+  text-transform: uppercase;
 
   &:active, &:focus { outline: 0 }
 

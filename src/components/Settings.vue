@@ -64,7 +64,7 @@ form {
 
 label {
   @include flex;
-  @include share; 
+  @include open-sans; 
   @include scale(font-size 16px 16px);
   color: $black;
 
