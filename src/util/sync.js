@@ -163,7 +163,7 @@ export default class Sync {
     } catch (e) {
       if (this.$store) {
         this.$store.dispatch('toast', {
-          message: 'One moment please...'
+          message: 'Session expired. Logging back in...'
         })
 
         await pause(2000)
@@ -199,7 +199,7 @@ export default class Sync {
 
       if (this.$store) {
         this.$store.dispatch('toast', {
-          message: 'One moment please...'
+          message: 'Oops! Spotify error. Refreshing now.'
         })
 
         await pause(2000)

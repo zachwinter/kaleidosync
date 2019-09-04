@@ -4,14 +4,14 @@ import { interpolateBasis, interpolateRgbBasis } from 'd3-interpolate'
 import ease from '../util/easing'
 
 export default class Trails extends Visualizer {
-  constructor ({ parent = null, fixed = false, volumeSmoothing = 30 } = {}) {
-    super({
-      volumeSmoothing, 
+  constructor (args) {
+    super(Object.assign({ 
       hidpi: true, 
-      parent, 
-      fixed,
+      parent: null, 
+      fixed: false,
+      volumeSmoothing: 30,
       name: 'trails'
-    })
+    }, args))
 
     this.SIDES = 6
     this.TRAIL_LENGTH = 20
@@ -25,13 +25,13 @@ export default class Trails extends Visualizer {
     this.THEME = ['#FF61E0', '#61E3FF', '#FF61E0']
 
     this.sync.registerQueue({
-      name: 'volume',
+      name: 'trails-volume',
       totalSamples: 70,
       smoothing: 30
     })
 
     this.sync.registerQueue({
-      name: 'beat',
+      name: 'trails-beat',
       totalSamples: 10,
       smoothing: 1
     })
@@ -77,19 +77,19 @@ export default class Trails extends Visualizer {
   }
 
   group ({ offscreen, width, height, now, smallest }, { radius, name, rotation, multi1, multi2 }) {
-    const volume = (radius * Math.pow(this.sync.getVolumeQueue('volume'), multi1))
-    const beat = volume/this.BEAT_AMPLITUDE_CONSTANT * Math.pow(this.sync.getVolumeQueue('beat'), multi2) 
+    const volume = (radius * Math.pow(this.sync.getVolumeQueue('trails-volume'), multi1))
+    const beat = volume/this.BEAT_AMPLITUDE_CONSTANT * Math.pow(this.sync.getVolumeQueue('trails-beat'), multi2) 
     const finalRadius = volume + beat
     const vertices = polygon(this.SIDES, finalRadius, width/2, height/2, now/this.ROTATION_CONSTANT*rotation)
     this.updateModel(vertices, name)
     for (let i = this[name].length - 1; i >= 0; i--) {
-      this.drawLine(offscreen, this[name][i], (smallest/this.WIDTH_CONSTANT) * this.sync.getVolumeQueue('volume'))
+      this.drawLine(offscreen, this[name][i], (smallest/this.WIDTH_CONSTANT) * this.sync.getVolumeQueue('trails-volume'))
     }
   }
 
   applyOffscreen ({ ctx, offscreen, width, height }) {
     ctx.save()
-    ctx.shadowBlur = this.SHADOW_BLUR_SIZE * this.sync.getVolumeQueue('volume')
+    ctx.shadowBlur = this.SHADOW_BLUR_SIZE * this.sync.getVolumeQueue('trails-volume')
     ctx.shadowColor = interpolateRgbBasis(this.THEME)(ease(this.sync.bar.progress, 'linear'))
     ctx.globalCompositeOperation = 'lighter'
     ctx.drawImage(offscreen.canvas, 0, 0, width, height)

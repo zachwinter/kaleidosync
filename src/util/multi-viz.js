@@ -27,12 +27,12 @@ export default class MultiViz extends Visualizer {
         break
       case 'kaleidosync':
         this.sync.state.volumeSmoothing = 50
-        this.sync.state.volumeAverage = 400
+        this.sync.state.volumeAverage = 200
         this.kaleidosync.paint(args)
         break
       case 'wavesync':
-        this.sync.state.volumeSmoothing = 60
-        this.sync.state.volumeAverage = 400
+        this.sync.state.volumeSmoothing = 80
+        this.sync.state.volumeAverage = 600
         this.wavesync.paint(args)
         break
       case 'blobs':

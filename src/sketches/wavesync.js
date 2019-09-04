@@ -38,6 +38,20 @@ export default class WaveSync extends Visualizer {
 
     this.easing = 'easeInOutQuint'
     
+    this.sync.registerQueue({
+      name: 'wavesync-beat',
+      totalSamples: 80,
+      smoothing: 30
+    })
+
+    this.sync.registerQueue({
+      name: 'wavesync-volume',
+      totalSamples: 150,
+      smoothing: 50
+    })
+
+
+  
     this.setGradients()
     this.setCtxParams()
     this.setScales()
@@ -114,7 +128,7 @@ export default class WaveSync extends Visualizer {
   paintOuterLines ({ ctx, width, height, now }) {
     const progress = ease(this.sync.beat.progress, this.easing)
     const base = (width > height) ? width / 10 : height / 10
-    const volume = this.sync.volume
+    const volume = this.sync.getVolumeQueue('wavesync-beat') //this.sync.volume
     const iAmp = interpolateBasis([volume * -base, volume * base, volume * -base]) 
     const amp = iAmp(progress) * this.radiusScale(this.sync.state.trackFeatures.energy) * .66
     const radius = (width > height) ? volume * height / 3 : volume * width / 3
@@ -131,7 +145,7 @@ export default class WaveSync extends Visualizer {
 
   paintInnerLines ({ ctx, width, height, now }) {
     const progress = ease(this.sync.bar.progress, this.easing)
-    const volume = this.sync.volume
+    const volume = this.sync.getVolumeQueue('wavesync-beat')//this.sync.volume
     const amp = interpolateBasis([volume * (height / 5), volume * (height / 5)])(progress)
     const radius = (width > height) ? volume * height / 3 : volume * width / 3
     const x = ANGLE => (radius + amp * Math.sin(2.019 * (ANGLE + now/this.rotationScale(this.sync.state.trackFeatures.energy) * 8))) * Math.cos(ANGLE) + width/2
@@ -147,7 +161,7 @@ export default class WaveSync extends Visualizer {
   paintCenter ({ ctx, width, height, now }) {
     const progress = ease(this.sync.beat.progress, this.easing)
     const base = (width < height) ? width / 5 : height / 5
-    const volume = this.sync.volume
+    const volume = this.sync.getVolumeQueue('wavesync-volume')//this.sync.volume
     const iAmp = interpolateBasis([volume * -base, volume * base, volume * -base]) 
     const amp = iAmp(progress) * this.radiusScale(this.sync.state.trackFeatures.energy) 
     const radius = (width > height) ? volume * height / 3 : volume * width / 3

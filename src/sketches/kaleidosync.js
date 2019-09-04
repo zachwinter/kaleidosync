@@ -2,7 +2,7 @@ import Visualizer from '@/util/visualizer'
 import { getRandomElement } from '../util/array'
 import Observe from '../util/observe'
 import { createStar, drawShape } from '../util/canvas'
-import { interpolate } from 'd3-interpolate'
+import { interpolate, interpolateBasis } from 'd3-interpolate'
 import ease from '../util/easing'
 
 export default class Kaleidosync extends Visualizer {
@@ -32,6 +32,12 @@ export default class Kaleidosync extends Visualizer {
       negativeSpace: 20,
       stars: [],
       background: {} 
+    })
+
+    this.sync.registerQueue({
+      name: 'kaleidosync-beat',
+      totalSamples: 150,
+      smoothing: 80
     })
 
     this.setSizeParams()
@@ -275,6 +281,8 @@ export default class Kaleidosync extends Visualizer {
     const [r, g, b] = this.state.background.get()
     ctx.fillStyle = `rgb(${r},${g},${b})`
     ctx.fillRect(0, 0, width, height)
+
+    // const beat = this.sync.getVolumeQueue('kaleidosync-beat') // interpolateBasis([1, 1.5, 1])(ease(this.sync.beat.progress, 'linear'))
 
     for (let star of this.state.stars) {
       const inner = star.innerRadius.get()
