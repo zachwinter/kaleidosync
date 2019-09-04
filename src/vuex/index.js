@@ -39,11 +39,11 @@ export default new Vuex.Store({
     settingsVisible: false,
     hover: false,
     spinnerVisible: false,
-    slowerSpeed: false,
+    slowerSpeed: false, 
     color: 'rgba(0,0,0,.5)',
     colorScheme: {},
     currentlyPlaying: {},
-    selectedVisualizer: 'kaleidosync',
+    selectedVisualizer: 'trails',
     toast: {
       visible: false,
       message: '',

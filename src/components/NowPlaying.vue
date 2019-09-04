@@ -5,11 +5,9 @@
   transition(name="fade")
     div(:class="{ transitioning, initialized }" v-if="!settingsVisible && !toast.visible && !hideAll && (trackInfoVisible || alwaysShowTrackInfo)")
       span.name
-        //- i(:style="{ backgroundColor: color, transition: `background ${colorTransitionDuration}ms, transform ${colorTransitionDuration}ms` }" ref="nameBar")
         span(v-if="name" :style="{ transition: `opacity ${colorTransitionDuration}ms` }") {{ name }}
       br
       span.artist
-        //- i(:style="{ backgroundColor: color, transition: `background ${colorTransitionDuration}ms, transform ${colorTransitionDuration}ms` }" ref="artistBar")
         span(v-if="artist" :style="{ transition: `opacity ${colorTransitionDuration}ms` }") {{ artist }}
 </template>
 

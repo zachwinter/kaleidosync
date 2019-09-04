@@ -7,7 +7,7 @@ export default class Sketch {
     container = document.body,
     width = window.innerWidth,
     height = window.innerHeight,
-    hidpi = true,
+    hidpi = null,
     fill = null,
     name,
   } = {}) {
@@ -15,6 +15,7 @@ export default class Sketch {
     this.width = width
     this.height = height
     this.hidpi = hidpi
+    this.dpi = hidpi ? Math.min(hidpi, 2) : 1
     this.active = false
     this.queue = []
     this.fill = fill
@@ -51,16 +52,16 @@ export default class Sketch {
     }
   }
 
-  setSize (hidpi = null) {
-    const dpi = (hidpi !== null ? hidpi : this.hidpi) ? Math.min(window.devicePixelRatio, 2) : 1
-    this.canvas.width = this.width * dpi
-    this.canvas.height = this.height * dpi
+  setSize (hidpi = false) {
+    this.dpi = hidpi ? Math.min(window.devicePixelRatio, 2) : 1
+    this.canvas.width = this.width * this.dpi
+    this.canvas.height = this.height * this.dpi
     this.canvas.style.width = this.width + 'px'
     this.canvas.style.height = this.height + 'px'
-    this.offscreenCanvas.width = this.width * dpi
-    this.offscreenCanvas.height = this.height * dpi
-    this.ctx.scale(dpi, dpi) 
-    this.offscreenCtx.scale(dpi, dpi)
+    this.offscreenCanvas.width = this.width * this.dpi
+    this.offscreenCanvas.height = this.height * this.dpi
+    this.ctx.scale(this.dpi , this.dpi) 
+    this.offscreenCtx.scale(this.dpi, this.dpi)
   }
   
   /**

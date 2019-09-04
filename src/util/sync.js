@@ -2,7 +2,7 @@ import Observe from '../util/observe'
 import * as cookies from '../util/cookie'
 import { get } from '../util/network'
 import { interpolateNumber } from 'd3-interpolate'
-import { scaleLog } from 'd3-scale'
+import { scaleLog, scaleLinear } from 'd3-scale'
 import { min, max } from 'd3-array'
 import { average } from '../util/array'
 import { pause } from '../util/timing'
@@ -163,7 +163,7 @@ export default class Sync {
     } catch (e) {
       if (this.$store) {
         this.$store.dispatch('toast', {
-          message: 'Something went wrong. Reconnecting...'
+          message: 'One moment please...'
         })
 
         await pause(2000)
@@ -196,6 +196,16 @@ export default class Sync {
       if (status === 401) {
         return this.getNewToken()
       }
+
+      if (this.$store) {
+        this.$store.dispatch('toast', {
+          message: 'One moment please...'
+        })
+
+        await pause(2000)
+      }
+
+      auth(this.$store)
     }
   }
 
@@ -246,6 +256,7 @@ export default class Sync {
     this.state.trackProgress = Date.now() - data.timestamp
     this.state.initialStart = window.performance.now()
     this.state.loadingNextSong = false
+    this.resetVolumeQueues()
     
     if (this.state.initialized === false) {
       requestAnimationFrame(this.tick.bind(this))
@@ -399,7 +410,7 @@ export default class Sync {
       queue.average = average(queue.values)
       queue.min = min(queue.values)
       queue.max = max(queue.values)
-      const sizeScale = scaleLog()
+      const sizeScale = scaleLinear()
         .domain([queue.min, queue.mode === 'average' ? queue.average : queue.max])
       const latest = average(queue.values.slice(0, queue.smoothing))
       queue.volume = sizeScale(latest)
@@ -408,6 +419,16 @@ export default class Sync {
 
   getVolumeQueue (name) {
     return this.state.volumeQueues[name].volume
+  }
+
+  resetVolumeQueues () {
+    for (let key in this.state.volumeQueues) {
+      const queue = this.state.volumeQueues[key]
+      queue.volume = .5
+      queue.average = .5
+      queue.min= 0
+      queue.max = 1
+    }
   }
 
   /**
