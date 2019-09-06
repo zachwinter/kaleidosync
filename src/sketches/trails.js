@@ -39,7 +39,7 @@ export default class Trails extends Visualizer {
     this.sync.registerQueue({
       name: 'trails-volume',
       totalSamples: 70,
-      smoothing: 15
+      smoothing: 20
     })
 
     this.sync.registerQueue({
