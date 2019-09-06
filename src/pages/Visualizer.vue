@@ -8,6 +8,8 @@
     Spinner(v-if="spinnerVisible")
   transition(name="fadey")
     Toast(v-if="toast.visible")
+  //- transition(name="fade")
+  //-   TrailsGUI(v-if="selectedVisualizer === 'trails'")
 </template>
 
 <script>
@@ -18,8 +20,8 @@ import Spinner from '@/components/Spinner'
 import Toast from '@/components/Toast'
 import Buttons from '@/components/Buttons'
 import Header from '@/components/Header'
-
-import enums from '@/enums'
+import VISUALIZERS from '@/enums'
+import TrailsGUI from '@/components/TrailsGUI'
 import {
   SET_SPINNER_VISIBLE,
   SET_TOAST_VISIBLE,
@@ -34,10 +36,11 @@ export default {
     Spinner,
     Toast,
     Buttons,
-    Header
+    Header,
+    TrailsGUI
   },
   computed: {
-    ...mapState(['menuVisible', 'spinnerVisible', 'toast', 'selectedVisualizer'])
+    ...mapState(['menuVisible', 'spinnerVisible', 'hover', 'toast', 'selectedVisualizer']),
   },
   watch: {
     selectedVisualizer (val) {
@@ -123,7 +126,7 @@ export default {
         eventCategory: 'visualizer',
         eventAction: 'mounted',
         eventLabel: this.selectedVisualizer,
-        eventValue: enums[this.selectedVisualizer]
+        eventValue: VISUALIZERS[this.selectedVisualizer.toUppercase()].id
       })
     }
   },

@@ -3,17 +3,19 @@ import Vuex from 'vuex'
 import VuexPersistence from 'vuex-persist'
 import Actions from './actions'
 import Mutations from './mutations'
+import { TRAILS } from '../enums'
 
 Vue.use(Vuex)
 
 const { plugin } = new VuexPersistence({
   storage: window.localStorage,
   key: 'kaleidosync-persist',
-  reducer ({ alwaysShowAlbumArt, alwaysShowTrackInfo, selectedVisualizer }) {
+  reducer ({ alwaysShowAlbumArt, alwaysShowTrackInfo, selectedVisualizer, saved }) {
     return {
       alwaysShowAlbumArt,
       alwaysShowTrackInfo,
-      selectedVisualizer
+      selectedVisualizer,
+      saved
     }
   }
 })
@@ -48,7 +50,14 @@ export default new Vuex.Store({
       visible: false,
       message: '',
       autohide: true
-    }
+    },
+    visualizers: {
+      trails: { ...TRAILS.settings }
+    },
+    saved: [{
+      name: 'Default',
+      state: { ...TRAILS.settings }
+    }]
   },
   mutations: Mutations,
   actions: Actions,

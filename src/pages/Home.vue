@@ -14,7 +14,7 @@ div.home(:class="{ hide: hidePage }")
       span(data-letter="10") n
       span(data-letter="11") c
     div.text
-      h2 a collection of Spotify visualizers
+      h2 a Spotify visualizer
       noscript Please enable JavaScript before logging in.
       .buttons
         button(@click="login")
@@ -89,16 +89,18 @@ $splash-hide-duration: 300ms;
 }
 
 h1 {
-  @include scale(font-size 170px 56px, line-height 120px 56px);
+  @include scale(font-size 220px 72px, line-height 150px 50px);
   font-family: 'Gochi Hand', cursive;
   font-weight: 400;
+  letter-spacing: -.1em;
   
   span { display: inline-block; }
 }
 
 h2 {
-  @include scale(font-size 24px 16px, line-height 24px 16px);
+  @include scale(font-size 32px 16px, line-height 24px 16px);
   transition: transform $splash-hide-duration $bounce-easing, opacity $splash-hide-duration $bounce-easing;
+  opacity: .3;
 }
 
 .buttons {
