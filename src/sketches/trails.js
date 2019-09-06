@@ -1,7 +1,18 @@
 import Visualizer from '../util/visualizer'
 import { growingLine, polygon } from '../util/canvas'
 import { interpolateBasis, interpolateRgbBasis } from 'd3-interpolate'
+import { scaleLinear } from 'd3-scale'
 import ease from '../util/easing'
+import {
+  TRAILS_SET_ROTATION_CONSTANT, 
+  TRAILS_SET_SIDES, 
+  TRAILS_SET_TRAIL_LENGTH,
+  TRAILS_SET_WIDTH_CONSTANT,
+  TRAILS_SET_GLOW_WIDTH,
+  TRAILS_SET_SMEAR,
+  TRAILS_SET_ROTATION_MULTIPLIER
+} from '../vuex/mutation-types'
+import { TRAILS } from '../enums'
 
 export default class Trails extends Visualizer {
   constructor (args) {
@@ -13,21 +24,22 @@ export default class Trails extends Visualizer {
       name: 'trails'
     }, args))
 
-    this.SIDES = 6
-    this.TRAIL_LENGTH = 20
-    this.ROTATION_CONSTANT = 12
-    this.BEAT_AMPLITUDE_CONSTANT = 2
-    this.SHADOW_BLUR_SIZE = 40
+    this.SIDES = TRAILS.settings.SIDES.INITIAL
+    this.TRAIL_LENGTH = TRAILS.settings.TRAIL_LENGTH.INITIAL
+    this.ROTATION_CONSTANT = TRAILS.settings.ROTATION_CONSTANT.INITIAL
+    this.ROTATION_MULTIPLIER = TRAILS.settings.ROTATION_MULTIPLIER.INITIAL
+    this.BEAT_AMPLITUDE_CONSTANT = 3
+    this.GLOW_WIDTH = TRAILS.settings.GLOW_WIDTH.INITIAL
     this.OUTER_RADIUS = 300
     this.INNER_RADIUS = 100
-    this.WIDTH_CONSTANT = 30
-    this.FILL = 'rgba(12, 8, 50, .4)'
+    this.WIDTH_CONSTANT = TRAILS.settings.WIDTH_CONSTANT.INITIAL
+    this.FILL = `rgba(12, 8, 50, ${TRAILS.settings.SMEAR.INITIAL})`
     this.THEME = ['#FF61E0', '#61E3FF', '#FF61E0']
 
     this.sync.registerQueue({
       name: 'trails-volume',
       totalSamples: 70,
-      smoothing: 30
+      smoothing: 15
     })
 
     this.sync.registerQueue({
@@ -37,6 +49,7 @@ export default class Trails extends Visualizer {
     })
 
     this.initModel()
+    this.subscribe()
   }
 
   initModel () {
@@ -46,6 +59,38 @@ export default class Trails extends Visualizer {
       this[bucket] = []
       for (let i = 0; i < this.SIDES; i++) {
         this[bucket].push([])
+      }
+    })
+  }
+
+  subscribe () {
+    this.sync.$store.subscribe(({ type, payload }) => {
+      switch (type) {
+        case TRAILS_SET_SIDES:
+          this.SIDES = payload
+          this.initModel()
+          break
+        case TRAILS_SET_TRAIL_LENGTH:
+          this.TRAIL_LENGTH = payload
+          this.initModel()
+          break
+        case TRAILS_SET_ROTATION_CONSTANT:
+          this.ROTATION_CONSTANT = payload
+          break
+        case TRAILS_SET_ROTATION_MULTIPLIER:
+          this.ROTATION_MULTIPLIER = payload
+          break
+        case TRAILS_SET_WIDTH_CONSTANT:
+          this.WIDTH_CONSTANT = payload
+          break
+        case TRAILS_SET_GLOW_WIDTH:
+          this.GLOW_WIDTH = payload
+          break
+        case TRAILS_SET_SMEAR:
+          this.FILL = `rgba(12, 8, 50, ${scaleLinear([0, 1], [1, 0])(payload)})`
+          break
+        default:
+          return
       }
     })
   }
@@ -79,17 +124,18 @@ export default class Trails extends Visualizer {
   group ({ offscreen, width, height, now, smallest }, { radius, name, rotation, multi1, multi2 }) {
     const volume = (radius * Math.pow(this.sync.getVolumeQueue('trails-volume'), multi1))
     const beat = volume/this.BEAT_AMPLITUDE_CONSTANT * Math.pow(this.sync.getVolumeQueue('trails-beat'), multi2) 
-    const finalRadius = volume + beat
-    const vertices = polygon(this.SIDES, finalRadius, width/2, height/2, now/this.ROTATION_CONSTANT*rotation)
+    const finalRadius = (volume + beat)
+    const _rotation = interpolateBasis([this.ROTATION_CONSTANT, this.ROTATION_CONSTANT * this.ROTATION_MULTIPLIER, this.ROTATION_CONSTANT])(ease(this.sync.bar.progress, 'easeInOutQuint'))
+    const vertices = polygon(this.SIDES, finalRadius, width/2, height/2, now/_rotation*rotation)
     this.updateModel(vertices, name)
     for (let i = this[name].length - 1; i >= 0; i--) {
-      this.drawLine(offscreen, this[name][i], (smallest/this.WIDTH_CONSTANT) * this.sync.getVolumeQueue('trails-volume'))
+      this.drawLine(offscreen, this[name][i], (smallest*this.WIDTH_CONSTANT) * this.sync.getVolumeQueue('trails-volume'))
     }
   }
 
   applyOffscreen ({ ctx, offscreen, width, height }) {
     ctx.save()
-    ctx.shadowBlur = this.SHADOW_BLUR_SIZE * this.sync.getVolumeQueue('trails-volume')
+    ctx.shadowBlur = this.GLOW_WIDTH * this.sync.getVolumeQueue('trails-volume')
     ctx.shadowColor = interpolateRgbBasis(this.THEME)(ease(this.sync.bar.progress, 'linear'))
     ctx.globalCompositeOperation = 'lighter'
     ctx.drawImage(offscreen.canvas, 0, 0, width, height)
@@ -103,8 +149,8 @@ export default class Trails extends Visualizer {
     this.clear(args)
     this.group(args, { radius: this.OUTER_RADIUS, name: '_01', rotation:  1, multi1: 2, multi2: 1 })
     this.group(args, { radius: this.OUTER_RADIUS, name: '_02', rotation: -1, multi1: 2, multi2: 1 })
-    this.group(args, { radius: this.INNER_RADIUS, name: '_03', rotation:  1, multi1: 1, multi2: 1 })
-    this.group(args, { radius: this.INNER_RADIUS, name: '_04', rotation: -1, multi1: 1, multi2: 1 })
+    this.group(args, { radius: this.INNER_RADIUS, name: '_03', rotation:  1, multi1: 4, multi2: 1 })
+    this.group(args, { radius: this.INNER_RADIUS, name: '_04', rotation: -1, multi1: 4, multi2: 1 })
     this.applyOffscreen(args)
   }
 } 

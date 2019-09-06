@@ -12,7 +12,15 @@ import {
   SET_CURRENTLY_PLAYING,
   SET_HIDE_ALL,
   SET_HOVER_TIMEOUT,
-  SET_TOAST_MESSAGE
+  SET_TOAST_MESSAGE,
+  TRAILS_SET_WIDTH_CONSTANT,
+  TRAILS_SET_TRAIL_LENGTH,
+  TRAILS_SET_SIDES,
+  TRAILS_SET_ROTATION_CONSTANT,
+  TRAILS_SET_GLOW_WIDTH,
+  TRAILS_SET_SMEAR,
+  TRAILS_SAVE_STATE,
+  TRAILS_SET_ROTATION_MULTIPLIER
 } from './mutation-types'
 
 export default {
@@ -64,5 +72,29 @@ export default {
   },
   [SET_VISUALIZER] (state, val) {
     state.selectedVisualizer = val
+  },
+  [TRAILS_SET_SIDES] (state, val) {
+    state.visualizers.trails.SIDES.VALUE = val
+  },
+  [TRAILS_SET_TRAIL_LENGTH] (state, val) {
+    state.visualizers.trails.TRAIL_LENGTH.VALUE = val
+  },
+  [TRAILS_SET_GLOW_WIDTH] (state, val) {
+    state.visualizers.trails.GLOW_WIDTH.VALUE = val
+  },
+  [TRAILS_SET_WIDTH_CONSTANT] (state, val) {
+    state.visualizers.trails.WIDTH_CONSTANT.VALUE = val
+  },
+  [TRAILS_SET_ROTATION_CONSTANT] (state, val) {
+    state.visualizers.trails.ROTATION_CONSTANT.VALUE = val
+  },
+  [TRAILS_SET_SMEAR] (state, val) {
+    state.visualizers.trails.SMEAR.VALUE = val
+  },
+  [TRAILS_SAVE_STATE] (state, val) {
+    state.saved.push(val)
+  },
+  [TRAILS_SET_ROTATION_MULTIPLIER] (state, val) {
+    state.visualizers.trails.ROTATION_MULTIPLIER.VALUE = val
   }
 }

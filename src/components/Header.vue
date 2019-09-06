@@ -14,7 +14,7 @@ header
 import { mapState } from 'vuex'
 import Settings from '@/components/Settings'
 import Check from './Check'
-import enums from '@/enums'
+import VISUALIZERS from '@/enums'
 import { SET_VISUALIZER } from '@/vuex/mutation-types'
 
 export default {
@@ -34,7 +34,7 @@ export default {
           eventCategory: 'visualizer',
           eventAction: 'selected',
           eventLabel: name,
-          eventValue: enums[name]
+          eventValue: VISUALIZERS[name.toUppercase()].id
         })
       }
     }
@@ -66,6 +66,10 @@ header {
 h1 {
   @include gochi;
   @include scale(margin-left 30px 0px);
+  text-transform: none;
+  letter-spacing: -.1em;
+  font-size: 42px;
+  font-weight: 400;
 
   @include max-width(header) {
     line-height: 40px;
