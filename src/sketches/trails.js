@@ -24,7 +24,6 @@ export default class Trails extends Visualizer {
       name: 'trails'
     }, args))
 
-    const side = Math.min(window.innerHeight, window.outerHeight)
     
     this.SIDES = TRAILS.settings.SIDES.INITIAL
     this.TRAIL_LENGTH = TRAILS.settings.TRAIL_LENGTH.INITIAL
@@ -32,8 +31,15 @@ export default class Trails extends Visualizer {
     this.ROTATION_MULTIPLIER = TRAILS.settings.ROTATION_MULTIPLIER.INITIAL
     this.BEAT_AMPLITUDE_CONSTANT = 5
     this.GLOW_WIDTH = TRAILS.settings.GLOW_WIDTH.INITIAL
-    this.OUTER_RADIUS = side/2
-    this.INNER_RADIUS = side/4
+
+    const setRadius = () => {
+      const side = Math.min(window.innerHeight, window.innerWidth)
+      this.OUTER_RADIUS = side/2
+      this.INNER_RADIUS = side/4
+    }
+
+    setRadius()
+
     this.WIDTH_CONSTANT = TRAILS.settings.WIDTH_CONSTANT.INITIAL
     this.FILL = `rgba(12, 8, 50, ${TRAILS.settings.SMEAR.INITIAL})`
     this.THEME = ['#FF61E0', '#61E3FF', '#FF61E0']
@@ -52,6 +58,8 @@ export default class Trails extends Visualizer {
 
     this.initModel()
     this.subscribe()
+    
+    window.addEventListener('resize', setRadius)
   }
 
   initModel () {

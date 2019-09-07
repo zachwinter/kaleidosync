@@ -36,8 +36,8 @@ export const TRAILS = {
     ROTATION_MULTIPLIER: {
       MIN: 1,
       MAX: 2,
-      INITIAL: 1.1,
-      VALUE: 1.1,
+      INITIAL: 1.05,
+      VALUE: 1.05,
       STEP: .1
     },
     WIDTH_CONSTANT: {
