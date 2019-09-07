@@ -1,27 +1,27 @@
 <template lang="pug">
 .trails-gui
-  form(@submit.prevent)
+  form(@submit.prevent )
     label
       span Sides
-      input(type="range" :min="minSides" :max="maxSides" v-model="sides")
+      input(type="range" :min="minSides" :max="maxSides" v-model="sides" @input="hover")
     label
       span Trail Length
-      input(type="range" :min="minTrailLength" :max="maxTrailLength" v-model="trailLength")
+      input(type="range" :min="minTrailLength" :max="maxTrailLength" v-model="trailLength" @input="hover")
     label
       span Width
-      input(type="range" :min="minWidthConstant" :max="maxWidthConstant" step=".001" v-model="widthConstant")
+      input(type="range" :min="minWidthConstant" :max="maxWidthConstant" step=".001" v-model="widthConstant" @input="hover")
     label
       span Glow
-      input(type="range" :min="minGlowWidth" :max="maxGlowWidth" v-model="glowWidth")
+      input(type="range" :min="minGlowWidth" :max="maxGlowWidth" v-model="glowWidth" @input="hover")
     label
       span Base Rotation
-      input(type="range" :min="minBaseRotation" :max="maxBaseRotation" step=".001" v-model="baseRotation")
+      input(type="range" :min="minBaseRotation" :max="maxBaseRotation" step=".001" v-model="baseRotation" @input="hover")
     label
       span Flux Rotation
-      input(type="range" :min="minFluxRotation" :max="maxFluxRotation" step=".001" v-model="fluxRotation")
+      input(type="range" :min="minFluxRotation" :max="maxFluxRotation" step=".001" v-model="fluxRotation" @input="hover")
     label
       span Smear
-      input(type="range" :min="minSmear" :max="maxSmear" step=".05" v-model="smear")
+      input(type="range" :min="minSmear" :max="maxSmear" step=".05" v-model="smear" @input="hover")
     button(@click="reset") Reset
 </template>
 
@@ -123,6 +123,9 @@ export default {
   methods: {
     reset () {
       this.$store.dispatch('reset')
+    },
+    hover () {
+      this.$store.dispatch('hover')
     }
   }
 }
@@ -130,7 +133,7 @@ export default {
 
 <style lang="scss" scoped>
 .trails-gui {
-  @include position(fixed, null null 30px 30px);
+  @include position(fixed, 30px 30px null null);
   @include share;
   z-index: 99999;
   color: white;
@@ -172,20 +175,20 @@ input[type="text"] {
 
 input[type=range] {
   -webkit-appearance: none; 
-  width: 150px; 
+  width: 100px; 
   background: transparent; 
 }
 
 input[type=range]::-webkit-slider-thumb {
   @include size(20px);
   -webkit-appearance: none;
-  background: $white;
+  background: $blue;
   border-radius: 100%;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
   @include size(100%, 20px);
-  background: $blue;
+  background: $white;
   color: $blue;
   border-radius: 20px;
 }
