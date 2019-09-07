@@ -25,12 +25,12 @@ export default class Trails extends Visualizer {
     }, args))
 
     
-    this.SIDES = TRAILS.settings.SIDES.INITIAL
-    this.TRAIL_LENGTH = TRAILS.settings.TRAIL_LENGTH.INITIAL
-    this.ROTATION_CONSTANT = TRAILS.settings.ROTATION_CONSTANT.INITIAL
-    this.ROTATION_MULTIPLIER = TRAILS.settings.ROTATION_MULTIPLIER.INITIAL
+    this.SIDES = this.sync.$store.state.visualizers.trails.SIDES.VALUE
+    this.TRAIL_LENGTH = this.sync.$store.state.visualizers.trails.TRAIL_LENGTH.VALUE
+    this.ROTATION_CONSTANT = this.sync.$store.state.visualizers.trails.ROTATION_CONSTANT.VALUE
+    this.ROTATION_MULTIPLIER = this.sync.$store.state.visualizers.trails.ROTATION_MULTIPLIER.VALUE
     this.BEAT_AMPLITUDE_CONSTANT = 5
-    this.GLOW_WIDTH = TRAILS.settings.GLOW_WIDTH.INITIAL
+    this.GLOW_WIDTH = this.sync.$store.state.visualizers.trails.GLOW_WIDTH.VALUE
 
     const setRadius = () => {
       const side = Math.min(window.innerHeight, window.innerWidth)
@@ -40,8 +40,8 @@ export default class Trails extends Visualizer {
 
     setRadius()
 
-    this.WIDTH_CONSTANT = TRAILS.settings.WIDTH_CONSTANT.INITIAL
-    this.FILL = `rgba(12, 8, 50, ${TRAILS.settings.SMEAR.INITIAL})`
+    this.WIDTH_CONSTANT = this.sync.$store.state.visualizers.trails.WIDTH_CONSTANT.VALUE
+    this.FILL = `rgba(12, 8, 50, ${this.sync.$store.state.visualizers.trails.SMEAR.VALUE})`
     this.THEME = ['#FF61E0', '#61E3FF', '#FF61E0']
 
     this.sync.registerQueue({

@@ -10,12 +10,12 @@ Vue.use(Vuex)
 const { plugin } = new VuexPersistence({
   storage: window.localStorage,
   key: 'kaleidosync-persist',
-  reducer ({ alwaysShowAlbumArt, alwaysShowTrackInfo, selectedVisualizer, saved }) {
+  reducer ({ alwaysShowAlbumArt, alwaysShowTrackInfo, selectedVisualizer, visualizers }) {
     return {
       alwaysShowAlbumArt,
       alwaysShowTrackInfo,
       selectedVisualizer,
-      saved
+      visualizers
     }
   }
 })
