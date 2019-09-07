@@ -34,7 +34,7 @@ export default {
           eventCategory: 'visualizer',
           eventAction: 'selected',
           eventLabel: name,
-          eventValue: VISUALIZERS[name.toUppercase()].id
+          eventValue: VISUALIZERS[name.toUpperCase()].id
         })
       }
     }
