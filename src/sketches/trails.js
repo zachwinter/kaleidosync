@@ -24,21 +24,23 @@ export default class Trails extends Visualizer {
       name: 'trails'
     }, args))
 
+    const side = Math.min(window.innerHeight, window.outerHeight)
+    
     this.SIDES = TRAILS.settings.SIDES.INITIAL
     this.TRAIL_LENGTH = TRAILS.settings.TRAIL_LENGTH.INITIAL
     this.ROTATION_CONSTANT = TRAILS.settings.ROTATION_CONSTANT.INITIAL
     this.ROTATION_MULTIPLIER = TRAILS.settings.ROTATION_MULTIPLIER.INITIAL
-    this.BEAT_AMPLITUDE_CONSTANT = 3
+    this.BEAT_AMPLITUDE_CONSTANT = 5
     this.GLOW_WIDTH = TRAILS.settings.GLOW_WIDTH.INITIAL
-    this.OUTER_RADIUS = 300
-    this.INNER_RADIUS = 100
+    this.OUTER_RADIUS = side/2
+    this.INNER_RADIUS = side/4
     this.WIDTH_CONSTANT = TRAILS.settings.WIDTH_CONSTANT.INITIAL
     this.FILL = `rgba(12, 8, 50, ${TRAILS.settings.SMEAR.INITIAL})`
     this.THEME = ['#FF61E0', '#61E3FF', '#FF61E0']
 
     this.sync.registerQueue({
       name: 'trails-volume',
-      totalSamples: 70,
+      totalSamples: 200,
       smoothing: 20
     })
 
@@ -149,8 +151,8 @@ export default class Trails extends Visualizer {
     this.clear(args)
     this.group(args, { radius: this.OUTER_RADIUS, name: '_01', rotation:  1, multi1: 2, multi2: 1 })
     this.group(args, { radius: this.OUTER_RADIUS, name: '_02', rotation: -1, multi1: 2, multi2: 1 })
-    this.group(args, { radius: this.INNER_RADIUS, name: '_03', rotation:  1, multi1: 4, multi2: 1 })
-    this.group(args, { radius: this.INNER_RADIUS, name: '_04', rotation: -1, multi1: 4, multi2: 1 })
+    this.group(args, { radius: this.INNER_RADIUS, name: '_03', rotation:  1, multi1: 2, multi2: 2 })
+    this.group(args, { radius: this.INNER_RADIUS, name: '_04', rotation: -1, multi1: 2, multi2: 2 })
     this.applyOffscreen(args)
   }
 } 

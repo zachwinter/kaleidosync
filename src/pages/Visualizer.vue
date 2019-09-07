@@ -99,35 +99,39 @@ export default {
     }
   },
   mounted () {
-    const canvas = document.getElementsByTagName('canvas')[0]
+    try {
+      const canvas = document.getElementsByTagName('canvas')[0]
 
-    if (canvas) {
-      canvas.remove()
-    } 
+      if (canvas) {
+        canvas.remove()
+      } 
 
-    this.multiviz = new MultiViz(this.$store)
+      this.multiviz = new MultiViz(this.$store)
 
-    this.$store.dispatch('toast', {
-      message: 'Connecting to Spotify'
-    })
-
-    this.setVisualizerSize(this.selectedVisualizer)
-
-    window.addEventListener('resize', () => {
-      this.setVisualizerSize(this.selectedVisualizer)
-    })
-
-    this.watchers()
-
-    if (this.$ga) {
-      this.$ga.page('/visualizer')
-
-      this.$ga.event({
-        eventCategory: 'visualizer',
-        eventAction: 'mounted',
-        eventLabel: this.selectedVisualizer,
-        eventValue: VISUALIZERS[this.selectedVisualizer.toUppercase()].id
+      this.$store.dispatch('toast', {
+        message: 'Connecting to Spotify'
       })
+
+      this.setVisualizerSize(this.selectedVisualizer)
+
+      window.addEventListener('resize', () => {
+        this.setVisualizerSize(this.selectedVisualizer)
+      })
+
+      this.watchers()
+
+      if (this.$ga) {
+        this.$ga.page('/visualizer')
+
+        this.$ga.event({
+          eventCategory: 'visualizer',
+          eventAction: 'mounted',
+          eventLabel: this.selectedVisualizer,
+          eventValue: VISUALIZERS[this.selectedVisualizer.toUpperCase()].id
+        })
+      }
+    } catch (e) {
+      console.log(e)
     }
   },
   beforeMount () {
