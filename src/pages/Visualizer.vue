@@ -8,8 +8,8 @@
     Spinner(v-if="spinnerVisible")
   transition(name="fadey")
     Toast(v-if="toast.visible")
-  //- transition(name="fade")
-  //-   TrailsGUI(v-if="selectedVisualizer === 'trails'")
+  transition(name="fadeyn")
+    TrailsGUI(v-if="selectedVisualizer === 'trails' && hover && !menuVisible")
 </template>
 
 <script>
