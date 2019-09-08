@@ -3,25 +3,25 @@
   form(@submit.prevent )
     label
       span Sides
-      input(type="range" :min="minSides" :max="maxSides" v-model="sides" @input="hover")
+      input(type="range" :min="minSides" :max="maxSides" v-model="sides" :step="sidesStep" @input="hover")
     label
       span Trail Length
-      input(type="range" :min="minTrailLength" :max="maxTrailLength" v-model="trailLength" @input="hover")
+      input(type="range" :min="minTrailLength" :max="maxTrailLength" :step="trailLengthStep" v-model="trailLength" @input="hover")
     label
       span Width
-      input(type="range" :min="minWidthConstant" :max="maxWidthConstant" step=".001" v-model="widthConstant" @input="hover")
+      input(type="range" :min="minWidthConstant" :max="maxWidthConstant" :step="widthConstantStep" v-model="widthConstant" @input="hover")
     label
       span Glow
-      input(type="range" :min="minGlowWidth" :max="maxGlowWidth" v-model="glowWidth" @input="hover")
+      input(type="range" :min="minGlowWidth" :max="maxGlowWidth" :step="glowWidthStep" v-model="glowWidth" @input="hover")
     label
       span Base Rotation
-      input(type="range" :min="minBaseRotation" :max="maxBaseRotation" step=".001" v-model="baseRotation" @input="hover")
+      input(type="range" :min="minBaseRotation" :max="maxBaseRotation" :step="baseRotationStep" v-model="baseRotation" @input="hover")
     label
       span Flux Rotation
-      input(type="range" :min="minFluxRotation" :max="maxFluxRotation" step=".001" v-model="fluxRotation" @input="hover")
+      input(type="range" :min="minFluxRotation" :max="maxFluxRotation" :step="fluxRotationStep" v-model="fluxRotation" @input="hover")
     label
       span Smear
-      input(type="range" :min="minSmear" :max="maxSmear" step=".05" v-model="smear" @input="hover")
+      input(type="range" :min="minSmear" :max="maxSmear" :step="smearStep" v-model="smear" @input="hover")
     button(@click="reset") Reset
 </template>
 
@@ -48,18 +48,25 @@ export default {
     ...mapState({
       minSides: s => s.visualizers.trails.SIDES.MIN,
       maxSides: s => s.visualizers.trails.SIDES.MAX,
+      sidesStep: s => s.visualizers.trails.SIDES.STEP,
       minTrailLength: s => s.visualizers.trails.TRAIL_LENGTH.MIN,
       maxTrailLength: s => s.visualizers.trails.TRAIL_LENGTH.MAX,
+      trailLengthStep: s => s.visualizers.trails.TRAIL_LENGTH.STEP,
       minWidthConstant: s => s.visualizers.trails.WIDTH_CONSTANT.MIN,
       maxWidthConstant: s => s.visualizers.trails.WIDTH_CONSTANT.MAX,
+      widthConstantStep: s => s.visualizers.trails.WIDTH_CONSTANT.STEP,
       minGlowWidth: s => s.visualizers.trails.GLOW_WIDTH.MIN,
       maxGlowWidth: s => s.visualizers.trails.GLOW_WIDTH.MAX,
+      glowWidthStep: s => s.visualizers.trails.GLOW_WIDTH.STEP,
       minBaseRotation: s => s.visualizers.trails.ROTATION_CONSTANT.MIN,
       maxBaseRotation: s => s.visualizers.trails.ROTATION_CONSTANT.MAX,
+      baseRotationStep: s => s.visualizers.trails.ROTATION_CONSTANT.STEP,
       minFluxRotation: s => s.visualizers.trails.ROTATION_MULTIPLIER.MIN,
       maxFluxRotation: s => s.visualizers.trails.ROTATION_MULTIPLIER.MAX,
+      fluxRotationStep: s => s.visualizers.trails.ROTATION_MULTIPLIER.STEP,
       minSmear: s => s.visualizers.trails.SMEAR.MIN,
       maxSmear: s => s.visualizers.trails.SMEAR.MAX,
+      smearStep: s => s.visualizers.trails.SMEAR.STEP,
       saved: s => s.saved
     }),
 

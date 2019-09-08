@@ -52,15 +52,16 @@ export default {
     commit(TRAILS_SET_WIDTH_CONSTANT, randomNumber(TRAILS.settings.WIDTH_CONSTANT.MIN, TRAILS.settings.WIDTH_CONSTANT.MAX))
     commit(TRAILS_SET_GLOW_WIDTH, randomNumber(TRAILS.settings.GLOW_WIDTH.MIN, TRAILS.settings.GLOW_WIDTH.MAX))
     commit(TRAILS_SET_SMEAR, randomNumber(TRAILS.settings.SMEAR.MIN, TRAILS.settings.SMEAR.MAX))
+    commit(TRAILS_SET_ROTATION_MULTIPLIER, randomNumber(TRAILS.settings.ROTATION_MULTIPLIER.MIN, TRAILS.settings.ROTATION_MULTIPLIER.MAX))
   },
 
-  reset ({ commit }) {
-    commit(TRAILS_SET_SIDES, TRAILS.settings.SIDES.INITIAL)
-    commit(TRAILS_SET_TRAIL_LENGTH, TRAILS.settings.TRAIL_LENGTH.INITIAL)
-    commit(TRAILS_SET_ROTATION_CONSTANT, TRAILS.settings.ROTATION_CONSTANT.INITIAL)
-    commit(TRAILS_SET_WIDTH_CONSTANT, TRAILS.settings.WIDTH_CONSTANT.INITIAL)
-    commit(TRAILS_SET_GLOW_WIDTH, TRAILS.settings.GLOW_WIDTH.INITIAL)
-    commit(TRAILS_SET_SMEAR, TRAILS.settings.SMEAR.INITIAL)
-    commit(TRAILS_SET_ROTATION_MULTIPLIER, TRAILS.settings.ROTATION_MULTIPLIER.INITIAL)
+  reset ({ commit, state }) {
+    commit(TRAILS_SET_SIDES, state.visualizers.trails.SIDES.INITIAL)
+    commit(TRAILS_SET_TRAIL_LENGTH, state.visualizers.trails.TRAIL_LENGTH.INITIAL)
+    commit(TRAILS_SET_ROTATION_CONSTANT, state.visualizers.trails.ROTATION_CONSTANT.INITIAL)
+    commit(TRAILS_SET_WIDTH_CONSTANT, state.visualizers.trails.WIDTH_CONSTANT.INITIAL)
+    commit(TRAILS_SET_GLOW_WIDTH, state.visualizers.trails.GLOW_WIDTH.INITIAL)
+    commit(TRAILS_SET_SMEAR, state.visualizers.trails.SMEAR.INITIAL)
+    commit(TRAILS_SET_ROTATION_MULTIPLIER, state.visualizers.trails.ROTATION_MULTIPLIER.INITIAL)
   }
 }

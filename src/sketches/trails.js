@@ -12,36 +12,21 @@ import {
   TRAILS_SET_SMEAR,
   TRAILS_SET_ROTATION_MULTIPLIER
 } from '../vuex/mutation-types'
-import { TRAILS } from '../enums'
 
 export default class Trails extends Visualizer {
   constructor (args) {
-    super(Object.assign({ 
-      hidpi: true, 
-      parent: null, 
-      fixed: false,
-      volumeSmoothing: 30,
-      name: 'trails'
-    }, args))
+    super(Object.assign({ name: 'trails' }, args))
 
+    const $store = this.sync.$store.state.visualizers.trails
     
-    this.SIDES = this.sync.$store.state.visualizers.trails.SIDES.VALUE
-    this.TRAIL_LENGTH = this.sync.$store.state.visualizers.trails.TRAIL_LENGTH.VALUE
-    this.ROTATION_CONSTANT = this.sync.$store.state.visualizers.trails.ROTATION_CONSTANT.VALUE
-    this.ROTATION_MULTIPLIER = this.sync.$store.state.visualizers.trails.ROTATION_MULTIPLIER.VALUE
+    this.SIDES = $store.SIDES.VALUE
+    this.TRAIL_LENGTH = $store.TRAIL_LENGTH.VALUE
+    this.ROTATION_CONSTANT = $store.ROTATION_CONSTANT.VALUE
+    this.ROTATION_MULTIPLIER = $store.ROTATION_MULTIPLIER.VALUE
     this.BEAT_AMPLITUDE_CONSTANT = 5
-    this.GLOW_WIDTH = this.sync.$store.state.visualizers.trails.GLOW_WIDTH.VALUE
-
-    const setRadius = () => {
-      const side = Math.min(window.innerHeight, window.innerWidth)
-      this.OUTER_RADIUS = side/2
-      this.INNER_RADIUS = side/4
-    }
-
-    setRadius()
-
-    this.WIDTH_CONSTANT = this.sync.$store.state.visualizers.trails.WIDTH_CONSTANT.VALUE
-    this.FILL = `rgba(12, 8, 50, ${this.sync.$store.state.visualizers.trails.SMEAR.VALUE})`
+    this.GLOW_WIDTH = $store.GLOW_WIDTH.VALUE
+    this.WIDTH_CONSTANT = $store.WIDTH_CONSTANT.VALUE
+    this.FILL = `rgba(12, 8, 50, ${scaleLinear([0, 1], [1, 0])($store.SMEAR.VALUE)})`
     this.THEME = ['#FF61E0', '#61E3FF', '#FF61E0']
 
     this.sync.registerQueue({
@@ -56,10 +41,17 @@ export default class Trails extends Visualizer {
       smoothing: 1
     })
 
+    const setRadius = () => {
+      const side = Math.min(window.innerHeight, window.innerWidth)
+      this.OUTER_RADIUS = side/2
+      this.INNER_RADIUS = side/4
+    }
+
+    setRadius()
+    window.addEventListener('resize', setRadius)
+
     this.initModel()
     this.subscribe()
-    
-    window.addEventListener('resize', setRadius)
   }
 
   initModel () {
@@ -126,8 +118,9 @@ export default class Trails extends Visualizer {
     }
   }
 
-  clear ({ offscreen, width, height }) {
-    this.sketch.fill = this.FILL
+  clear ({ ctx, offscreen, width, height }) {
+    ctx.fillStyle = this.FILL
+    ctx.fillRect(0, 0, width, height)
     offscreen.clearRect(0, 0, width, height)
   }
 
