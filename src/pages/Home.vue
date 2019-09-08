@@ -50,11 +50,6 @@ export default {
       })
     } 
   },
-  async created () { 
-    const data = await fetch('https://api.github.com/users/zachwinter/repos').then(res => res.json())
-    const { stargazers_count } = data.find(d => d.id === 114038493)
-    this.stars = stargazers_count
-  },
   mounted () {
     if (this.$ga) {
       this.$ga.page('/')
@@ -74,18 +69,11 @@ $splash-hide-duration: 300ms;
 .splash {
   z-index: 100;
   position: relative;
-  // animation: fade-in 500ms ease-out forwards;
-  // animation-delay: 100ms;
-  // opacity: 0;
 }
 
 .home {
   @include position(fixed, 0 0 0 0);
   @include flex;
-}
-
-.text {
-  // @include position(absolute, null 0 0 0);
 }
 
 h1 {
@@ -176,33 +164,5 @@ button {
 
 .hide .github {
   animation: fade-out $splash-hide-duration forwards;
-}
-</style>
-
-<style lang="scss">
-$splash-hide-duration: 500ms;
-
-@keyframes fade-canvas {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes fadeout-canvas {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-$canvas-easing: 1400ms $bounce-easing forwards;
-
-canvas.fade {
-  @include position(fixed, 0 null null 0);
-  animation: fade-canvas $canvas-easing;
-  animation-delay: $splash-hide-duration;
-  opacity: 0;
-  z-index: 0;
-}
-
-canvas.fade-out {
-  animation: fadeout-canvas $canvas-easing;
 }
 </style>
