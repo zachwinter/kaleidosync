@@ -23,7 +23,7 @@ export default class Trails extends Visualizer {
     this.TRAIL_LENGTH = $store.TRAIL_LENGTH.VALUE
     this.ROTATION_CONSTANT = $store.ROTATION_CONSTANT.VALUE
     this.ROTATION_MULTIPLIER = $store.ROTATION_MULTIPLIER.VALUE
-    this.BEAT_AMPLITUDE_CONSTANT = 5
+    this.BEAT_AMPLITUDE_CONSTANT = 3
     this.GLOW_WIDTH = $store.GLOW_WIDTH.VALUE
     this.WIDTH_CONSTANT = $store.WIDTH_CONSTANT.VALUE
     this.FILL = `rgba(12, 8, 50, ${scaleLinear([0, 1], [1, 0])($store.SMEAR.VALUE)})`
@@ -31,8 +31,8 @@ export default class Trails extends Visualizer {
 
     this.sync.registerQueue({
       name: 'trails-volume',
-      totalSamples: 200,
-      smoothing: 20
+      totalSamples: 300,
+      smoothing: 30
     })
 
     this.sync.registerQueue({
@@ -118,9 +118,8 @@ export default class Trails extends Visualizer {
     }
   }
 
-  clear ({ ctx, offscreen, width, height }) {
-    ctx.fillStyle = this.FILL
-    ctx.fillRect(0, 0, width, height)
+  clear ({ offscreen, width, height }) {
+    this.sketch.fill = this.FILL
     offscreen.clearRect(0, 0, width, height)
   }
 
@@ -150,10 +149,10 @@ export default class Trails extends Visualizer {
 
   paint (args) {
     this.clear(args)
-    this.group(args, { radius: this.OUTER_RADIUS, name: '_01', rotation:  1, multi1: 2, multi2: 1 })
-    this.group(args, { radius: this.OUTER_RADIUS, name: '_02', rotation: -1, multi1: 2, multi2: 1 })
-    this.group(args, { radius: this.INNER_RADIUS, name: '_03', rotation:  1, multi1: 2, multi2: 2 })
-    this.group(args, { radius: this.INNER_RADIUS, name: '_04', rotation: -1, multi1: 2, multi2: 2 })
+    this.group(args, { radius: this.OUTER_RADIUS, name: '_01', rotation:  1, multi1: 1, multi2: 1 })
+    this.group(args, { radius: this.OUTER_RADIUS, name: '_02', rotation: -1, multi1: 1, multi2: 1 })
+    this.group(args, { radius: this.INNER_RADIUS, name: '_03', rotation:  1, multi1: 1, multi2: 2 })
+    this.group(args, { radius: this.INNER_RADIUS, name: '_04', rotation: -1, multi1: 1, multi2: 2 })
     this.applyOffscreen(args)
   }
 } 

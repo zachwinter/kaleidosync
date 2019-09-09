@@ -2,7 +2,7 @@ import Observe from '../util/observe'
 import * as cookies from '../util/cookie'
 import { get } from '../util/network'
 import { interpolateNumber } from 'd3-interpolate'
-import { scaleLog, scaleLinear, scalePow } from 'd3-scale'
+import { scaleLog, scaleLinear } from 'd3-scale'
 import { min, max } from 'd3-array'
 import { average } from '../util/array'
 import { pause } from '../util/timing'
@@ -412,6 +412,7 @@ export default class Sync {
       queue.max = max(queue.values)
       const sizeScale = scaleLinear()
         .domain([queue.min, queue.mode === 'average' ? queue.average : queue.max])
+
       const latest = average(queue.values.slice(0, queue.smoothing))
       queue.volume = sizeScale(latest)
     }
@@ -426,8 +427,9 @@ export default class Sync {
       const queue = this.state.volumeQueues[key]
       queue.volume = .5
       queue.average = .5
-      queue.min= 0
+      queue.min = 0
       queue.max = 1
+      queue.values = [0, 1]
     }
   }
 
