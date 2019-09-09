@@ -2,7 +2,7 @@ import Visualizer from '@/util/visualizer'
 import { getRandomElement } from '../util/array'
 import Observe from '../util/observe'
 import { createStar, drawShape } from '../util/canvas'
-import { interpolate, interpolateBasis } from 'd3-interpolate'
+import { interpolate } from 'd3-interpolate'
 import ease from '../util/easing'
 
 export default class Kaleidosync extends Visualizer {

@@ -36,9 +36,7 @@ export default {
   data () {
     return {
       hideSplash: false,
-      hidePage: false,
-      stars: null,
-      starsLoaded: true
+      hidePage: false
     }
   },
   methods: {
