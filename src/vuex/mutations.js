@@ -20,7 +20,9 @@ import {
   TRAILS_SET_GLOW_WIDTH,
   TRAILS_SET_SMEAR,
   TRAILS_SAVE_STATE,
-  TRAILS_SET_ROTATION_MULTIPLIER
+  TRAILS_SET_ROTATION_MULTIPLIER,
+  TRAILS_SET_BACKGROUND_COLOR,
+  TRAILS_SET_GLOW_COLOR
 } from './mutation-types'
 
 export default {
@@ -96,5 +98,11 @@ export default {
   },
   [TRAILS_SET_ROTATION_MULTIPLIER] (state, val) {
     state.visualizers.trails.ROTATION_MULTIPLIER.VALUE = val
+  },
+  [TRAILS_SET_BACKGROUND_COLOR] (state, val) {
+    state.visualizers.trails.BACKGROUND_COLOR.VALUE = val
+  },
+  [TRAILS_SET_GLOW_COLOR] (state, val) {
+    state.visualizers.trails.GLOW_COLOR.VALUE = val
   }
 }
