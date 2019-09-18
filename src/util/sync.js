@@ -161,8 +161,6 @@ export default class Sync {
       }
       this.ping()
     } catch (e) {
-      console.log(e)
-      debugger
       if (this.$store) {
         this.$store.dispatch('toast', {
           message: 'Session expired. Logging back in...'
