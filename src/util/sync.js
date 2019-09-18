@@ -161,6 +161,8 @@ export default class Sync {
       }
       this.ping()
     } catch (e) {
+      console.log(e)
+      debugger
       if (this.$store) {
         this.$store.dispatch('toast', {
           message: 'Session expired. Logging back in...'
@@ -320,13 +322,13 @@ export default class Sync {
     const current = start + elapsed
   
     if (elapsed < loudness_max_time) {
-      const progress = Math.min(1, elapsed / loudness_max_time)
+      const progress = Math.max(Math.min(1, elapsed / loudness_max_time), 0)
       return interpolateNumber(loudness_start, loudness_max)(progress)
     } else {
       const _start = start + loudness_max_time
       const _elapsed = current - _start
       const _duration = duration - loudness_max_time
-      const progress = Math.min(1, _elapsed / _duration)
+      const progress = Math.max(Math.min(1, _elapsed / _duration), 0)
       return interpolateNumber(loudness_max, next)(progress)
     }
   }
@@ -401,6 +403,7 @@ export default class Sync {
   }
 
   processVolumeQueues (volume) {
+    // const volume = Math.pow(2, vol/6)
     for (let key in this.state.volumeQueues) {
       const queue = this.state.volumeQueues[key]
       queue.values.unshift(volume)
@@ -410,6 +413,7 @@ export default class Sync {
       queue.average = average(queue.values)
       queue.min = min(queue.values)
       queue.max = max(queue.values)
+
       const sizeScale = scaleLinear()
         .domain([queue.min, queue.mode === 'average' ? queue.average : queue.max])
 

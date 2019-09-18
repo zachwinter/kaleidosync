@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 const { plugin } = new VuexPersistence({
   storage: window.localStorage,
-  key: 'kaleidosync-persist',
+  key: 'kaleidosync-persist-v2',
   reducer ({ alwaysShowAlbumArt, alwaysShowTrackInfo, selectedVisualizer, visualizers }) {
     return {
       alwaysShowAlbumArt,
@@ -54,7 +54,7 @@ export default new Vuex.Store({
       trails: {
         SIDES: {
           MIN: 3,
-          MAX: 24,
+          MAX: 12,
           INITIAL: 6,
           VALUE: 6,
           STEP: 1
@@ -62,29 +62,29 @@ export default new Vuex.Store({
         TRAIL_LENGTH: {
           MIN: 7,
           MAX: 25,
-          INITIAL: 20,
-          VALUE: 20,
+          INITIAL: 17,
+          VALUE: 17,
           STEP: 1
         },
         ROTATION_CONSTANT: {
           MIN: 1,
           MAX: 15,
-          INITIAL: 12,
-          VALUE: 12,
+          INITIAL: 9.5,
+          VALUE: 9.5,
           STEP: .25
         },
         ROTATION_MULTIPLIER: {
           MIN: 1,
-          MAX: 1.2,
+          MAX: 1.1,
           INITIAL: 1,
           VALUE: 1,
           STEP: .001
         },
         WIDTH_CONSTANT: {
           MIN: .01,
-          MAX: .05,
-          INITIAL: .03,
-          VALUE: .03,
+          MAX: .1,
+          INITIAL: 0.09,
+          VALUE: 0.09,
           STEP: .001
         },
         GLOW_WIDTH: {
@@ -97,9 +97,17 @@ export default new Vuex.Store({
         SMEAR: {
           MIN: .1,
           MAX: .9,
-          INITIAL: .8,
-          VALUE: .8,
-          STEP: .05
+          INITIAL: 0.7,
+          VALUE: .7,
+          STEP: 0.05
+        },
+        BACKGROUND_COLOR: {
+          INITIAL: { rgba: { r: 12, g: 8, b: 50 } },
+          VALUE: { rgba: { r: 12, g: 8, b: 50 } }
+        },
+        GLOW_COLOR: {
+          INITIAL: { rgba: { r: 48, g: 153, b: 255 } },
+          VALUE: { rgba: { r: 48, g: 153, b: 255 } }
         }
       }
     }

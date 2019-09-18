@@ -13,15 +13,12 @@ header
 <script>
 import { mapState } from 'vuex'
 import Settings from '@/components/Settings'
-import Check from './Check'
+import Check from '@/assets/svg/check.svg'
 import VISUALIZERS from '@/enums'
 import { SET_VISUALIZER } from '@/vuex/mutation-types'
 
 export default {
-  components : {
-    Settings,
-    Check
-  },
+  components : { Check, Settings },
   computed: {
     ...mapState(['selectedVisualizer', 'alwaysShowAlbumArt', 'alwaysShowTrackInfo'])
   },
@@ -112,15 +109,10 @@ h2 {
   li {
     margin-right: 20px;
     transition: opacity 200ms ease-in-out;
-    // animation: fade-in 400ms $slide-easing forwards;
-    // opacity: 0;
-    // @include cascade;
 
     &:last-child { margin-right: 0; }
 
-    @include max-width(mobile) {
-      margin-bottom: 20px;
-    }
+    @include max-width(mobile) { margin-bottom: 20px; }
   }
 
   li span {
@@ -145,6 +137,4 @@ h2 {
 [data-selected="trails"] .trails { @extend %style; }
 [data-selected="wavesync"] .wavesync { @extend %style; }
 [data-selected="blobs"] .blobs { @extend %style; }
-[data-selected="purple"] .purple { @extend %style; }
-
 </style>

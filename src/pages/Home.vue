@@ -1,6 +1,6 @@
 <template lang="pug">
-div.home(:class="{ hide: hidePage }")
-  div.splash(:class="{ hide: hideSplash }")
+div.home(:class="{ hide, show }")
+  div.splash
     h1(ref="logo")
       span(data-letter="1") K
       span(data-letter="2") a
@@ -20,58 +20,63 @@ div.home(:class="{ hide: hidePage }")
         button(@click="login")
           span Log In
           Spotify
-  .github
-    a(href="https://github.com/zachwinter/kaleidosync" target="_blank")
-      GitHub
+  .github: a(href="https://github.com/zachwinter/kaleidosync" target="_blank"): GitHub
 </template>
 
 <script>
-import GitHub from '@/components/GitHub'
-import Star from '@/components/Star'
-import Spotify from '@/components/Spotify'
+import GitHub from '@/assets/svg/github.svg'
+import Spotify from '@/assets/svg/spotify.svg'
+import { pause } from '@/util/timing'
 
 export default {
   name: 'home',
-  components: { GitHub, Star, Spotify },
+  components: { GitHub, Spotify },
   data () {
     return {
-      hideSplash: false,
-      hidePage: false
+      show: false,
+      hide: false
     }
   },
   methods: {
     async login () {
-      this.hideSplash = true
-      this.hidePage = true
+      this.hide = true
       this.$refs.animate.addEventListener('animationend', () => {
         this.$store.dispatch('login')
       })
-    } 
+    },
+    
+    init () {
+      this.show = true
+      if (this.$ga) {
+        this.$ga.page('/')
+      }
+    }
   },
-  mounted () {
-    if (this.$ga) {
-      this.$ga.page('/')
+  async mounted () {
+    if (typeof document.fonts.ready !== 'undefined') {
+      await document.fonts.ready
+      this.init()
+    } else {
+      await pause(300)
+      this.init()
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-$splash-hide-duration: 300ms;
+$splash-hide-duration: 1000ms;
 
-@keyframes fade-to-white {
-  0% { background: #55FF93; }
-  100% { background: #ffffff; }
+.home {
+  @include position(fixed, 0 0 0 0);
+  @include flex;
 }
 
 .splash {
   z-index: 100;
   position: relative;
-}
-
-.home {
-  @include position(fixed, 0 0 0 0);
-  @include flex;
+  opacity: 0;
+  transition: opacity $splash-hide-duration;
 }
 
 h1 {
@@ -85,6 +90,8 @@ h1 {
 
 h2 {
   @include scale(font-size 32px 16px, line-height 24px 16px);
+  font-family: 'Open Sans';
+  font-weight: 300;
   transition: transform $splash-hide-duration $bounce-easing, opacity $splash-hide-duration $bounce-easing;
   opacity: .3;
 }
@@ -103,9 +110,7 @@ button {
   font-size: 24px;
   border: 0;
 
-  &:hover {
-    background: darken(#65D36E, 20%);
-  }
+  &:hover { background: darken(#65D36E, 20%); }
 
   svg {
     @include size(24px);
@@ -113,7 +118,34 @@ button {
   }
 }
 
-.splash.hide {
+.github {
+  @include position(fixed, null null 30px null);
+  opacity: 0;
+  transition: all $splash-hide-duration;
+
+  a {
+    @include flex;
+    text-decoration: none;
+    font-weight: bold;
+    @include share;
+  }
+
+  svg {
+    @include size(40px);
+    margin-right: 8px;
+    transition: fill 200ms ease-in-out;
+
+    &:hover { fill: rgba(0, 0, 0, .5); }
+  }
+}
+
+.show {
+  .splash, .github {
+    opacity: 1;
+  }
+}
+
+.hide {
   @for $i from 1 through 11 {
     @keyframes shwoop-#{$i} {
       0% {
@@ -137,30 +169,5 @@ button {
     opacity: 0;
     transform: scale(.7);
   }
-}
-
-.github {
-  @include position(fixed, null null 30px null);
-  
-  a {
-    @include flex;
-    text-decoration: none;
-    font-weight: bold;
-    @include share;
-  }
-
-  svg {
-    @include size(40px);
-    margin-right: 8px;
-    transition: fill 200ms ease-in-out;
-
-    &:hover {
-      fill: rgba(0, 0, 0, .5);
-    }
-  }
-}
-
-.hide .github {
-  animation: fade-out $splash-hide-duration forwards;
 }
 </style>

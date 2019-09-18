@@ -1,6 +1,6 @@
 {
   "name": "kaleidosync",
-  "version": "4.0.2",
+  "version": "4.1.0",
   "private": false,
   "scripts": {
     "serve": "concurrently \"node ./server/index.js\" \"vue-cli-service serve\"",
@@ -27,6 +27,7 @@
     "request": "^2.88.0",
     "vue": "^2.5.22",
     "vue-analytics": "^5.17.2",
+    "vue-color": "^2.7.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "vuex-persist": "^2.0.1"
@@ -43,6 +44,7 @@
     "pug": "^2.0.3",
     "pug-plain-loader": "^1.0.0",
     "sass-loader": "^7.1.0",
+    "vue-svg-loader": "^0.12.0",
     "vue-template-compiler": "^2.5.21",
     "worker-loader": "^2.0.0"
   }

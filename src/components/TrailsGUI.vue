@@ -22,6 +22,14 @@
     label
       span Smear
       input(type="range" :min="minSmear" :max="maxSmear" :step="smearStep" v-model="smear" @input="hover")
+    //- .color
+    //-   label Background
+    //-   .color-swatch(:style="{ background }" @click="toggleColorPicker('background')")
+    //-   Chrome(v-model="backgroundColor" disableAlpha=true disableFields=true v-if="colorPickers.background")
+    //- .color
+    //-   label Glow Color
+    //-   .color-swatch(:style="{ background: glow }" @click="toggleColorPicker('glow')")
+    //-   Chrome(v-model="glowColor" disableAlpha=true disableFields=true v-if="colorPickers.glow")
     button(@click="reset") Reset
 </template>
 
@@ -33,15 +41,25 @@ import {
   TRAILS_SET_GLOW_WIDTH,
   TRAILS_SET_ROTATION_CONSTANT,
   TRAILS_SET_SMEAR,
-  TRAILS_SET_ROTATION_MULTIPLIER
+  TRAILS_SET_ROTATION_MULTIPLIER,
+  TRAILS_SET_BACKGROUND_COLOR,
+  TRAILS_SET_GLOW_COLOR
 } from '@/vuex/mutation-types'
 import { mapState } from 'vuex'
+import { Chrome } from 'vue-color'
 
 export default {
+  components: {
+    Chrome
+  },
   data () {
     return {
       selected: 'Default',
-      sketchName: ''
+      sketchName: '',
+      colorPickers: {
+        background: false,
+        glow: false
+      }
     }
   },
   computed: {
@@ -69,7 +87,6 @@ export default {
       smearStep: s => s.visualizers.trails.SMEAR.STEP,
       saved: s => s.saved
     }),
-
     sides: {
       get () {
         return this.$store.state.visualizers.trails.SIDES.VALUE
@@ -125,6 +142,30 @@ export default {
       set (value) {
         this.$store.commit(TRAILS_SET_SMEAR, parseFloat(value))
       }
+    },
+    backgroundColor: {
+      get () {
+        return this.$store.state.visualizers.trails.BACKGROUND_COLOR.VALUE
+      },
+      set (value) {
+        this.$store.commit(TRAILS_SET_BACKGROUND_COLOR, value)
+      }
+    },
+    glowColor: {
+      get () {
+        return this.$store.state.visualizers.trails.GLOW_COLOR.VALUE
+      },
+      set (value) {
+        this.$store.commit(TRAILS_SET_GLOW_COLOR, value)
+      }
+    },
+    background () {
+      const { r, g, b } = this.backgroundColor.rgba
+      return `rgb(${r}, ${g}, ${b})`
+    },
+    glow () {
+      const { r, g, b } = this.glowColor.rgba
+      return `rgb(${r}, ${g}, ${b})`
     }
   },
   methods: {
@@ -133,6 +174,9 @@ export default {
     },
     hover () {
       this.$store.dispatch('hover')
+    },
+    toggleColorPicker (picker) {
+      this.colorPickers[picker] = !this.colorPickers[picker]
     }
   }
 }
@@ -146,11 +190,31 @@ export default {
   color: white;
   background: black;
   padding: 15px;
+  width: 280px;
 }
 
-label {
+label, .color {
   @include flex(center, space-between);
-  height: 30px;
+  margin-bottom: 5px;
+}
+
+.color {
+  width: 100%;
+  flex-wrap: wrap;
+
+  label { margin: 0; }
+
+  .color-swatch {
+    @include size(100px, 20px);
+    background: red;
+    border-radius: 20px;
+  }
+
+  .vc-chrome {
+    min-width: 100%;
+    max-width: 100%;
+    margin: 10px 0;
+  }
 }
 
 span {
