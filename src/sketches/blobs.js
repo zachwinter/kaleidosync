@@ -76,8 +76,8 @@ class Blob {
 }
 
 export default class Blobs extends Visualizer {
-  constructor ({ parent = null, volumeSmoothing = 80 } = {}) {
-    super({ volumeSmoothing, hidpi: true, parent })
+  constructor (args) {
+    super(Object.assign({ name: 'blobs' }, args))
     this.blobs = []
   }
 

@@ -8,18 +8,8 @@ const TWO_PI = Math.PI * 2
 const PI_OVER_180 = Math.PI / 180
 
 export default class WaveSync extends Visualizer {
-  constructor ({ 
-    fixed = false, 
-    parent = null, 
-    volumeSmoothing = 80
-  } = {}) {
-    super({
-      volumeSmoothing,
-      fixed,
-      hidpi: false,
-      name: 'wavesync',
-      parent
-    })
+  constructor (args) {
+    super(Object.assign({ name: 'wavesync' }, args))
 
     this.theme = [
       color('#FFE66D'), // yellow
@@ -49,8 +39,6 @@ export default class WaveSync extends Visualizer {
       totalSamples: 150,
       smoothing: 50
     })
-
-
   
     this.setGradients()
     this.setCtxParams()

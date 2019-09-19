@@ -180,7 +180,7 @@ export default class Sync {
     try {
       const { data } = await get(this.state.api.currentlyPlaying, { headers: this.state.api.headers })
       
-      if (!data || !data.is_playing) {
+      if (!data || !data.is_playing || !data.item) {
         if (this.state.active === true) {
           this.state.active = false
         }
@@ -188,10 +188,17 @@ export default class Sync {
         if (this.state.noPlayback === false) {
           this.state.noPlayback = true
         }
+
         return this.ping()
       }
 
-      this.processResponse(data)
+      const songsInSync = (JSON.stringify(data.item) === JSON.stringify(this.state.currentlyPlaying))
+
+      if (this.state.initialized === false || !songsInSync || this.state.active === false) {
+        return this.getTrackInfo(data)
+      }
+  
+      this.ping()
     } catch ({ status }) {
       if (status === 401) {
         return this.getNewToken()
@@ -207,20 +214,6 @@ export default class Sync {
 
       auth(this.$store)
     }
-  }
-
-  /**
-   * @method processResponse - Process `currently playing` API response according to state.
-   * @param {object} data - Response from Spotify API. 
-   */
-  processResponse (data) {
-    const songsInSync = (JSON.stringify(data.item) === JSON.stringify(this.state.currentlyPlaying))
-
-    if (this.state.initialized === false || !songsInSync || this.state.active === false) {
-      return this.getTrackInfo(data)
-    }
-
-    this.ping()
   }
   
   /**
@@ -550,8 +543,13 @@ export default class Sync {
 }
 
 export async function auth () {
-  // eslint-disable-next-line 
-  const { data } = await get(`${PROJECT_ROOT}/auth`)
-  // eslint-disable-next-line 
-  window.location.href = `${PROJECT_ROOT}/login?auth_id=${data.auth_id}`
+  try {
+    // eslint-disable-next-line 
+    const { data } = await get(`${PROJECT_ROOT}/auth`)
+    // eslint-disable-next-line 
+    window.location.href = `${PROJECT_ROOT}/login?auth_id=${data.auth_id}`
+  } catch (e) {
+    // eslint-disable-next-line
+    console.log(e)
+  }
 }
