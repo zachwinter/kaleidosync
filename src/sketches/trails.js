@@ -1,6 +1,6 @@
 import Visualizer from '../util/visualizer'
 import { growingLine, polygon } from '../util/canvas'
-import { interpolateBasis, interpolateRgbBasis, interpolateObject } from 'd3-interpolate'
+import { interpolateBasis, interpolateObject } from 'd3-interpolate'
 import { scaleLinear } from 'd3-scale'
 import ease from '../util/easing'
 import {
@@ -26,7 +26,7 @@ export default class Trails extends Visualizer {
     this.TRAIL_LENGTH = $store.TRAIL_LENGTH.VALUE
     this.ROTATION_CONSTANT = $store.ROTATION_CONSTANT.VALUE
     this.ROTATION_MULTIPLIER = $store.ROTATION_MULTIPLIER.VALUE
-    this.BEAT_AMPLITUDE_CONSTANT = 1
+    this.BEAT_AMPLITUDE_CONSTANT = .6
     this.GLOW_WIDTH = $store.GLOW_WIDTH.VALUE
     this.WIDTH_CONSTANT = $store.WIDTH_CONSTANT.VALUE
     this.BACKGROUND_COLOR = $store.BACKGROUND_COLOR.VALUE
@@ -35,8 +35,14 @@ export default class Trails extends Visualizer {
 
     this.sync.registerQueue({
       name: 'trails-volume',
-      totalSamples: 300,
-      smoothing: 10
+      totalSamples: 90,
+      smoothing: 5
+    })
+
+    this.sync.registerQueue({
+      name: 'trails-glow',
+      totalSamples: 120,
+      smoothing: 20
     })
 
     this.THEMES = [
@@ -64,7 +70,7 @@ export default class Trails extends Visualizer {
 
     const setRadius = () => {
       const side = Math.min(window.innerHeight, window.innerWidth)
-      this.RADIUS = side/4
+      this.RADIUS = side/5
     }
 
     setRadius()
@@ -80,6 +86,14 @@ export default class Trails extends Visualizer {
 
   get glowColor () {
     return `rgb(${this.GLOW_COLOR.rgba.r}, ${this.GLOW_COLOR.rgba.g}, ${this.GLOW_COLOR.rgba.b})`
+  }
+
+  get volume () {
+    return this.sync.getVolumeQueue('trails-volume')
+  }
+
+  get glow () {
+    return this.sync.getVolumeQueue('trails-glow')
   }
 
   initModel () {
@@ -141,9 +155,7 @@ export default class Trails extends Visualizer {
     })
   }
 
-  drawLine (ctx, vertices, _width) {
-    const width = _width * interpolateBasis([1, 1])(ease(this.sync.beat.progress, 'easeOutQuart'))
-
+  drawLine (ctx, vertices, width) {
     for (let i = 0; i < vertices.length - 1; i++) {
       const percent = (i/(vertices.length-1))
       const next = (i+1)/(vertices.length-1)
@@ -173,21 +185,21 @@ export default class Trails extends Visualizer {
     })
   }
 
-  group ({ offscreen, width, height, now, smallest }, { radius, name, rotation, multi1, multi2, multi3 = 1 }) {
-    const volume = (radius * Math.pow(this.sync.getVolumeQueue('trails-volume'), multi1)) 
+  group ({ offscreen, width, height, now, smallest }, { radius, name, rotation, multiplier }) {
+    const volume = (radius * Math.pow(this.volume, multiplier)) 
     const beat = volume/(this.BEAT_AMPLITUDE_CONSTANT)
     const finalRadius = volume + beat
     const _rotation = interpolateBasis([this.ROTATION_CONSTANT, this.ROTATION_CONSTANT * this.ROTATION_MULTIPLIER, this.ROTATION_CONSTANT])(ease(this.sync.bar.progress, 'easeInOutQuint'))
     const vertices = polygon(this.SIDES, finalRadius, width/2, height/2, now/_rotation*rotation)
     this.updateModel(vertices, name)
     for (let i = this[name].length - 1; i >= 0; i--) {
-      this.drawLine(offscreen, this[name][i], (smallest*this.WIDTH_CONSTANT*multi3) * this.sync.getVolumeQueue('trails-volume'))
+      this.drawLine(offscreen, this[name][i], (smallest*this.WIDTH_CONSTANT) * this.glow)
     }
   }
 
   applyOffscreen ({ ctx, offscreen, width, height }) {
     ctx.save()
-    ctx.shadowBlur = this.GLOW_WIDTH
+    ctx.shadowBlur = this.GLOW_WIDTH 
     ctx.shadowColor = this.glowColor
     ctx.globalCompositeOperation = 'lighter'
     ctx.drawImage(offscreen.canvas, 0, 0, width, height)
@@ -199,10 +211,10 @@ export default class Trails extends Visualizer {
   paint (args) {
     this.updateColors(args)
     this.clear(args)
-    this.group(args, { radius: this.RADIUS,   name: '_01', rotation:  1, multi1: 1, multi2: 1, multi3: 1 })
-    this.group(args, { radius: this.RADIUS,   name: '_02', rotation: -1, multi1: 1, multi2: 1, multi3: 1 })
-    this.group(args, { radius: this.RADIUS/2, name: '_03', rotation:  1, multi1: 2, multi2: 2 })
-    this.group(args, { radius: this.RADIUS/2, name: '_04', rotation: -1, multi1: 2, multi2: 2 })
+    this.group(args, { radius: this.RADIUS,   name: '_01', rotation:  1, multiplier: .5 })
+    this.group(args, { radius: this.RADIUS,   name: '_02', rotation: -1, multiplier: .5 })
+    this.group(args, { radius: this.RADIUS/2, name: '_03', rotation:  1, multiplier:  2 })
+    this.group(args, { radius: this.RADIUS/2, name: '_04', rotation: -1, multiplier:  2 })
     this.applyOffscreen(args)
   }
 } 

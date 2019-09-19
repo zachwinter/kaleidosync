@@ -2,24 +2,20 @@ import Visualizer from '@/util/visualizer'
 import { getRandomElement } from '../util/array'
 import Observe from '../util/observe'
 import { createStar, drawShape } from '../util/canvas'
-import { interpolate } from 'd3-interpolate'
+import { interpolate, interpolateBasis } from 'd3-interpolate'
 import ease from '../util/easing'
 
 export default class Kaleidosync extends Visualizer {
   constructor (args) {
-    super(Object.assign({
-      volumeSmoothing: 10,
-      hidpi: false,
-      name: 'kaleidosync'
-    }, args))
+    super(Object.assign({ name: 'kaleidosync' }, args))
 
     this.state = Observe({
       easing: 'easeOutQuint',  
-      totalStars: 28,
+      totalStars: 32,
       minSize: 0,
       maxSize: 0,
       activeSize: 0,
-      radiusStep: [.1, .2, .3, .8, 1, 1.1],
+      radiusStep: [.1, .2, .3, .4, .5, .8, 1, 1.1, 1.2, 1.3],
       sizeStep: [],
       colorThemes: [
         [[255,255,255], [255,191,105], [255,159,28], [203,243,240], [46,196,182]],
@@ -36,8 +32,8 @@ export default class Kaleidosync extends Visualizer {
 
     this.sync.registerQueue({
       name: 'kaleidosync-beat',
-      totalSamples: 150,
-      smoothing: 80
+      totalSamples: 240,
+      smoothing: 30
     })
 
     this.setSizeParams()
@@ -57,7 +53,7 @@ export default class Kaleidosync extends Visualizer {
       this.state.maxSize = this.sketch.height / 2
     }
   
-    this.state.minSize = this.state.maxSize / 5
+    this.state.minSize = this.state.maxSize / 10
     this.state.activeSize = this.state.maxSize
   
     const { maxSize, totalStars } = this.state
@@ -170,9 +166,9 @@ export default class Kaleidosync extends Visualizer {
     let size 
 
     if (nextSegment) {
-      size = this.state.activeSize * this.sync.getFutureVolume(this.sync.segment.index + 1)
+      size = this.state.activeSize * this.sync.getVolumeQueue('kaleidosync-beat') //this.sync.getFutureVolume(this.sync.segment.index + 1)
     } else {
-      size = this.state.activeSize * this.sync.volume
+      size = this.state.activeSize * this.sync.getVolumeQueue('kaleidosync-beat')
     }
 
     this.state.stars.forEach((star, index) => {
@@ -281,12 +277,13 @@ export default class Kaleidosync extends Visualizer {
     const [r, g, b] = this.state.background.get()
     ctx.fillStyle = `rgb(${r},${g},${b})`
     ctx.fillRect(0, 0, width, height)
-
-    // const beat = this.sync.getVolumeQueue('kaleidosync-beat') // interpolateBasis([1, 1.5, 1])(ease(this.sync.beat.progress, 'linear'))
+    
+    // const volume = this.sync.getVolumeQueue('kaleidosync-beat')
+    const beat = interpolateBasis([1, 1.2, 1])(ease(this.sync.beat.progress, 'easeOutCubic'))// * this.sync.getVolumeQueue('kaleidosync-beat')
 
     for (let star of this.state.stars) {
-      const inner = star.innerRadius.get()
-      const outer = star.outerRadius.get()
+      const inner = star.innerRadius.get() * beat
+      const outer = star.outerRadius.get() * beat
       const rotation = now / 40
       const { vertices } = createStar(star.points, inner, outer, width/2, height/2, rotation)
       const [r, g, b] = star.color.get()
