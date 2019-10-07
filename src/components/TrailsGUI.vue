@@ -190,7 +190,6 @@ export default {
   color: white;
   background: black;
   padding: 15px;
-  width: 280px;
 }
 
 label, .color {

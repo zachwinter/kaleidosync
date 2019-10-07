@@ -2,7 +2,7 @@ import Observe from '../util/observe'
 import * as cookies from '../util/cookie'
 import { get } from '../util/network'
 import { interpolateNumber } from 'd3-interpolate'
-import { scaleLog, scaleLinear } from 'd3-scale'
+import { scaleLinear } from 'd3-scale'
 import { min, max } from 'd3-array'
 import { average } from '../util/array'
 import { pause } from '../util/timing'
@@ -212,7 +212,7 @@ export default class Sync {
         await pause(2000)
       }
 
-      auth(this.$store)
+      auth()
     }
   }
   
@@ -223,10 +223,14 @@ export default class Sync {
   async getTrackInfo (data) {
     this.state.loadingNextSong = true
 
-    const [ analysis, features ] = await Promise.all([
-      get(this.state.api.trackAnalysis + data.item.id, { headers: this.state.api.headers }).then(res => res.data),
-      get(this.state.api.trackFeatures + data.item.id, { headers: this.state.api.headers }).then(res => res.data),
-    ])
+    try {
+      var [ analysis, features ] = await Promise.all([
+        get(this.state.api.trackAnalysis + data.item.id, { headers: this.state.api.headers }).then(res => res.data),
+        get(this.state.api.trackFeatures + data.item.id, { headers: this.state.api.headers }).then(res => res.data),
+      ])
+    } catch (e) {
+      return this.ping()
+    }
 
     this.state.intervalTypes.forEach((t) => {
       const type = analysis[t]
@@ -393,8 +397,9 @@ export default class Sync {
     }
   }
 
-  processVolumeQueues (volume) {
-    // const volume = Math.pow(2, vol/6)
+  processVolumeQueues () {
+    const volume = this.getVolume()
+
     for (let key in this.state.volumeQueues) {
       const queue = this.state.volumeQueues[key]
       queue.values.unshift(volume)
@@ -434,70 +439,9 @@ export default class Sync {
    */
   tick (now) {
     requestAnimationFrame(this.tick.bind(this))
-    // if (!this.state.active) return
-
-    /** Set track progress and active intervals. */
     this.state.trackProgress = (now - this.state.initialStart) + this.state.initialTrackProgress
     this.setActiveIntervals()
-
-    /** Get current volume. */
-    const volume = this.getVolume()
-    const queues = this.state.queues
-
-    this.processVolumeQueues(volume)
-
-    /** Add volume value to the beginning of the volume queue. */
-    queues.volume.unshift(volume)
-
-    while (queues.volume.length > this.state.volumeAverage) {
-      queues.volume.pop()
-    }
-
-    /** Add volume value to the beginning of the beat queue. */
-    queues.beat.unshift(volume)
-
-    while (queues.beat.length > this.state.volumeSmoothing) {
-      queues.beat.pop()
-    }
-
-    function average (arr) {
-      return arr.reduce((a, b) => (a + b)) / arr.length
-    }
-
-    /** Scale volume (dB) to a linear range using the minimum and average values of the volume queue. */
-    const sizeScale = scaleLog()
-      .domain([min(queues.volume), average(queues.volume)])
-
-    /** Average the beat queue, then pass it to our size scale. */
-    const beat = average(queues.beat)
-    this.volume = sizeScale(beat)
-  }
-
-  getFutureVolume (index) {
-    const loudness = this.state.trackAnalysis.segments[index].loudness_start
-    const queues = {...this.state.queues}
-
-    queues.volume.unshift(loudness)
-
-    while (queues.volume.length > this.state.volumeAverage) {
-      queues.volume.pop()
-    }
-
-    queues.beat.unshift(loudness)
-
-    while (queues.beat.length > this.state.volumeSmoothing) {
-      queues.beat.pop()
-    }
-
-    function average (arr) {
-      return arr.reduce((a, b) => (a + b)) / arr.length
-    }
-
-    const sizeScale = scaleLog()
-      .domain([min(queues.volume), average(queues.volume)])
-
-    const beat = average(queues.beat)
-    return sizeScale(beat)
+    this.processVolumeQueues()
   }
 
   buildStaticIntervals (base) {

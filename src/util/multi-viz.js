@@ -21,23 +21,15 @@ export default class MultiViz extends Visualizer {
   paint (args) {
     switch (this.selectedVisualizer) { 
       case 'trails':
-        this.sync.state.volumeSmoothing = 5
-        this.sync.state.volumeAverage = 50
         this.trails.paint(args)
         break
       case 'kaleidosync':
-        this.sync.state.volumeSmoothing = 50
-        this.sync.state.volumeAverage = 200
         this.kaleidosync.paint(args)
         break
       case 'wavesync':
-        this.sync.state.volumeSmoothing = 80
-        this.sync.state.volumeAverage = 600
         this.wavesync.paint(args)
         break
       case 'blobs':
-        this.sync.state.volumeSmoothing = 5
-        this.sync.state.volumeAverage = 50
         this.blobs.paint(args)
         break
       default:
