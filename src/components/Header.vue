@@ -3,8 +3,8 @@ header
   h1 Kaleidosync
   .visualizers 
     ul(:data-selected="selectedVisualizer")
-      li: span.kaleidosync(@click="select('kaleidosync')"): img(src="@/assets/kaleidosync.png" alt="Original")
       li: span.trails(@click="select('trails')"): img(src="@/assets/trails.jpg" alt="Trails")
+      li: span.kaleidosync(@click="select('kaleidosync')"): img(src="@/assets/kaleidosync.png" alt="Original")
       li: span.blobs(@click="select('blobs')"): img(src="@/assets/blobs.jpg" alt="Blobs")
       li: span.wavesync(@click="select('wavesync')"): img(src="@/assets/wavesync.png" alt="Wavesync")
   Settings

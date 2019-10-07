@@ -161,15 +161,7 @@ export default class Kaleidosync extends Visualizer {
   }
 
   setStarRadius (type) {
-    const nextSegment = this.sync.state.trackAnalysis.segments[this.sync.segment.index + 1]
-
-    let size 
-
-    if (nextSegment) {
-      size = this.state.activeSize * this.sync.getVolumeQueue('kaleidosync-beat') //this.sync.getFutureVolume(this.sync.segment.index + 1)
-    } else {
-      size = this.state.activeSize * this.sync.getVolumeQueue('kaleidosync-beat')
-    }
+    let size = this.state.activeSize * this.sync.getVolumeQueue('kaleidosync-beat')
 
     this.state.stars.forEach((star, index) => {
       size = ~~(size - getRandomElement(this.state.sizeStep))
@@ -278,8 +270,7 @@ export default class Kaleidosync extends Visualizer {
     ctx.fillStyle = `rgb(${r},${g},${b})`
     ctx.fillRect(0, 0, width, height)
     
-    // const volume = this.sync.getVolumeQueue('kaleidosync-beat')
-    const beat = interpolateBasis([1, 1.2, 1])(ease(this.sync.beat.progress, 'easeOutCubic'))// * this.sync.getVolumeQueue('kaleidosync-beat')
+    const beat = interpolateBasis([1, 1.2, 1])(ease(this.sync.beat.progress, 'easeOutCubic'))
 
     for (let star of this.state.stars) {
       const inner = star.innerRadius.get() * beat

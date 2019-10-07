@@ -19,12 +19,13 @@ function getColor (index, alpha = 1) {
 
 class Blob {
   constructor (interval, self, color) {
+    const volume = self.sync.getVolumeQueue('blobs')
     this.self = self
     this.interval = interval
     this.birth = window.performance.now()
     this.lifespan = interval.duration
     this.color = color
-    this.width = window.innerWidth/5* Math.pow(self.sync.volume, 2)
+    this.width = window.innerWidth/5 * volume
   }
 
   paint ({ ctx, width, height, now }) {
@@ -46,7 +47,6 @@ class Blob {
     const radius = iRadius(progress)
     const amplitude = interpolateBasis([-radius/2, radius, -radius/2])(ease(this.self.sync.beat.progress, EASING))
     const rotation = now/ROTATION_CONSTANT
-    
     
     ctx.save()
     ctx.lineCap = 'round'
@@ -79,6 +79,11 @@ export default class Blobs extends Visualizer {
   constructor (args) {
     super(Object.assign({ name: 'blobs' }, args))
     this.blobs = []
+    this.sync.registerQueue({
+      name: 'blobs',
+      totalSamples: 50,
+      smoothing: 5
+    })
   }
 
   hooks () {
