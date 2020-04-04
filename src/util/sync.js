@@ -101,7 +101,7 @@ export default class Sync {
       this.state.active = true
       requestAnimationFrame(this.tick.bind(this))
     } else {
-      this.ping()
+      this.getCurrentlyPlaying()
     }
   }
 
