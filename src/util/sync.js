@@ -17,7 +17,7 @@ export default class Sync {
   constructor ({
     volumeSmoothing = 100,
     volumeAverage = 200,
-    pingDelay = 2500,
+    pingDelay = 5000,
     fixed = false,
     staticIntervalBaseDuration = 2000,
     $store = null
