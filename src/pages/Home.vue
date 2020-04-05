@@ -20,17 +20,20 @@ div.home(:class="{ hide, show }")
         button(@click="login")
           span Log In
           Spotify
-  .github: a(href="https://github.com/zachwinter/kaleidosync" target="_blank"): GitHub
+  .links
+    .github: a(href="https://github.com/zachwinter/kaleidosync" target="github"): GitHub
+    .instagram: a(href="https://instagram.com/zachary.io" target="instagram"): Instagram
 </template>
 
 <script>
 import GitHub from '@/assets/svg/github.svg'
 import Spotify from '@/assets/svg/spotify.svg'
+import Instagram from '@/assets/svg/instagram.svg'
 import { pause } from '@/util/timing'
 
 export default {
   name: 'home',
-  components: { GitHub, Spotify },
+  components: { GitHub, Spotify, Instagram },
   data () {
     return {
       show: false,
@@ -118,8 +121,9 @@ button {
   }
 }
 
-.github {
+.links {
   @include position(fixed, null null 30px null);
+  @include flex;
   opacity: 0;
   transition: all $splash-hide-duration;
 
@@ -140,7 +144,7 @@ button {
 }
 
 .show {
-  .splash, .github {
+  .splash, .links {
     opacity: 1;
   }
 }
@@ -165,7 +169,7 @@ button {
     }
   }
 
-  h2, button, .github {
+  h2, button, .links {
     opacity: 0;
     transform: scale(.7);
   }
