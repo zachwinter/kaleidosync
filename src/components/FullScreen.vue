@@ -47,7 +47,7 @@ export default {
 <style lang="scss" scoped>
 button {
   @include size(80px, 80px);
-  @include position(fixed, 140px null null 30px);
+  @include position(fixed, 250px null null 30px);
   z-index: 100000;
   background: black;
   padding: 30px;
@@ -59,7 +59,7 @@ button {
   @include max-width(header) {
     @include size(40px);
     padding: 10px;
-    top: 90px;
+    top: 150px;
   }
 
   svg {

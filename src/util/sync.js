@@ -204,6 +204,11 @@ export default class Sync {
         return this.getNewToken()
       }
 
+      if (status === 429) {
+        await pause(5000)
+        return this.ping()
+      }
+
       if (this.$store) {
         this.$store.dispatch('toast', {
           message: 'Oops! Spotify error. Refreshing now.'
