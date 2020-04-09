@@ -22,13 +22,10 @@ export function createResponse (request) {
   }
 }
 
-export function get (url, {
-  async = true,
-  headers = {}
-} = {}) {
+export function get (url, { async = true, headers = {} } = {}) {
   return new Promise((resolve, reject) => {
     const request = createXMLHttpRequest('GET', url, async, headers)
-
+    
     const error = () => {
       const response = createResponse(request)
       response.success = false
@@ -47,7 +44,6 @@ export function get (url, {
     }
 
     request.onerror = () => error(request)
-
     request.send()
   })
 }

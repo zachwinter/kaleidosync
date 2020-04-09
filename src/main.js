@@ -1,10 +1,11 @@
 import 'proxy-polyfill/src/proxy.js'
-
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './vuex'
+import store from './store'
 import VueAnalytics from 'vue-analytics'
+
+Vue.config.productionTip = false
 
 // eslint-disable-next-line 
 if (PRODUCTION && GOOGLE_ANALYTICS) {
@@ -13,8 +14,6 @@ if (PRODUCTION && GOOGLE_ANALYTICS) {
     id: GOOGLE_ANALYTICS
   })
 }
-
-Vue.config.productionTip = false
 
 new Vue({
   router,

@@ -97,6 +97,7 @@ h2 {
   font-weight: 300;
   transition: transform $splash-hide-duration $bounce-easing, opacity $splash-hide-duration $bounce-easing;
   opacity: .3;
+  text-align: center;
 }
 
 .buttons {

@@ -4,7 +4,7 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        data: `@import "@/sass/imports.scss";`
+        prependData: `@import "@/sass/imports.scss";`
       }
     }
   },
@@ -39,5 +39,6 @@ module.exports = {
       .end()
       .use('vue-svg-loader')
       .loader('vue-svg-loader')
-	}
+  },
+  transpileDependencies: ['vuex-persist']
 }

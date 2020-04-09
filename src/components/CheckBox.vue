@@ -1,6 +1,6 @@
 <template lang="pug">
 label
-  .checkbox-container
+  .checkbox-container(:class="{ [variant]: variant, [size]: size }")
     input(type="checkbox" :checked="value" ref="input" @change="updateValue")
     Check
   span {{ label }}
@@ -10,7 +10,7 @@ label
 import Check from '@/assets/svg/check.svg'
 
 export default {
-  props: ['value', 'label'],
+  props: ['value', 'label', 'variant', 'size'],
   components: { Check },
   methods: {
     updateValue () {
@@ -24,14 +24,27 @@ export default {
 .checkbox-container {
   @include size(40px);
   position: relative;
-  margin-right: 10px;
+  // margin-right: 10px;
   background: transparent;
   border: 2px solid black;
   border-radius: 100%;
+  margin-right: 10px;
 
   @include max-width(laptop) {
     @include size(30px);
   }
+
+  &.light {
+    border: 2px solid white;
+  }
+
+  &.sm {
+    @include size(20px);
+  }
+}
+
+label label {
+  margin: 0;
 }
 
 input {
@@ -52,4 +65,6 @@ svg {
 }
 
 input:checked + svg { opacity: 1; }
+
+.light svg * { fill: white; }
 </style>

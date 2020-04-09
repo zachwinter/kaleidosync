@@ -1,10 +1,20 @@
-import Visualizer from '../util/visualizer'
-import { interpolateBasis, interpolateNumber } from 'd3-interpolate'
-import ease from '../util/easing'
-import { color } from 'd3-color'
-import { randomNumber } from '../util/numbers'
+<template lang="pug">
+.blobs
+  Canvas(ref="canvas")
+</template>
 
-const TWO_PI = Math.PI * 2
+<script>
+import { mapState } from 'vuex'
+import visualizer from '@/mixins/visualizer'
+import { TWO_PI } from '@/util/canvas'
+import ease from '@/util/ease'
+import interpolateBasis from 'd3-interpolate/src/basis'
+import interpolateNumber from 'd3-interpolate/src/number'
+import { randomNumber } from '@/util/numbers'
+import { color } from 'd3-color'
+
+export const WIDTH_CONSTANT = 80
+
 const THEME = [
   color('#FF8360'), // yellow
   color('#00FFF5'), // turqoise
@@ -19,8 +29,9 @@ function getColor (index, alpha = 1) {
 
 class Blob {
   constructor (interval, self, color) {
-    const volume = self.sync.getVolumeQueue('blobs')
+    const volume = self.getVolumeQueue('blobs')
     this.self = self
+    this.$store = self.$store.state
     this.interval = interval
     this.birth = window.performance.now()
     this.lifespan = interval.duration
@@ -43,9 +54,9 @@ class Blob {
 
     const iRadius = interpolateNumber(0,this.width)
     const iLineWidth = interpolateBasis([0, this.width/WIDTH_DIVIDER, 0]) 
-    const beat = interpolateBasis([1,BEAT_MULTIPLIER,1])(ease(this.self.sync.beat.progress, EASING))
+    const beat = interpolateBasis([1,BEAT_MULTIPLIER,1])(ease(this.self.activeIntervals.beats.progress, EASING))
     const radius = iRadius(progress)
-    const amplitude = interpolateBasis([-radius/2, radius, -radius/2])(ease(this.self.sync.beat.progress, EASING))
+    const amplitude = interpolateBasis([-radius/2, radius, -radius/2])(ease(this.self.activeIntervals.beats.progress, EASING))
     const rotation = now/ROTATION_CONSTANT
     
     ctx.save()
@@ -75,30 +86,31 @@ class Blob {
   }
 }
 
-export default class Blobs extends Visualizer {
-  constructor (args) {
-    super(Object.assign({ name: 'blobs' }, args))
-    this.blobs = []
-    this.sync.registerQueue({
-      name: 'blobs',
-      totalSamples: 50,
-      smoothing: 5
-    })
-  }
-
-  hooks () {
-    this.sync.on('tatum', interval => {
+export default {
+  mixins: [visualizer],
+  computed: mapState(['trails', 'trailsBackground', 'beatInterval']),
+  data: () => ({
+    blobs: []
+  }),
+  created () {
+    this.registerVolumeQueue('blobs', 100, 5)
+  },
+  methods: {
+    onTatum (interval) {
       const index = randomNumber(0, 2, true)
       const color = getColor(index)
       const blob = new Blob(interval, this, color)
       this.blobs.push(blob)
-    })
-  }
-
-  paint ({ width, height, now, ctx }) {
-    this.sketch.fill = getColor(3, .8)
-    for (let i = this.blobs.length - 1; i >= 0; i--) {
-      this.blobs[i].paint({ width, height, now, ctx })
+    },
+    paint (now) {
+      if (!this.$refs.canvas) return
+      const { width, height } = this.$refs.canvas
+      this.$refs.canvas.ctx.fillStyle = getColor(3, .8)
+      this.$refs.canvas.ctx.fillRect(0, 0, width, height)
+      for (let i = this.blobs.length - 1; i >= 0; i--) {
+        this.blobs[i].paint({ width, height, now, ctx: this.$refs.canvas.ctx })
+      }
     }
   }
 }
+</script>

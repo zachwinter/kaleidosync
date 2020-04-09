@@ -1,198 +1,141 @@
 <template lang="pug">
 .trails-gui
-  form(@submit.prevent )
-    label
-      span Sides
-      input(type="range" :min="minSides" :max="maxSides" v-model="sides" :step="sidesStep" @input="hover")
-    label
-      span Trail Length
-      input(type="range" :min="minTrailLength" :max="maxTrailLength" :step="trailLengthStep" v-model="trailLength" @input="hover")
-    label
-      span Width
-      input(type="range" :min="minWidthConstant" :max="maxWidthConstant" :step="widthConstantStep" v-model="widthConstant" @input="hover")
-    label
-      span Glow
-      input(type="range" :min="minGlowWidth" :max="maxGlowWidth" :step="glowWidthStep" v-model="glowWidth" @input="hover")
-    label
-      span Base Rotation
-      input(type="range" :min="minBaseRotation" :max="maxBaseRotation" :step="baseRotationStep" v-model="baseRotation" @input="hover")
-    label
-      span Flux Rotation
-      input(type="range" :min="minFluxRotation" :max="maxFluxRotation" :step="fluxRotationStep" v-model="fluxRotation" @input="hover")
-    label
-      span Smear
-      input(type="range" :min="minSmear" :max="maxSmear" :step="smearStep" v-model="smear" @input="hover")
-    //- .color
-    //-   label Background
-    //-   .color-swatch(:style="{ background }" @click="toggleColorPicker('background')")
-    //-   Chrome(v-model="backgroundColor" disableAlpha=true disableFields=true v-if="colorPickers.background")
-    //- .color
-    //-   label Glow Color
-    //-   .color-swatch(:style="{ background: glow }" @click="toggleColorPicker('glow')")
-    //-   Chrome(v-model="glowColor" disableAlpha=true disableFields=true v-if="colorPickers.glow")
-    button(@click="reset") Reset
+  form(@submit.prevent)
+    label.color
+      span Background
+      Chrome(v-model="background" disableFields=true)
+    div(v-for="(group, i) in groups" :key="i").group
+      header
+        h3 Group {{ i + 1 }}
+        button(@click="remove(i)" v-if="groups.length > 1") Remove
+      //- label.color
+      //-   span Color
+      //-   Chrome(v-model="group.color" disableAlpha=true disableFields=true @input="onInput(i)")
+      label 
+        span Blending
+        select(v-model="group.blending" @change="onInput(i)" @input="onInput(i)")
+          option(v-for="(mode, i) in blending") {{ mode }}
+      label
+        span Sides
+        input(type="range" min="3" max="12" v-model="group.sides" step="1" @change="onInput(i)" @input="onInput(i)")
+      label
+        span Trail Length
+        input(type="range" min="2" max="40" v-model="group.length" step="1" @change="onInput(i)" @input="onInput(i)")
+      label
+        span Width
+        input(type="range" min=".01" max="1" v-model="group.width" step=".01" @change="onInput(i)" @input="onInput(i)")
+      label
+        span Radius
+        input(type="range" min="0" max=".5" v-model="group.radius" step=".01" @change="onInput(i)" @input="onInput(i)")
+      label 
+        span Rotation
+        input(type="range" min="0" max=".15" v-model="group.rotation" step=".01" @change="onInput(i)" @input="onInput(i)")
+      label 
+        span Bend
+        CheckBox(v-model="group.scale" @input="onInput(i)" variant="light" size="sm")
+  button(@click="add") Add Ring
 </template>
 
 <script>
-import {
-  TRAILS_SET_SIDES,
-  TRAILS_SET_WIDTH_CONSTANT,
-  TRAILS_SET_TRAIL_LENGTH,
-  TRAILS_SET_GLOW_WIDTH,
-  TRAILS_SET_ROTATION_CONSTANT,
-  TRAILS_SET_SMEAR,
-  TRAILS_SET_ROTATION_MULTIPLIER,
-  TRAILS_SET_BACKGROUND_COLOR,
-  TRAILS_SET_GLOW_COLOR
-} from '@/vuex/mutation-types'
 import { mapState } from 'vuex'
 import { Chrome } from 'vue-color'
-
+import { SET_TRAILS_BACKGROUND, SET_TRAILS } from '@/store/mutation-types'
+import CheckBox from './CheckBox'
+import cloneDeep from 'lodash/cloneDeep'
+ 
 export default {
-  components: {
-    Chrome
-  },
+  components: { Chrome, CheckBox },
   data () {
     return {
-      selected: 'Default',
-      sketchName: '',
-      colorPickers: {
-        background: false,
-        glow: false
-      }
+      groups: [],
+      background: null,
+      backgroundColorPickerVisible: true,
+      blending: [
+        'source-over',
+        'source-in',
+        'source-out',
+        'source-atop',
+        'destination-over',
+        'destination-in',
+        'destination-out',
+        'destination-atop',
+        'lighter',
+        'copy',
+        'xor',
+        'multiply',
+        'screen',
+        'overlay',
+        'darken',
+        'lighten',
+        'color-dodge',
+        'color-burn',
+        'hard-light',
+        'soft-light',
+        'difference',
+        'exclusion',
+        'hue',
+        'saturation',
+        'color',
+        'luminosity'
+      ]
     }
   },
-  computed: {
-    ...mapState({
-      minSides: s => s.visualizers.trails.SIDES.MIN,
-      maxSides: s => s.visualizers.trails.SIDES.MAX,
-      sidesStep: s => s.visualizers.trails.SIDES.STEP,
-      minTrailLength: s => s.visualizers.trails.TRAIL_LENGTH.MIN,
-      maxTrailLength: s => s.visualizers.trails.TRAIL_LENGTH.MAX,
-      trailLengthStep: s => s.visualizers.trails.TRAIL_LENGTH.STEP,
-      minWidthConstant: s => s.visualizers.trails.WIDTH_CONSTANT.MIN,
-      maxWidthConstant: s => s.visualizers.trails.WIDTH_CONSTANT.MAX,
-      widthConstantStep: s => s.visualizers.trails.WIDTH_CONSTANT.STEP,
-      minGlowWidth: s => s.visualizers.trails.GLOW_WIDTH.MIN,
-      maxGlowWidth: s => s.visualizers.trails.GLOW_WIDTH.MAX,
-      glowWidthStep: s => s.visualizers.trails.GLOW_WIDTH.STEP,
-      minBaseRotation: s => s.visualizers.trails.ROTATION_CONSTANT.MIN,
-      maxBaseRotation: s => s.visualizers.trails.ROTATION_CONSTANT.MAX,
-      baseRotationStep: s => s.visualizers.trails.ROTATION_CONSTANT.STEP,
-      minFluxRotation: s => s.visualizers.trails.ROTATION_MULTIPLIER.MIN,
-      maxFluxRotation: s => s.visualizers.trails.ROTATION_MULTIPLIER.MAX,
-      fluxRotationStep: s => s.visualizers.trails.ROTATION_MULTIPLIER.STEP,
-      minSmear: s => s.visualizers.trails.SMEAR.MIN,
-      maxSmear: s => s.visualizers.trails.SMEAR.MAX,
-      smearStep: s => s.visualizers.trails.SMEAR.STEP,
-      saved: s => s.saved
-    }),
-    sides: {
-      get () {
-        return this.$store.state.visualizers.trails.SIDES.VALUE
-      },
-      set (value) {
-        this.$store.commit(TRAILS_SET_SIDES, parseFloat(value))
-      }
-    },
-    widthConstant: {
-      get () {
-        return this.$store.state.visualizers.trails.WIDTH_CONSTANT.VALUE
-      },
-      set (value) {
-        this.$store.commit(TRAILS_SET_WIDTH_CONSTANT, parseFloat(value))
-      }
-    },
-    trailLength: {
-      get () {
-        return this.$store.state.visualizers.trails.TRAIL_LENGTH.VALUE
-      },
-      set (value) {
-        this.$store.commit(TRAILS_SET_TRAIL_LENGTH, parseFloat(value))
-      }
-    },
-    glowWidth: {
-      get () {
-        return this.$store.state.visualizers.trails.GLOW_WIDTH.VALUE
-      },
-      set (value) {
-        this.$store.commit(TRAILS_SET_GLOW_WIDTH, parseFloat(value))
-      }
-    },
-    baseRotation: {
-      get () {
-        return this.$store.state.visualizers.trails.ROTATION_CONSTANT.VALUE
-      },
-      set (value) {
-        this.$store.commit(TRAILS_SET_ROTATION_CONSTANT, parseFloat(value))
-      }
-    },
-    fluxRotation: {
-      get () {
-        return this.$store.state.visualizers.trails.ROTATION_MULTIPLIER.VALUE
-      },
-      set (value) {
-        this.$store.commit(TRAILS_SET_ROTATION_MULTIPLIER, parseFloat(value))
-      }
-    },
-    smear: {
-      get () {
-        return this.$store.state.visualizers.trails.SMEAR.VALUE
-      },
-      set (value) {
-        this.$store.commit(TRAILS_SET_SMEAR, parseFloat(value))
-      }
-    },
-    backgroundColor: {
-      get () {
-        return this.$store.state.visualizers.trails.BACKGROUND_COLOR.VALUE
-      },
-      set (value) {
-        this.$store.commit(TRAILS_SET_BACKGROUND_COLOR, value)
-      }
-    },
-    glowColor: {
-      get () {
-        return this.$store.state.visualizers.trails.GLOW_COLOR.VALUE
-      },
-      set (value) {
-        this.$store.commit(TRAILS_SET_GLOW_COLOR, value)
-      }
-    },
-    background () {
-      const { r, g, b } = this.backgroundColor.rgba
-      return `rgb(${r}, ${g}, ${b})`
-    },
-    glow () {
-      const { r, g, b } = this.glowColor.rgba
-      return `rgb(${r}, ${g}, ${b})`
+  computed: mapState(['trails', 'trailsBackground']),
+  watch: {
+    async background (val) {
+      await this.$nextTick()
+      this.$store.commit(SET_TRAILS_BACKGROUND, val)
     }
   },
   methods: {
-    reset () {
-      this.$store.dispatch('reset')
+    async add () {
+      await this.$store.dispatch('addTrailsRing')
+      this.groups = cloneDeep(this.trails)
+      this.$store.commit(SET_TRAILS, cloneDeep(this.groups))
     },
-    hover () {
-      this.$store.dispatch('hover')
+    async remove (i) {
+      this.groups.splice(i, 1)
+      await this.$nextTick()
+      this.$store.commit(SET_TRAILS, cloneDeep(this.groups))
     },
-    toggleColorPicker (picker) {
-      this.colorPickers[picker] = !this.colorPickers[picker]
+    async onInput () {
+      await this.$nextTick()
+      this.$store.commit(SET_TRAILS, cloneDeep(this.groups))
     }
+  },
+  created () {
+    this.background = cloneDeep(this.trailsBackground)
+    this.groups = cloneDeep(this.trails)
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .trails-gui {
-  @include position(fixed, 30px 30px null null);
+  @include position(fixed, 0 0 0 null);
   @include share;
   z-index: 99999;
-  color: white;
-  background: black;
-  padding: 15px;
+  color: $white;
+  background: rgba($black, .2);
+  -webkit-overflow-scrolling: touch;
+  overflow-y: scroll;
+  padding: 30px;
+  width: 320px;
 }
 
-label, .color {
+.group {
+  margin-top: 10px;
+  padding-top: 5px;
+  border-top: 1px solid $white;
+
+  &:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
+label {
   @include flex(center, space-between);
   margin-bottom: 5px;
 }
@@ -216,10 +159,32 @@ label, .color {
   }
 }
 
+
+.color {
+  @include size(100%, auto);
+  border-radius: 50px;
+}
+
 span {
   display: block;
   min-width: 100px;
   text-align: left;
+}
+
+header {
+  @include flex(center, space-between);
+  padding: 5px 0 10px 0;
+  h3 {
+    line-height: 30px;
+    margin: 0;
+  }
+  button {
+    width: auto;
+    margin: 0;
+    padding: 0 10px;
+    height: 26px;
+    border-width: 2px;
+  }
 }
 
 button {
@@ -235,6 +200,7 @@ input[type="text"] {
   border: 0;
   border-bottom: 2px solid white;
   font-size: 20px;
+  color: white;
 
   &:focus { outline: 0; }
 
@@ -273,5 +239,17 @@ input[type=range]::-ms-track {
   background: transparent; 
   border-color: transparent;
   color: transparent;
+}
+
+h3 {
+  margin-bottom: 5px;
+  text-align: left;
+  color: $blue;
+}
+</style>
+
+<style lang="scss">
+.vc-chrome-saturation-wrap {
+  padding-bottom: 60px !important;
 }
 </style>
