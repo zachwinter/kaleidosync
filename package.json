@@ -1,6 +1,6 @@
 {
-  "name": "kaleidosync-v3",
-  "version": "0.1.0",
+  "name": "kaleidosync",
+  "version": "5.0.0",
   "private": true,
   "scripts": {
     "serve": "concurrently \"node ./server/index.js\" \"vue-cli-service serve\"",
