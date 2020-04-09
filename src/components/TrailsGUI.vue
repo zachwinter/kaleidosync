@@ -1,9 +1,9 @@
 <template lang="pug">
 .trails-gui
   form(@submit.prevent)
-    label.color
-      span Background
-      Chrome(v-model="background" disableFields=true)
+    //- label.color
+    //-   span Background
+    //-   Chrome(v-model="background" disableFields=true)
     div(v-for="(group, i) in groups" :key="i").group
       header
         h3 Group {{ i + 1 }}
@@ -11,10 +11,10 @@
       //- label.color
       //-   span Color
       //-   Chrome(v-model="group.color" disableAlpha=true disableFields=true @input="onInput(i)")
-      label 
-        span Blending
-        select(v-model="group.blending" @change="onInput(i)" @input="onInput(i)")
-          option(v-for="(mode, i) in blending") {{ mode }}
+      //- label 
+      //-   span Blending
+      //-   select(v-model="group.blending" @change="onInput(i)" @input="onInput(i)")
+      //-     option(v-for="(mode, i) in blending") {{ mode }}
       label
         span Sides
         input(type="range" min="3" max="12" v-model="group.sides" step="1" @change="onInput(i)" @input="onInput(i)")

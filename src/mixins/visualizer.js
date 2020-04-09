@@ -1,15 +1,25 @@
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import Canvas from '@/components/Canvas'
 
 export default {
   components: { Canvas },
-  computed: mapState([
-    'active', 
-    'trackProgress', 
-    'volumeQueues', 
-    'activeIntervals', 
-    'trackFeatures'
-  ]),
+  computed: {
+    ...mapState([
+      'active', 
+      'trackProgress', 
+      'volumeQueues', 
+      'activeIntervals', 
+      'trackFeatures'
+    ]),
+    ...mapGetters([
+      'segment',
+      'tatum',
+      'beat',
+      'bar',
+      'section',
+      'beatInterval'
+    ])
+  },
   watch: {
     active: {
       handler (val) {
@@ -21,19 +31,19 @@ export default {
       }, 
       immediate: true
     },
-    'activeIntervals.beats' (val, { index }) {
+    'beat' (val, { index }) {
       if (typeof this.onBeat === 'function' && val.index !== index) this.onBeat(val)
     },
-    'activeIntervals.tatums' (val, { index }) {
+    'tatum' (val, { index }) {
       if (typeof this.onTatum === 'function' && val.index !== index) this.onTatum(val)
     },
-    'activeIntervals.segments' (val, { index }) {
+    'segment' (val, { index }) {
       if (typeof this.onSegment === 'function' && val.index !== index) this.onSegment(val)
     },
-    'activeIntervals.sections' (val, { index }) {
+    'section' (val, { index }) {
       if (typeof this.onSection === 'function' && val.index !== index) this.onSection(val)
     },
-    'activeIntervals.bars' (val, { index }) {
+    'bar' (val, { index }) {
       if (typeof this.onBar === 'function' && val.index !== index) this.onBar(val)
     }
   },

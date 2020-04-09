@@ -7,6 +7,12 @@ router-view
 @import 'sass/global/fonts';
 @import 'sass/global/transitions';
 
+html, body, .home, .visualizer {
+  @include size(100%);
+  @include flex;
+  overflow: hidden;
+}
+
 body { font-family: 'Open Sans', sans-serif; }
-canvas { position: fixed; }
+canvas { @include position(fixed, 0 0 0 0); }
 </style>

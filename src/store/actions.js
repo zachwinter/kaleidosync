@@ -79,6 +79,7 @@ export default {
       var { data } = await get('https://api.spotify.com/v1/me/player', { headers: state.api.headers })
     } catch (e) {
       if (e.status === 401) return dispatch('refreshTokens')
+      if (e.status === 429) await pause(5000)
       return dispatch('ping')
     }
     
@@ -149,7 +150,7 @@ export default {
   },
 
   async ping ({ dispatch }) {
-    await pause(3000)
+    await pause(5000)
     dispatch('getCurrentlyPlaying')
   },
 
@@ -249,7 +250,9 @@ export default {
   },
 
   addTrailsRing ({ state, commit }) {
-    commit(SET_TRAILS, [...state.trails, {...state.trails[state.trails.length -1]}])
+    const trail = {...state.trails[state.trails.length -1]}
+    trail.radius = trail.radius * .5
+    commit(SET_TRAILS, [...state.trails, trail])
   },
 
   hover ({ commit }) {

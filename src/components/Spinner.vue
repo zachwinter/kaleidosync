@@ -1,20 +1,11 @@
 <template lang="pug">
 .spinner
-  .loader(:style="{ backgroundColor: color }")
+  .loader
 </template>
-
-<script>
-import { mapState } from 'vuex'
-
-export default {
-  computed: {
-    ...mapState(['color'])
-  }
-}
-</script>
 
 <style scoped lang="scss">
 .spinner {
+  @include position(fixed, 0 0 0 0);
   @include flex;
   z-index: 100;
 }
