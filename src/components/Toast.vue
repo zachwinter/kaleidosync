@@ -5,7 +5,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { SET_HOVER, SET_TOAST_VISIBLE } from '@/vuex/mutation-types'
+import { SET_HOVER, SET_TOAST_VISIBLE } from '@/store/mutation-types'
 
 export default { 
   data () {

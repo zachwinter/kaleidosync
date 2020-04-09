@@ -5,15 +5,15 @@
   transition(name="fade")
     div(:class="{ transitioning, initialized }" v-if="!settingsVisible && !toast.visible && !hideAll && (trackInfoVisible || alwaysShowTrackInfo)")
       span.name
-        span(v-if="name" :style="{ transition: `opacity ${colorTransitionDuration}ms` }") {{ name }}
+        span(v-if="name" :style="{ transition: `opacity ${300}ms` }") {{ name }}
       br
       span.artist
-        span(v-if="artist" :style="{ transition: `opacity ${colorTransitionDuration}ms` }") {{ artist }}
+        span(v-if="artist" :style="{ transition: `opacity ${300}ms` }") {{ artist }}
 </template>
 
 <script>
 import { mapState} from 'vuex' 
-import { SET_ALBUM_ART_VISIBLE, SET_TRACK_INFO_VISIBLE } from '@/vuex/mutation-types'
+import { SET_ALBUM_ART_VISIBLE, SET_TRACK_INFO_VISIBLE } from '@/store/mutation-types'
 
 export default {
   data () {
@@ -21,48 +21,39 @@ export default {
       delay: 4000, // Visibility duration (ms)
       transitioning: false,
       initialized: false,
-      transitionendIndex: 0,
       image: '',
       name: '',
       artist: ''
     }
   },
-  computed: {
-    ...mapState([
-      'color', 
-      'colorTransitionDuration', 
-      'currentlyPlaying', 
-      'albumArtVisible', 
-      'alwaysShowAlbumArt', 
-      'trackInfoVisible', 
-      'alwaysShowTrackInfo',
-      'toast',
-      'settingsVisible',
-      'hover',
-      'hideAll'
-    ])
-  },
+  computed: mapState([
+    'currentlyPlaying', 
+    'albumArtVisible', 
+    'alwaysShowAlbumArt', 
+    'trackInfoVisible', 
+    'alwaysShowTrackInfo',
+    'toast',
+    'settingsVisible',
+    'hover',
+    'hideAll'
+  ]),
   watch: {
     currentlyPlaying: {
       handler (val, old) {
-        const values = this.getCurrentlyPlaying(val)
-        this.image = values.image
-        this.artist = values.artist
-        this.name = values.name
+        const { image, artist, name } = this.getCurrentlyPlaying(val)
+        this.image = image
+        this.artist = artist
+        this.name = name
         this.show(val, old)
-        // this.transition(values)
       },
       immediate: true
     }
   },
   methods: {
-    show (val, old) {
+    show () {
       this.$store.commit(SET_ALBUM_ART_VISIBLE, true)
       this.$store.commit(SET_TRACK_INFO_VISIBLE, true)
     
-
-      if (!old) return
-      
       this.timeout = setTimeout(() => {
         if (this.alwaysShowAlbumArt === false) {
           this.$store.commit(SET_ALBUM_ART_VISIBLE, false)

@@ -10,7 +10,7 @@ import CheckBox from '@/components/CheckBox'
 import {
   SET_ALWAYS_SHOW_TRACK_INFO, 
   SET_ALWAYS_SHOW_ALBUM_ART
-} from '@/vuex/mutation-types'
+} from '@/store/mutation-types'
 
 export default {
   components: { CheckBox },

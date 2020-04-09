@@ -9,7 +9,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { SET_MENU_VISIBLE } from '@/vuex/mutation-types'
+import { SET_MENU_VISIBLE } from '@/store/mutation-types'
 
 export default {
   computed: {

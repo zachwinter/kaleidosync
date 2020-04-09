@@ -3,6 +3,7 @@ header
   h1 Kaleidosync
   .visualizers 
     ul(:data-selected="selectedVisualizer")
+      li: span.fractal(@click="select('fractal')"): img(src="@/assets/fractal.jpg" alt="Fractal")
       li: span.trails(@click="select('trails')"): img(src="@/assets/trails.jpg" alt="Trails")
       li: span.kaleidosync(@click="select('kaleidosync')"): img(src="@/assets/kaleidosync.png" alt="Original")
       li: span.blobs(@click="select('blobs')"): img(src="@/assets/blobs.jpg" alt="Blobs")
@@ -14,8 +15,7 @@ header
 import { mapState } from 'vuex'
 import Settings from '@/components/Settings'
 import Check from '@/assets/svg/check.svg'
-import VISUALIZERS from '@/enums'
-import { SET_VISUALIZER } from '@/vuex/mutation-types'
+import { SET_SELECTED_VISUALIZER } from '@/store/mutation-types'
 
 export default {
   components : { Check, Settings },
@@ -24,16 +24,7 @@ export default {
   },
   methods: {
     select (name) {
-      this.$store.commit(SET_VISUALIZER, name)
-
-      if (this.$ga) {
-        this.$ga.event({
-          eventCategory: 'visualizer',
-          eventAction: 'selected',
-          eventLabel: name,
-          eventValue: VISUALIZERS[name.toUpperCase()].id
-        })
-      }
+      this.$store.commit(SET_SELECTED_VISUALIZER, name)
     }
   }
 }
@@ -71,6 +62,7 @@ h1 {
   @include max-width(header) {
     line-height: 40px;
     margin-bottom: 30px;
+    text-align: center;
   }
 }
 
@@ -137,4 +129,6 @@ h2 {
 [data-selected="trails"] .trails { @extend %style; }
 [data-selected="wavesync"] .wavesync { @extend %style; }
 [data-selected="blobs"] .blobs { @extend %style; }
+[data-selected="fractal"] .fractal { @extend %style; }
+
 </style>

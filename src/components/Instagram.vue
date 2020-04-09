@@ -22,6 +22,7 @@ a {
   padding: 30px;
   border: 0;
   outline: 0;
+  display: block;
   
   &:hover { outline: 0; }
 
@@ -29,10 +30,11 @@ a {
     @include size(40px);
     padding: 10px;
     top: 90px;
-  }
+  } 
 
   svg {
     @include size(100%);
+    display: block;
 
     * {
       fill: white;
