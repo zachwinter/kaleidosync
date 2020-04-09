@@ -5,7 +5,7 @@
     Header(v-if="menuVisible")
   NowPlaying
   transition(name="fade")
-    Spinner(v-if="spinnerVisible")
+    Spinner(v-if="loadingNextSong")
   transition(name="fadey")
     Toast(v-if="toast.visible")
   component(:is="activeVisualizer")
@@ -42,7 +42,7 @@ export default {
     ...mapState([
       'selectedVisualizer', 
       'headerVisible', 
-      'spinnerVisible', 
+      'loadingNextSong', 
       'toast',
       'menuVisible'
     ]),
@@ -68,6 +68,7 @@ export default {
     this.$store.dispatch('toast', {
       message: 'Connecting to Spotify'
     })
+    if (this.$ga) this.$ga.page('/visualizer')
     await pause(1000)
     this.$store.dispatch('getCurrentlyPlaying')
   },

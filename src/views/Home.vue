@@ -70,11 +70,6 @@ export default {
 <style lang="scss" scoped>
 $splash-hide-duration: 1000ms;
 
-.home {
-  @include position(fixed, 0 0 0 0);
-  @include flex;
-}
-
 .splash {
   z-index: 100;
   position: relative;

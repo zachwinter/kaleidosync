@@ -7,7 +7,6 @@ import * as THREE from 'three'
 import visualizer from '@/mixins/visualizer'
 import { interpolateBasis } from 'd3-interpolate'
 import ease from '@/util/ease'
-import { mapState } from 'vuex'
 
 export default {
   mixins: [visualizer],
@@ -34,8 +33,6 @@ export default {
   data: () => ({
     dead: false
   }), 
-
-  computed: mapState(['beatInterval']),
 
   mounted () {
     this.init()
@@ -127,9 +124,9 @@ export default {
         volume *= this.getVolumeQueue(queue.name)
       })
       // const beat = interpolateBasis([base, tick * volume, base])(ease(this.activeIntervals.beats.progress))
-      const tatum = interpolateBasis([base, base + (tick * volume), base])(ease(this.activeIntervals[this.beatInterval].progress))
+      const tatum = interpolateBasis([base, base + (tick * volume), base])(ease(this.beatInterval.progress))
       if (!isNaN(tatum)) this.uniforms.stream.value += tatum 
-      this.uniforms.bounce.value = interpolateBasis([1, 5 * volume, 1])(ease(this.activeIntervals.bars.progress))
+      this.uniforms.bounce.value = interpolateBasis([1, 5 * volume, 1])(ease(this.bar.progress))
       this.uniforms.time.value = now
       this.renderer.render(this.scene, this.camera)
     }

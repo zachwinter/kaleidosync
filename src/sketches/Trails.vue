@@ -50,8 +50,6 @@ export default {
       hsl('purple'),
       hsl('red')
     ].map(color => {
-      color.l += .2
-      color.s -= .2
       return color
     })
     this.colorIndex = 0
@@ -113,7 +111,7 @@ export default {
       // const c = this.getVolumeQueue('trails-c')
       const volume = b * a
       const base = (Math.min(width, height) / 2) * parseFloat(config.radius)
-      const beat = interpolateBasis([0, 2 * volume, 0])(ease(this.activeIntervals[this.beatInterval].progress, 'easeInQuint'))
+      const beat = interpolateBasis([0, 4 * volume, 0])(ease(this.activeIntervals[this.beatInterval].progress, 'easeOutCubic'))
       const radius = (base + (base * a) + (base * beat)) * a
       const vertices = polygon(config.sides, radius, width/2, height/2, this.now * config.rotation)
       vertices.forEach(({ x, y }, i) => {
@@ -123,7 +121,7 @@ export default {
         this.arm.fillStyle = this.iColor(this.activeIntervals.bars.progress) //this.trails[0].color.hex
         // console.log(this.arm.fillStyle, this.activeIntervals.bars.progress)
         const iRadius = interpolateBasis([0, r, 0])
-        const iRotation = interpolateBasis([0, -45, 0])
+        const iRotation = interpolateBasis([0, 90, 0])
         for (let j = 0; j < this.model[index][i].length - 1; j++) {
           const easing = 'linear'
           const p1 = ease((j/(this.model[index][i].length - 1)), easing)
@@ -159,9 +157,9 @@ export default {
     applyGroup ({ config }) {
       const { ctx, width, height } = this.$refs.canvas
       ctx.save()
-      ctx.shadowBlur = (WIDTH_CONSTANT * config.width) / 4
+      ctx.shadowBlur = (WIDTH_CONSTANT * config.width) / 3
       ctx.shadowColor = this.iColor(this.activeIntervals.bars.progress) // config.color.hex
-      ctx.globalCompositeOperation = config.blending
+      ctx.globalCompositeOperation = 'lighter'
       ctx.drawImage(this.arm.canvas, 0, 0, width, height)
       ctx.restore()
     },
