@@ -42,6 +42,12 @@ npm serve
 
 ## Changelog
 
+> #### Version 5.0
+
+* Major refactor.
+* There are now 5 visualizers to choose from.
+* Includes an interface for rendering fragment shaders.
+
 > #### Version 4.0
 * Project backbone has been abstracted away into its own library, [spotify-viz](https://github.com/zachwinter/spotify-viz).
 * Adoped [@vue/cli](https://cli.vuejs.org) for the UI layer.
