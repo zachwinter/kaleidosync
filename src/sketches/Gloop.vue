@@ -60,8 +60,8 @@ export default {
         );
 
         vec3 color = mix(mix1, mix2, col );
-        gl_FragColor -= vec4(log(color), 1);
-        gl_FragColor.bg *= .5; 
+        gl_FragColor -= vec4((color), 1);
+        gl_FragColor.bg *= .4 * cos(time/1000.); 
       }
     `,
     xBase: 2,
