@@ -7,7 +7,7 @@ export default {
   data: () => ({
     width: window.innerWidth,
     height: window.innerHeight,
-    dpi: 1,// window.devicePixelRatio,
+    dpi: 1, // window.devicePixelRatio,
     offscreens: []
   }),
   computed: {

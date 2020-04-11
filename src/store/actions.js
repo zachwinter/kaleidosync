@@ -198,8 +198,6 @@ export default {
   determineBeatInterval ({ state, commit }) {
     const average = state.trackAnalysis.tatums.reduce((total, tatum) => total + tatum.duration, 0) / state.trackAnalysis.tatums.length
     const interval = average >= 300 ? 'tatums' : 'beats'
-    // eslint-disable-next-line 
-    // console.log(`Average tatum: ${average}ms – selecting ${interval})`)
     commit(SET_BEAT_INTERVAL, interval)
   },
 

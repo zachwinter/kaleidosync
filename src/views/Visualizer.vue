@@ -21,6 +21,7 @@ import Toast from '@/components/Toast'
 import { pause } from '@/util/timing'
 import Trails from '@/sketches/Trails'
 import Fractal from '@/sketches/Fractal'
+import Gloop from '@/sketches/Gloop'
 import Blobs from '@/sketches/Blobs'
 import Kaleidosync from '@/sketches/Kaleidosync'
 import Wavesync from '@/sketches/Wavesync'
@@ -36,7 +37,8 @@ export default {
     Fractal, 
     Blobs,
     Kaleidosync,
-    Wavesync
+    Wavesync,
+    Gloop
   },
   computed: {
     ...mapState([
@@ -58,6 +60,8 @@ export default {
           return 'Kaleidosync'
         case 'wavesync':
           return 'Wavesync'
+        case 'gloop':
+          return 'Gloop'
         default:
           return null
       }

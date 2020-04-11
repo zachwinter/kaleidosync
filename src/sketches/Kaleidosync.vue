@@ -39,12 +39,14 @@ export default {
     this.registerVolumeQueue('kaleidosync-beat', 240, 30)
     this.setSizeParams()
     this.setInitialModel()
-    window.addEventListener('resize', () => {
-      this.setSizeParams()
-    })
+    window.addEventListener('resize', this.setSizeParams.bind(this))
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.setSizeParams.bind(this))
   },
   methods: {
     setSizeParams () {
+      if (!this.$refs.canvas) return
       const { width, height } = this.$refs.canvas
       const landscape = height < width
     

@@ -8,9 +8,9 @@ router-view
 @import 'sass/global/transitions';
 
 html, body, .home, .visualizer {
-  @include size(100%);
+  @include size(100%, calc(100% + 1px));
   @include flex;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 body { font-family: 'Open Sans', sans-serif; }

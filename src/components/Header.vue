@@ -1,31 +1,18 @@
 <template lang="pug">
 header
   h1 Kaleidosync
-  .visualizers 
-    ul(:data-selected="selectedVisualizer")
-      li: span.fractal(@click="select('fractal')"): img(src="@/assets/fractal.jpg" alt="Fractal")
-      li: span.trails(@click="select('trails')"): img(src="@/assets/trails.jpg" alt="Trails")
-      li: span.kaleidosync(@click="select('kaleidosync')"): img(src="@/assets/kaleidosync.png" alt="Original")
-      li: span.blobs(@click="select('blobs')"): img(src="@/assets/blobs.jpg" alt="Blobs")
-      li: span.wavesync(@click="select('wavesync')"): img(src="@/assets/wavesync.png" alt="Wavesync")
+  VisualizerPicker
   Settings
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Settings from '@/components/Settings'
-import Check from '@/assets/svg/check.svg'
-import { SET_SELECTED_VISUALIZER } from '@/store/mutation-types'
+import VisualizerPicker from '@/components/VisualizerPicker'
 
 export default {
-  components : { Check, Settings },
-  computed: {
-    ...mapState(['selectedVisualizer', 'alwaysShowAlbumArt', 'alwaysShowTrackInfo'])
-  },
-  methods: {
-    select (name) {
-      this.$store.commit(SET_SELECTED_VISUALIZER, name)
-    }
+  components: {
+    VisualizerPicker, 
+    Settings
   }
 }
 </script>
@@ -65,70 +52,4 @@ h1 {
     text-align: center;
   }
 }
-
-h2 {
-  font-size: 18px;
-  margin-bottom: 20px;
-}
-
-.visualizers {
-  @include flex;
-  text-align: left;
-
-  * { margin: 0; }
-
-  ul {
-    @include flex(center, flex-start);
-
-    @include max-width(mobile) {
-      max-width: 200px;
-      flex-wrap: wrap;
-    }
-  }
-
-  @keyframes fade-in {
-    0% {
-      opacity: 0;
-      transform: scale(0);
-    }
-
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  li {
-    margin-right: 20px;
-    transition: opacity 200ms ease-in-out;
-
-    &:last-child { margin-right: 0; }
-
-    @include max-width(mobile) { margin-bottom: 20px; }
-  }
-
-  li span {
-    box-shadow: 0 0 10px white;
-    transition: box-shadow 100ms linear;
-  }
-
-  img {
-    @include size(80px);
-    display: block;
-    border-radius: 100px;
-  }
-}
-
-%style {
-  display: block;
-  border-radius: 100px;
-  box-shadow: 0 0 10px $blue;
-}
-
-[data-selected="kaleidosync"] .kaleidosync { @extend %style; }
-[data-selected="trails"] .trails { @extend %style; }
-[data-selected="wavesync"] .wavesync { @extend %style; }
-[data-selected="blobs"] .blobs { @extend %style; }
-[data-selected="fractal"] .fractal { @extend %style; }
-
 </style>

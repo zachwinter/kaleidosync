@@ -39,6 +39,7 @@ export default {
   },
 
   destroyed () {
+    window.removeEventListener('resize', this.onResize.bind(this))
     this.dead = true
     this.renderer.domElement.remove()
   },
@@ -94,9 +95,7 @@ export default {
       this.scene.add(this.mesh)
       document.body.appendChild(this.renderer.domElement)
 
-      window.addEventListener('resize', () => {
-        this.renderer.setSize(window.innerWidth, window.innerHeight)
-      })
+      window.addEventListener('resize', this.onResize.bind(this))
     },
 
     printUniforms () {
@@ -126,9 +125,14 @@ export default {
       // const beat = interpolateBasis([base, tick * volume, base])(ease(this.activeIntervals.beats.progress))
       const tatum = interpolateBasis([base, base + (tick * volume), base])(ease(this.beatInterval.progress))
       if (!isNaN(tatum)) this.uniforms.stream.value += tatum 
-      this.uniforms.bounce.value = interpolateBasis([1, 5 * volume, 1])(ease(this.bar.progress))
+      this.uniforms.bounce.value = interpolateBasis([1, 10, 1])(ease(this.beat.progress, 'easeOutCubic'))
       this.uniforms.time.value = now
       this.renderer.render(this.scene, this.camera)
+    },
+
+    onResize () {
+      this.uniforms.resolution = new THREE.Uniform(new THREE.Vector2(window.innerWidth, window.innerHeight))
+      this.renderer.setSize(window.innerWidth, window.innerHeight)
     }
   }
 }
