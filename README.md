@@ -35,15 +35,17 @@ npm i
 ```
 5) Then build and serve the project via @vue/cli:
 ```bash
-npm serve
+npm run serve
 ```
 6) Once running, visit [http://localhost:8080](http://localhost:8080) and log in with your Spotify account. 
 7) Play a song in your Spotify client of choice. The visualizer will take a moment to sync before initializing.
 
 ## Changelog
 
-> #### Version 5.0
+> #### Version 5.1
+* There are now 6 visualizers to choose from.
 
+> #### Version 5.0
 * Major refactor.
 * There are now 5 visualizers to choose from.
 * Includes an interface for rendering fragment shaders.
@@ -58,14 +60,12 @@ npm serve
 
 
 > #### Version 3.0
-
 * Complete refactor with no front end dependencies.
 * Transitioned to webpack from gulp. 
 * Reactive data store using ES6 Proxies, semi-inspired by Vuex.
 * (Hopefully) less spaghetti and more comments. 
 
 > #### Version 2.0
-
 * Re-implemented with `requestAnimationFrame()` 
 * Now mobile-friendly, even on older devices.
 * Improved tweening.

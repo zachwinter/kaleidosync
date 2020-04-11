@@ -5,6 +5,11 @@
 <script>
 import Three from '@/components/Three'
 
+/**
+ * Thank you @Klems for shader I used as base for this sketch.
+ * https://www.shadertoy.com/view/Xd2Bzw
+ */
+
 export default {
   components: { Three },
   data: () => ({
@@ -21,8 +26,8 @@ export default {
         gl_FragColor.rg *= .3;
       }
     `,
-    xBase: 140,
-    xTick: 800,
+    xBase: 120,
+    xTick: 1000,
     queues: [{
       name: 'fractal-size',
       totalSamples: 300,
