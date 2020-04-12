@@ -9,7 +9,10 @@ import Instagram from '@/assets/svg/instagram.svg'
 
 export default {
   components: { Instagram },
-  computed: mapState(['menuVisible', 'hover'])
+  computed: mapState({
+    menuVisible: ({ ui }) => ui.menuVisible,
+    hover: ({ ui }) => ui.hover
+  })
 }
 </script>
 

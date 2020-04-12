@@ -1,4 +1,7 @@
-export function initialTrailsState () {
+export const SET_MODEL = 'SET_MODEL'
+export const SET_BACKGROUND = 'SET_BACKGROUND'
+
+export function initialModel () {
   return [{
     "sides": "6",
     "length": "23",
@@ -36,7 +39,7 @@ export function initialTrailsState () {
   }]
 }
 
-export function initialTrailsBackground () {
+export function initialBackground () {
   return {
     "hsl": {
       "h": 256.59574468085106,
@@ -61,5 +64,28 @@ export function initialTrailsBackground () {
     "oldHue": 256.59574468085106,
     "source": "rgba",
     "a": 0.14
+  }
+}
+
+export default {
+  namespaced: true,
+  state: {
+    model: initialModel(),
+    background: initialBackground()
+  },
+  mutations: {
+    [SET_MODEL] (state, val) {
+      state.model = val
+    },
+    [SET_BACKGROUND] (state, val) {
+      state.background = val
+    }
+  },
+  actions: {
+    addRing ({ state, commit }) {
+      const ring = {...state.model[state.model.length - 1]}
+      ring.radius = ring.radius * .5
+      commit(SET_MODEL, [...state.model, ring])
+    }
   }
 }

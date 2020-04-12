@@ -13,12 +13,12 @@
 
 <script>
 import { mapState} from 'vuex' 
-import { SET_ALBUM_ART_VISIBLE, SET_TRACK_INFO_VISIBLE } from '@/store/mutation-types'
+import { SET_ALBUM_ART_VISIBLE, SET_TRACK_INFO_VISIBLE } from '@/store/modules/ui'
 
 export default {
   data () {
     return {
-      delay: 4000, // Visibility duration (ms)
+      delay: 6000, // Visibility duration (ms)
       transitioning: false,
       initialized: false,
       image: '',
@@ -26,17 +26,19 @@ export default {
       artist: ''
     }
   },
-  computed: mapState([
-    'currentlyPlaying', 
-    'albumArtVisible', 
-    'alwaysShowAlbumArt', 
-    'trackInfoVisible', 
-    'alwaysShowTrackInfo',
-    'toast',
-    'settingsVisible',
-    'hover',
-    'hideAll'
-  ]),
+  computed: mapState({
+    currentlyPlaying: ({ spotify }) => spotify.currentlyPlaying,
+    selectedVisualizer: ({ spotify }) => spotify.selectedVisualizer,
+    loadingNextSong: ({ spotify }) => spotify.loadingNextSong,
+    albumArtVisible: ({ ui }) => ui.albumArtVisible,
+    alwaysShowAlbumArt: ({ ui }) => ui.alwaysShowAlbumArt,
+    trackInfoVisible: ({ ui }) => ui.trackInfoVisible,
+    alwaysShowTrackInfo: ({ ui }) => ui.alwaysShowTrackInfo,
+    toast: ({ ui }) => ui.toast,
+    settingsVisible: ({ ui }) => ui.settingsVisible,
+    hover: ({ ui }) => ui.hover,
+    hideAll: ({ ui }) => ui.hideAll
+  }),
   watch: {
     currentlyPlaying: {
       handler (val, old) {
@@ -51,16 +53,16 @@ export default {
   },
   methods: {
     show () {
-      this.$store.commit(SET_ALBUM_ART_VISIBLE, true)
-      this.$store.commit(SET_TRACK_INFO_VISIBLE, true)
+      this.$store.commit(`ui/${SET_ALBUM_ART_VISIBLE}`, true)
+      this.$store.commit(`ui/${SET_TRACK_INFO_VISIBLE}`, true)
     
       this.timeout = setTimeout(() => {
         if (this.alwaysShowAlbumArt === false) {
-          this.$store.commit(SET_ALBUM_ART_VISIBLE, false)
+          this.$store.commit(`ui/${SET_ALBUM_ART_VISIBLE}`, false)
         }
 
         if (this.alwaysShowTrackInfo === false) {
-          this.$store.commit(SET_TRACK_INFO_VISIBLE, false)
+          this.$store.commit(`ui/${SET_TRACK_INFO_VISIBLE}`, false)
         }
       }, this.delay)
     },

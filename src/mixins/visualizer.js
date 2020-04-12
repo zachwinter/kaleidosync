@@ -4,20 +4,20 @@ import Canvas from '@/components/Canvas'
 export default {
   components: { Canvas },
   computed: {
-    ...mapState([
-      'active', 
-      'trackProgress', 
-      'volumeQueues', 
-      'activeIntervals', 
-      'trackFeatures'
-    ]),
+    ...mapState({
+      active: ({ spotify }) => spotify.active,
+      trackProgress: ({ spotify }) => spotify.trackProgress,
+      volumeQueues: ({ spotify }) => spotify.volumeQueues,
+      activeIntervals: ({ spotify }) => spotify.activeIntervals,
+      trackFeatures: ({ spotify }) => spotify.trackFeatures,
+      beatInterval: ({ spotify }) => spotify.beatInterval
+    }),
     ...mapGetters([
       'segment',
       'tatum',
       'beat',
       'bar',
-      'section',
-      'beatInterval'
+      'section'
     ])
   },
   watch: {
@@ -62,12 +62,12 @@ export default {
 
     async tick (now) {
       if (!this.__stop__ && this.active) requestAnimationFrame(this.tick.bind(this))
-      await this.$store.dispatch('tickUpdate')
+      await this.$store.dispatch('spotify/tickUpdate')
       if (typeof this.paint === 'function') this.paint(now)
     },
 
     registerVolumeQueue (name, totalSamples, smoothing) {
-      this.$store.dispatch('registerVolumeQueue', {
+      this.$store.dispatch('spotify/registerVolumeQueue', {
         name,
         totalSamples,
         smoothing

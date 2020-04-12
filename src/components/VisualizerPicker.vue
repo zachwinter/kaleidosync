@@ -9,23 +9,26 @@
 
 <script>
 import { mapState } from 'vuex'
-import { SET_SELECTED_VISUALIZER } from '@/store/mutation-types'
+import { SET_SELECTED_VISUALIZER } from '@/store/modules/ui'
 
 export default {
   data: () => ({
     visualizers: [
       ['fractal', true],
       ['gloop', true],
+      // ['flower', true],
       ['trails', false],
       ['kaleidosync', false],
       ['blobs', false],
       ['wavesync', false]
     ]
   }),
-  computed: mapState(['selectedVisualizer']),
+  computed: mapState({
+    selectedVisualizer: ({ ui }) => ui.selectedVisualizer
+  }),
   methods: {
     select (name) {
-      this.$store.commit(SET_SELECTED_VISUALIZER, name)
+      this.$store.commit(`ui/${SET_SELECTED_VISUALIZER}`, name)
     }
   }
 }

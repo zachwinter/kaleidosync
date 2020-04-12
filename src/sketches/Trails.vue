@@ -25,15 +25,22 @@ export default {
     model: null,
     offscreenSize: null
   }),
-  computed: mapState([
-    'trails', 
-    'trailsBackground', 
-    'beatInterval', 
-    'hover',
-    'menuVisible'
-  ]),
+  computed: {
+    ...mapState({
+      trailsModel: ({ trails }) => trails.model,
+      background: ({ trails }) => trails.background,
+      beatInterval: ({ spotify }) => spotify.beatInterval,
+      hover: ({ ui }) => ui.hover,
+      menuVisible: ({ ui }) => ui.menuVisible
+    })
+  },
+      // 'trails', 
+      // 'trailsBackground', 
+      // 'beatInterval', 
+      // 'hover',
+      // 'menuVisible'
   watch: {
-    trails () {
+    trailsModel () {
       this.initModel()
     }
   },
@@ -70,7 +77,7 @@ export default {
     },
 
     initModel () {
-      this.model = this.trails.map(({ sides }) => {
+      this.model = this.trailsModel.map(({ sides }) => {
         const model = []
         for (let i = 0; i < sides; i++) {
           model.push([])
@@ -85,7 +92,7 @@ export default {
 
     clear () {
       const { width, height, ctx } = this.$refs.canvas
-      const { r, g, b, a } = this.trailsBackground.rgba
+      const { r, g, b, a } = this.background.rgba
       ctx.save()
       ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`
       ctx.fillRect(0, 0, width, height)
@@ -111,15 +118,14 @@ export default {
       // const c = this.getVolumeQueue('trails-c')
       const volume = b * a
       const base = (Math.min(width, height) / 2) * parseFloat(config.radius)
-      const beat = interpolateBasis([0, 4 * volume, 0])(ease(this.activeIntervals[this.beatInterval].progress, 'easeOutCubic'))
+      const beat = interpolateBasis([0, 4 * volume, 0])(ease(this[this.beatInterval].progress, 'easeOutCubic'))
       const radius = (base + (base * a) + (base * beat)) * a
       const vertices = polygon(config.sides, radius, width/2, height/2, this.now * config.rotation)
       vertices.forEach(({ x, y }, i) => {
         this.model[index][i].push({ x, y, scale: volume })
         while (this.model[index][i].length > config.length) this.model[index][i].shift()
-        const r = WIDTH_CONSTANT * config.width// * (radius / 200)
-        this.arm.fillStyle = this.iColor(this.activeIntervals.bars.progress) //this.trails[0].color.hex
-        // console.log(this.arm.fillStyle, this.activeIntervals.bars.progress)
+        const r = WIDTH_CONSTANT * config.width
+        this.arm.fillStyle = this.iColor(this.bar.progress)
         const iRadius = interpolateBasis([0, r, 0])
         const iRotation = interpolateBasis([0, 90, 0])
         for (let j = 0; j < this.model[index][i].length - 1; j++) {
@@ -158,7 +164,7 @@ export default {
       const { ctx, width, height } = this.$refs.canvas
       ctx.save()
       ctx.shadowBlur = (WIDTH_CONSTANT * config.width) / 3
-      ctx.shadowColor = this.iColor(this.activeIntervals.bars.progress) // config.color.hex
+      ctx.shadowColor = this.iColor(this.bar.progress) // config.color.hex
       ctx.globalCompositeOperation = 'lighter'
       ctx.drawImage(this.arm.canvas, 0, 0, width, height)
       ctx.restore()
@@ -167,15 +173,15 @@ export default {
     paint () {
       if (!this.$refs.canvas) return
       let { width, height, clear } = this.$refs.canvas
-      const beat = this.ease(this.activeIntervals[this.beatInterval].progress)
+      const beat = this.ease(this[this.beatInterval].progress)
       this.now = this.now || 0
       this.now += interpolateBasis([0, 100, 0])(beat)
       this.clear()
       clear(this.arm, this.offscreenSize)
-      this.trails.forEach((config, i) => {  
+      this.trailsModel.forEach((config, i) => {  
         this.paintGroup({ config, width, height }, i)
       })
-      this.applyGroup({ config: this.trails[0], width, height })
+      this.applyGroup({ config: this.trailsModel[0], width, height })
     }
   }
 }

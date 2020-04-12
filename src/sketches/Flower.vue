@@ -9,10 +9,10 @@ import Three from '@/components/Three'
 export default {
   components: { Three },
   computed: mapState({
-    shader: ({ gloop }) => gloop.shader,
-    xBase: ({ gloop }) => gloop.xBase,
-    xTick: ({ gloop }) => gloop.xTick,
-    queues: ({ gloop }) => gloop.queues
+    shader: ({ flower }) => flower.shader,
+    xBase: ({ flower }) => flower.xBase,
+    xTick: ({ flower }) => flower.xTick,
+    queues: ({ flower }) => flower.queues
   })
 }
 </script>

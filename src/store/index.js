@@ -1,39 +1,33 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersistence from 'vuex-persist'
-import mutations from './mutations'
-import actions from './actions'
 import getters from './getters'
-import state from './state'
+import spotify from './modules/spotify'
+import ui from './modules/ui'
+import fractal from './modules/fractal'
+import trails from './modules/trails'
+import gloop from './modules/gloop'
+import flower from './modules/flower'
 
 Vue.use(Vuex)
 
 const { plugin } = new VuexPersistence({
   storage: window.localStorage,
   key: 'kaleidosync-persist-v4',
-  reducer (state) {
-    const {
-      alwaysShowAlbumArt,
-      alwaysShowTrackInfo,
-      selectedVisualizer,
-      trails,
-      trailsBackground
-    } = state
-
-    return {
-      alwaysShowAlbumArt,
-      alwaysShowTrackInfo,
-      selectedVisualizer,
-      trails,
-      trailsBackground
-    }
+  reducer ({ ui }) {
+    return { ui }
   }
 })
 
 export default new Vuex.Store({
-  state,
-  mutations,
-  actions,
   getters,
+  modules: {
+    spotify,
+    ui,
+    fractal,
+    trails,
+    gloop,
+    flower
+  },
   plugins: [plugin]
 })

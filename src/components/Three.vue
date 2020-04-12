@@ -123,7 +123,7 @@ export default {
         volume *= this.getVolumeQueue(queue.name)
       })
       // const beat = interpolateBasis([base, tick * volume, base])(ease(this.activeIntervals.beats.progress))
-      const tatum = interpolateBasis([base, base + (tick * volume), base])(ease(this.beatInterval.progress))
+      const tatum = interpolateBasis([base, base + (tick * volume), base])(ease(this[this.beatInterval].progress))
       if (!isNaN(tatum)) this.uniforms.stream.value += tatum 
       this.uniforms.bounce.value = interpolateBasis([1, 10, 1])(ease(this.beat.progress, 'easeOutCubic'))
       this.uniforms.time.value = now
@@ -133,6 +133,7 @@ export default {
     onResize () {
       this.uniforms.resolution = new THREE.Uniform(new THREE.Vector2(window.innerWidth, window.innerHeight))
       this.renderer.setSize(window.innerWidth, window.innerHeight)
+      this.renderer.setPixelRatio(window.devicePixelRatio)
     }
   }
 }
