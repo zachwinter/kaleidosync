@@ -17,9 +17,10 @@ export default {
       isFullscreen: false
     }
   },
-  computed: {
-    ...mapState(['menuVisible', 'hover'])
-  },
+  computed: mapState({
+    menuVisible: ({ ui }) => ui.menuVisible,
+    hover: ({ ui }) => ui.hover
+  }),
   methods: {
     fullScreen () {
       if (this.isFullscreen) {

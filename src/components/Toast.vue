@@ -5,7 +5,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { SET_HOVER, SET_TOAST_VISIBLE } from '@/store/mutation-types'
+import { SET_HOVER, SET_TOAST_VISIBLE } from '@/store/modules/ui'
 
 export default { 
   data () {
@@ -15,16 +15,17 @@ export default {
   },
   computed: {
     ...mapState({
-      message: s => s.toast.message,
-      autoHide: s => s.toast.autoHide
+      message: ({ ui }) => ui.toast.message,
+      autoHide: ({ ui }) => ui.toast.autoHide
     })
+    
   },
   mounted () {
-    this.$store.commit(SET_HOVER, false)
+    this.$store.commit(`ui/${SET_HOVER}`, false)
     
     if (this.autoHide === true) {
       setTimeout(() => {
-        this.$store.commit(SET_TOAST_VISIBLE, false)
+        this.$store.commit(`ui/${SET_TOAST_VISIBLE}`, false)
       }, this.delay)
     }
   } 

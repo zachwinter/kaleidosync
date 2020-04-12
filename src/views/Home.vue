@@ -44,7 +44,7 @@ export default {
     async login () {
       this.hide = true
       this.$refs.animate.addEventListener('animationend', () => {
-        this.$store.dispatch('login')
+        this.$store.dispatch('spotify/login')
       })
     },
     

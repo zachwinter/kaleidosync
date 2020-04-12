@@ -22,6 +22,7 @@ import { pause } from '@/util/timing'
 import Trails from '@/sketches/Trails'
 import Fractal from '@/sketches/Fractal'
 import Gloop from '@/sketches/Gloop'
+import Flower from '@/sketches/Flower'
 import Blobs from '@/sketches/Blobs'
 import Kaleidosync from '@/sketches/Kaleidosync'
 import Wavesync from '@/sketches/Wavesync'
@@ -38,16 +39,16 @@ export default {
     Blobs,
     Kaleidosync,
     Wavesync,
-    Gloop
+    Gloop,
+    Flower
   },
   computed: {
-    ...mapState([
-      'selectedVisualizer', 
-      'headerVisible', 
-      'loadingNextSong', 
-      'toast',
-      'menuVisible'
-    ]),
+    ...mapState({
+      selectedVisualizer: ({ ui }) => ui.selectedVisualizer,
+      loadingNextSong: ({ spotify }) => spotify.loadingNextSong,
+      toast: ({ ui }) => ui.toast,
+      menuVisible: ({ ui }) => ui.menuVisible
+    }),
     activeVisualizer () {
       switch (this.selectedVisualizer) {
         case 'trails':
@@ -62,19 +63,21 @@ export default {
           return 'Wavesync'
         case 'gloop':
           return 'Gloop'
+        case 'flower':
+          return 'Flower'
         default:
           return null
       }
     }
   },
   async mounted () {
-    this.$store.dispatch('readTokens')
-    this.$store.dispatch('toast', {
+    this.$store.dispatch('spotify/readTokens')
+    this.$store.dispatch('ui/toast', {
       message: 'Connecting to Spotify'
     })
     if (this.$ga) this.$ga.page('/visualizer')
     await pause(1000)
-    this.$store.dispatch('getCurrentlyPlaying')
+    this.$store.dispatch('spotify/getCurrentlyPlaying')
   },
   beforeMount () {
     document.body.addEventListener('mousemove', this.mousemove.bind(this))
@@ -86,7 +89,7 @@ export default {
   },
   methods: {
     mousemove () {
-      this.$store.dispatch('hover')
+      this.$store.dispatch('ui/hover')
     }
   }
 }

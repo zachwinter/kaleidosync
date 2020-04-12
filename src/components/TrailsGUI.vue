@@ -39,7 +39,7 @@
 <script>
 import { mapState } from 'vuex'
 import { Chrome } from 'vue-color'
-import { SET_TRAILS_BACKGROUND, SET_TRAILS } from '@/store/mutation-types'
+import { SET_MODEL, SET_BACKGROUND } from '@/store/modules/trails'
 import CheckBox from './CheckBox'
 import cloneDeep from 'lodash/cloneDeep'
  
@@ -48,7 +48,7 @@ export default {
   data () {
     return {
       groups: [],
-      background: null,
+      localBackground: null,
       backgroundColorPickerVisible: true,
       blending: [
         'source-over',
@@ -80,32 +80,35 @@ export default {
       ]
     }
   },
-  computed: mapState(['trails', 'trailsBackground']),
+  computed: mapState({
+    model: ({ trails }) => trails.model,
+    background: ({ trails }) => trails.background
+  }),
   watch: {
     async background (val) {
       await this.$nextTick()
-      this.$store.commit(SET_TRAILS_BACKGROUND, val)
+      this.$store.commit(`trails/${SET_BACKGROUND}`, val)
     }
   },
   methods: {
     async add () {
-      await this.$store.dispatch('addTrailsRing')
-      this.groups = cloneDeep(this.trails)
-      this.$store.commit(SET_TRAILS, cloneDeep(this.groups))
+      await this.$store.dispatch('trails/addRing')
+      this.groups = cloneDeep(this.model)
+      this.$store.commit(`trails/${SET_MODEL}`, cloneDeep(this.groups))
     },
     async remove (i) {
       this.groups.splice(i, 1)
       await this.$nextTick()
-      this.$store.commit(SET_TRAILS, cloneDeep(this.groups))
+      this.$store.commit(`trails/${SET_MODEL}`, cloneDeep(this.groups))
     },
     async onInput () {
       await this.$nextTick()
-      this.$store.commit(SET_TRAILS, cloneDeep(this.groups))
+      this.$store.commit(`trails/${SET_MODEL}`, cloneDeep(this.groups))
     }
   },
   created () {
-    this.background = cloneDeep(this.trailsBackground)
-    this.groups = cloneDeep(this.trails)
+    this.localBackground = cloneDeep(this.background)
+    this.groups = cloneDeep(this.model)
   }
 }
 </script>

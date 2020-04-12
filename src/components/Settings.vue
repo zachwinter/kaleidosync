@@ -10,25 +10,25 @@ import CheckBox from '@/components/CheckBox'
 import {
   SET_ALWAYS_SHOW_TRACK_INFO, 
   SET_ALWAYS_SHOW_ALBUM_ART
-} from '@/store/mutation-types'
+} from '@/store/modules/ui'
 
 export default {
   components: { CheckBox },
   computed: {
     alwaysShowTrackInfo: {
       get () {
-        return this.$store.state.alwaysShowTrackInfo
+        return this.$store.state.ui.alwaysShowTrackInfo
       },
       set (value) {
-        this.$store.commit(SET_ALWAYS_SHOW_TRACK_INFO, value)
+        this.$store.commit(`ui/${SET_ALWAYS_SHOW_TRACK_INFO}`, value)
       }
     },
     alwaysShowAlbumArt: {
       get () {
-        return this.$store.state.alwaysShowAlbumArt
+        return this.$store.state.ui.alwaysShowAlbumArt
       },
       set (value) {
-        this.$store.commit(SET_ALWAYS_SHOW_ALBUM_ART, value)
+        this.$store.commit(`ui/${SET_ALWAYS_SHOW_ALBUM_ART}`, value)
       }
     }
   }

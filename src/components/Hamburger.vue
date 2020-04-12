@@ -9,15 +9,16 @@
 
 <script>
 import { mapState } from 'vuex'
-import { SET_MENU_VISIBLE } from '@/store/mutation-types'
+import { SET_MENU_VISIBLE } from '@/store/modules/ui'
 
 export default {
-  computed: {
-    ...mapState(['menuVisible', 'hover'])
-  },
+  computed: mapState({
+    menuVisible: ({ ui }) => ui.menuVisible,
+    hover: ({ ui }) => ui.hover
+  }),
   methods: {
     toggleMenu() {
-      this.$store.commit(SET_MENU_VISIBLE, !this.menuVisible)
+      this.$store.commit(`ui/${SET_MENU_VISIBLE}`, !this.menuVisible)
     }
   }
 }

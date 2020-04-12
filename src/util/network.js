@@ -30,6 +30,8 @@ export function get (url, { async = true, headers = {} } = {}) {
       const response = createResponse(request)
       response.success = false
       response.error = request.responseText
+      const retry = request.getResponseHeader('retry-after')
+      response.retry = retry ? parseInt(retry, 10) + 1 : null
       reject(response)
     }
 

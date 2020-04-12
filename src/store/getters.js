@@ -1,8 +1,8 @@
 export default {
-  segment: s => s.activeIntervals.segments,
-  tatum: s => s.activeIntervals.tatums,
-  beat: s => s.activeIntervals.beats,
-  bar: s => s.activeIntervals.bars,
-  section: s => s.activeIntervals.sections,
-  beatInterval: s => s.activeIntervals[s.beatInterval]
+  segment: ({ spotify }) => spotify.activeIntervals.segments,
+  tatum: ({ spotify }) => spotify.activeIntervals.tatums,
+  beat: ({ spotify }) => spotify.activeIntervals.beats,
+  bar: ({ spotify }) => spotify.activeIntervals.bars,
+  section: ({ spotify }) => spotify.activeIntervals.sections,
+  beatInterval: ({ spotify }) => spotify.activeIntervals[spotify.beatInterval]
 }
