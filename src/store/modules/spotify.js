@@ -163,11 +163,11 @@ export default {
   
     async getCurrentlyPlaying ({ state, commit, dispatch }) {
       try {
-        var { data } = await get('https://api.spotify.com/v1/me/player', { headers: state.api.headers })
+        var { data } = await get('https://api.spotify.com/v1/me/player/currently-playing', { headers: state.api.headers })
       } catch (e) {
         if (e.status === 401) return dispatch('refreshTokens')
         if (e.status === 429) {
-          await pause(e.retry * 1000)
+          await pause((e.retry * 1000) + 1000)
           return dispatch('getCurrentlyPlaying')
         }
         return dispatch('ping')
@@ -285,7 +285,7 @@ export default {
       commit(SET_VOLUME_QUEUES, queues)
     },
   
-    determineBeatInterval ({ state, commit }) {
+    determineBeatInterval ({ commit, state }) {
       const average = state.trackAnalysis.tatums.reduce((total, tatum) => total + tatum.duration, 0) / state.trackAnalysis.tatums.length
       const interval = average >= 300 ? 'tatum' : 'beat'
       commit(SET_BEAT_INTERVAL, interval)

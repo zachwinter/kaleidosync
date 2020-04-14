@@ -1,3 +1,6 @@
+export const SET_UNIFORMS = 'SET_UNIFORMS'
+export const SET_SHADER = 'SET_SHADER'
+
 /**
  * Shout out to @Klems for the shader from which I derived this sketch.
  * https://www.shadertoy.com/view/Xd2Bzw
@@ -19,8 +22,6 @@ export default {
         gl_FragColor.rg *= .3;
       }
     `,
-    xBase: 120,
-    xTick: 1000,
     queues: [{
       name: 'fractal-size',
       totalSamples: 300,
@@ -29,6 +30,26 @@ export default {
       name: 'fractal-beat',
       totalSamples: 700,
       smoothing: 30
-    }]
+    }],
+    uniforms: {
+      xBase: {
+        min: 0,
+        max: 200,
+        value: 120
+      },
+      xTick: {
+        min: 0,
+        max: 2000,
+        value: 1000
+      }
+    },
+  },
+  mutations: {
+    [SET_UNIFORMS] (state, val) {
+      state.uniforms = val
+    },
+    [SET_SHADER] (state, val) {
+      state.shader = val
+    }
   }
 }

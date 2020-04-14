@@ -8,7 +8,7 @@ router-view
 @import 'sass/global/transitions';
 
 html, body, .home, .visualizer {
-  @include size(100%, calc(100% + 1px));
+  @include size(100%);
   @include flex;
   overflow-x: hidden;
 }
