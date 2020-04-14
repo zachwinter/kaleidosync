@@ -1,5 +1,5 @@
 <template lang="pug">
-  Three(:shader="shader" :x-base="xBase" :x-tick="xTick" :queues="queues")
+  Three(:shader="shader" :queues="queues" :uniforms="uniforms")
 </template>
 
 <script>
@@ -10,9 +10,8 @@ export default {
   components: { Three },
   computed: mapState({
     shader: ({ fractal }) => fractal.shader,
-    xBase: ({ fractal }) => fractal.xBase,
-    xTick: ({ fractal }) => fractal.xTick,
-    queues: ({ fractal }) => fractal.queues
+    queues: ({ fractal }) => fractal.queues,
+    uniforms: ({ flower }) => flower.uniforms
   })
 }
 </script>

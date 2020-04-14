@@ -1,3 +1,5 @@
+import { pause } from '@/util/timing'
+
 export const SET_ALWAYS_SHOW_ALBUM_ART = 'SET_ALWAYS_SHOW_ALBUM_ART'
 export const SET_ALWAYS_SHOW_TRACK_INFO = 'SET_ALWAYS_SHOW_TRACK_INFO'
 export const SET_MENU_VISIBLE = 'SET_MENU_VISIBLE'
@@ -21,7 +23,7 @@ export default {
     trackInfoVisible: false,
     hover: false,
     hoverTimeout: null,
-    hoverDelay: 1000,
+    hoverDelay: 2000,
     spinnerVisible: false,
     hideAll: false,
     menuVisible: false,
@@ -89,8 +91,11 @@ export default {
       }) 
     },
   
-    toast ({ commit }, { message, autoHide = true }) {
-      commit(SET_TOAST_VISIBLE, false)
+    async toast ({ commit, state }, { message, autoHide = true }) {
+      if (state.toast.visible) {
+        commit(SET_TOAST_VISIBLE, false)
+        await pause(500)
+      }
       commit(SET_TOAST_MESSAGE, { message, autoHide })
       commit(SET_TOAST_VISIBLE, true)
     }

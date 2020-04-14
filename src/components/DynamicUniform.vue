@@ -89,7 +89,7 @@ button {
   @include size(20px);
   background: transparent;
   border: 0;
-  color: $col-white;
+  color: $white;
   padding: 0;
   position: relative;
   z-index: 5;
@@ -118,7 +118,7 @@ button {
   @include size(100%);
   font-size: 14px;
   line-height: 20px;
-  transition: opacity $base-transition;
+  transition: opacity 300ms ease-in-out;
   height: 20px !important;
   &.visible { opacity: 1; }
   &.hidden { opacity: 0; }
@@ -159,14 +159,14 @@ span {
 input[type=range] {
   -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
   width: 100%; /* Specific width is required for Firefox. */
-  background: $col-white;
+  background: $white;
   border-radius: 10px; /* Otherwise white in Chrome */
 }
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
   @include size($input-height/1.5);
-  background: $col-purple;
+  background: $blue;
   border-radius: 100px;
 }
 

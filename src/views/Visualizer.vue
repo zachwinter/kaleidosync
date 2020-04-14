@@ -47,7 +47,9 @@ export default {
       selectedVisualizer: ({ ui }) => ui.selectedVisualizer,
       loadingNextSong: ({ spotify }) => spotify.loadingNextSong,
       toast: ({ ui }) => ui.toast,
-      menuVisible: ({ ui }) => ui.menuVisible
+      menuVisible: ({ ui }) => ui.menuVisible,
+      initialized: ({ spotify }) => spotify.initialized,
+      noPlayback: ({ spotify }) => spotify.noPlayback
     }),
     activeVisualizer () {
       switch (this.selectedVisualizer) {
@@ -73,8 +75,10 @@ export default {
   async mounted () {
     this.$store.dispatch('spotify/readTokens')
     this.$store.dispatch('ui/toast', {
-      message: 'Connecting to Spotify'
+      message: 'Connecting to Spotify',
+      autoHide: false
     })
+    this.tooLong()
     if (this.$ga) this.$ga.page('/visualizer')
     await pause(1000)
     this.$store.dispatch('spotify/getCurrentlyPlaying')
@@ -90,6 +94,15 @@ export default {
   methods: {
     mousemove () {
       this.$store.dispatch('ui/hover')
+    },
+    async tooLong () {
+      await pause(3000)
+      if (this.initialized) return
+      if (!this.initilized && this.noPlayback) return
+      this.$store.dispatch('ui/toast', {
+        message: `Hang tight! Trying again...`,
+        autoHide: false
+      })
     }
   }
 }

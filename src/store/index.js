@@ -14,8 +14,8 @@ Vue.use(Vuex)
 const { plugin } = new VuexPersistence({
   storage: window.localStorage,
   key: 'kaleidosync-persist-v5',
-  reducer ({ ui, trails }) {
-    return { ui, trails }
+  reducer ({ ui, trails, flower }) {
+    return { ui, trails, flower }
   }
 })
 
