@@ -77,13 +77,15 @@ export default {
       }
     }
   },
+  created () {
+    this.$store.dispatch('ui/resetToast')
+  },
   async mounted () {
     this.$store.dispatch('spotify/readTokens')
     this.$store.dispatch('ui/toast', {
       message: 'Connecting to Spotify',
       autoHide: false
     })
-    this.tooLong()
     if (this.$ga) this.$ga.page('/visualizer')
     await pause(1000)
     this.$store.dispatch('spotify/getCurrentlyPlaying')
@@ -99,15 +101,6 @@ export default {
   methods: {
     mousemove () {
       this.$store.dispatch('ui/hover')
-    },
-    async tooLong () {
-      await pause(3000)
-      if (this.initialized) return
-      if (!this.initilized && this.noPlayback) return
-      this.$store.dispatch('ui/toast', {
-        message: `Hang tight! Trying again...`,
-        autoHide: false
-      })
     }
   }
 }

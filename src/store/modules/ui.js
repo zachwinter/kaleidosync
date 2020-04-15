@@ -71,9 +71,10 @@ export default {
     [SET_TOAST_VISIBLE] (state, val) {
       state.toast.visible = val
     },
-    [SET_TOAST_MESSAGE] (state, { message, autoHide }) {
+    [SET_TOAST_MESSAGE] (state, { message, autoHide, subText }) {
       state.toast.message = message
       state.toast.autoHide = autoHide
+      state.toast.subText = subText
     },
     [SET_SPINNER_VISIBLE] (state, val) {
       state.spinnerVisible = val
@@ -96,13 +97,17 @@ export default {
       }) 
     },
   
-    async toast ({ commit, state }, { message, autoHide = true }) {
+    async toast ({ commit, state }, { message, subText = null, autoHide = true }) {
       if (state.toast.visible) {
         commit(SET_TOAST_VISIBLE, false)
         await pause(500)
       }
-      commit(SET_TOAST_MESSAGE, { message, autoHide })
+      commit(SET_TOAST_MESSAGE, { message, autoHide, subText })
       commit(SET_TOAST_VISIBLE, true)
+    },
+
+    resetToast ({ commit }) {
+      commit(SET_TOAST_MESSAGE, { message: '', autoHide: true, subText: '' })
     }
   }
 }
