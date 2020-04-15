@@ -1,3 +1,5 @@
+import { pause } from '@/util/timing'
+
 export const SET_ALWAYS_SHOW_ALBUM_ART = 'SET_ALWAYS_SHOW_ALBUM_ART'
 export const SET_ALWAYS_SHOW_TRACK_INFO = 'SET_ALWAYS_SHOW_TRACK_INFO'
 export const SET_MENU_VISIBLE = 'SET_MENU_VISIBLE'
@@ -11,6 +13,7 @@ export const SET_TOAST_VISIBLE = 'SET_TOAST_VISIBLE'
 export const SET_TOAST_MESSAGE = 'SET_TOAST_MESSAGE'
 export const SET_SPINNER_VISIBLE = 'SET_SPINNER_VISIBLE'
 export const SET_SELECTED_VISUALIZER = 'SET_SELECTED_VISUALIZER'
+export const SET_EDUCATED = 'SET_EDUCATED'
 
 export default {
   namespaced: true,
@@ -21,7 +24,7 @@ export default {
     trackInfoVisible: false,
     hover: false,
     hoverTimeout: null,
-    hoverDelay: 1000,
+    hoverDelay: 2000,
     spinnerVisible: false,
     hideAll: false,
     menuVisible: false,
@@ -31,7 +34,8 @@ export default {
       message: '',
       autohide: true
     },
-    selectedVisualizer: 'fractal'
+    selectedVisualizer: 'fractal',
+    educated: false
   },
   mutations: {
     [SET_ALWAYS_SHOW_TRACK_INFO] (state, val) {
@@ -76,6 +80,9 @@ export default {
     },
     [SET_SELECTED_VISUALIZER] (state, val) {
       state.selectedVisualizer = val
+    },
+    [SET_EDUCATED] (state, val) {
+      state.educated = val
     }
   },
 
@@ -89,8 +96,11 @@ export default {
       }) 
     },
   
-    toast ({ commit }, { message, autoHide = true }) {
-      commit(SET_TOAST_VISIBLE, false)
+    async toast ({ commit, state }, { message, autoHide = true }) {
+      if (state.toast.visible) {
+        commit(SET_TOAST_VISIBLE, false)
+        await pause(500)
+      }
       commit(SET_TOAST_MESSAGE, { message, autoHide })
       commit(SET_TOAST_VISIBLE, true)
     }
