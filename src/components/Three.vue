@@ -147,18 +147,17 @@ export default {
     },
 
     paint (now) {
-      const base = parseFloat(this.uniforms.xBase.value)
-      const tick = parseFloat(this.uniforms.xTick.value)
+      const base = parseFloat(this._uniforms.xBase.value)
+      const tick = parseFloat(this._uniforms.xTick.value)
       let volume = 1
       this.queues.forEach(queue => {
         volume *= this.getVolumeQueue(queue.name)
       })
       const tatum = interpolateBasis([base, base + (tick * volume), base])(ease(this[this.beatInterval].progress))
       if (!isNaN(tatum)) this._uniforms.stream.value += tatum 
-      this._uniforms.bounce.value = interpolateBasis([1, 1 + (3* volume), 1])(ease(this.beat.progress, 'easeOutCubic'))
+      this._uniforms.bounce.value = interpolateBasis([1, 1 + (3 * volume), 1])(ease(this.beat.progress, 'easeOutCubic'))
       this._uniforms.time.value = now
       this.renderer.render(this.scene, this.camera)
-      console.log(this._uniforms)
     },
 
     onResize () {

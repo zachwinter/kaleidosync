@@ -13,6 +13,7 @@ export default {
       vec2 p;
       void main() {                                                                                                                                                                                                                                                                                                                                                                        
         p = -1.0 + 2.0 * vUv.xy;
+        p *= .7;
         p.x *= resolution.x/resolution.y;
         gl_FragColor = vec4(1, 1, 1, 1);
         for (float i = 1. ; i < 3. ; i++) {
@@ -39,8 +40,8 @@ export default {
       },
       xTick: {
         min: 0,
-        max: 2000,
-        value: 1000
+        max: 1500,
+        value: 800
       }
     },
   },
