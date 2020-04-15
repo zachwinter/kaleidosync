@@ -1,7 +1,7 @@
 <template lang="pug">
 .refresh
   transition(name="fadeyn")
-    button(v-if="!menuVisible && hover" @click="ping"): RefreshIcon
+    button(v-if="!menuVisible && hover" @click="ping" :disabled="retrying"): RefreshIcon
 </template>
 
 <script>
@@ -12,7 +12,8 @@ export default {
   components: { RefreshIcon },
   computed: mapState({
     menuVisible: ({ ui }) => ui.menuVisible,
-    hover: ({ ui }) => ui.hover
+    hover: ({ ui }) => ui.hover,
+    retrying: ({ spotify }) => spotify.retrying
   }),
   methods: {
     ping () {

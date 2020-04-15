@@ -1,6 +1,6 @@
 <template lang="pug">
 .toast
-  h2 {{ message }}
+  h2 {{ message }} #[span(v-if="subText") {{ subText }}] 
 </template>
 
 <script>
@@ -16,7 +16,8 @@ export default {
   computed: {
     ...mapState({
       message: ({ ui }) => ui.toast.message,
-      autoHide: ({ ui }) => ui.toast.autoHide
+      autoHide: ({ ui }) => ui.toast.autoHide,
+      subText: ({ ui }) => ui.toast.subText
     })
     
   },
@@ -44,7 +45,13 @@ export default {
     @include scale(font-size 60px 30px);
     color: white;
     background: black;
-    padding: 5px 10px;
+    padding: 20px;
+  }
+
+  span {
+    display: block;
+    font-size: .5em;
+    margin-top: 15px;
   }
 }
 </style>

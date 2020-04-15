@@ -8,6 +8,7 @@ import interpolateNumber from 'd3-interpolate/src/number'
 import scaleLinear from 'd3-scale/src/linear'
 import ease from '@/util/ease'
 import { SET_TOAST_VISIBLE } from '@/store/modules/ui'
+import { SET_TOAST_MESSAGE } from './ui'
 
 export const SET_AUTH_ID = 'SET_AUTH_ID'
 export const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN'
@@ -26,10 +27,11 @@ export const SET_LOADING_NEXT_SONG = 'SET_LOADING_NEXT_SONG'
 export const SET_VOLUME_QUEUES = 'SET_VOLUME_QUEUES'
 export const SET_ACTIVE_INTERVAL = 'SET_ACTIVE_INTERVAL'
 export const SET_BEAT_INTERVAL = 'SET_BEAT_INTERVAL'
+export const SET_RETRYING = 'SET_RETRYING'
 
 // eslint-disable-next-line 
 const LOCAL_ROOT = (PRODUCTION) ? '' : '/api' 
-const PING_DELAY = 30000
+const PING_DELAY = 60000
 
 export default {
   namespaced: true,
@@ -60,6 +62,7 @@ export default {
     initialized: false,
     noPlayback: false,
     loadingNextSong: false,
+    retrying: false,
     beatInterval: 'tatums'
   },
 
@@ -118,6 +121,9 @@ export default {
     },
     [SET_ACTIVE_INTERVAL] (state, { type, interval }) {
       state.activeIntervals[type] = interval
+    },
+    [SET_RETRYING] (state, val) {
+      state.retrying = val
     }
   },
 
@@ -166,11 +172,7 @@ export default {
         var { data } = await get('https://api.spotify.com/v1/me/player/currently-playing', { headers: state.api.headers })
       } catch (e) {
         if (e.status === 401) return dispatch('refreshTokens')
-        if (e.status === 429) {
-          await pause((e.retry * 1000) + 1000)
-          return dispatch('getCurrentlyPlaying')
-        }
-        return dispatch('ping')
+        if (e.status === 429) return dispatch('retryAfter', e.retry)
       }
       
       if (!data || !data.is_playing || !data.item) {
@@ -179,9 +181,9 @@ export default {
         commit(SET_ACTIVE, false)
         dispatch('ui/toast', {
           message: 'No playback detected',
+          subText: 'Play a song, then click the refresh icon.',
           autoHide: false
         }, { root: true })  
-        return dispatch('ping')
       } else {
         commit(`ui/${SET_TOAST_VISIBLE}`, false, { root: true })
       }
@@ -191,8 +193,6 @@ export default {
       if (!state.initialized || !songsInSync || !state.active) {
         return dispatch('getTrackInfo', data)
       }
-      
-      dispatch('ping')
     },
   
     async getTrackInfo ({ state, commit, dispatch }, currentlyPlaying) {
@@ -204,7 +204,11 @@ export default {
           get(`https://api.spotify.com/v1/audio-features/${currentlyPlaying.item.id}`, { headers: state.api.headers }).then(res => res.data),
         ])
       } catch (e) {
-        return dispatch('ping')
+        if (e.status === 429) {
+          await pause((e.retry * 1000) + 1000)
+          return dispatch('getTrackInfo', currentlyPlaying)
+        }
+        return dispatch('login')
       }
   
       commit(SET_CURRENTLY_PLAYING, currentlyPlaying.item)
@@ -229,14 +233,33 @@ export default {
       commit(SET_INITIAL_TRACK_PROGRESS, Date.now() - currentlyPlaying.timestamp)
       commit(SET_TRACK_PROGRESS, Date.now() - currentlyPlaying.timestamp)
       commit(SET_INITIAL_START, window.performance.now())
+      commit(SET_RETRYING, false)
       
       dispatch('determineBeatInterval')
   
       if (!state.initialized) commit(SET_INITIALIZED, true)
       if (!state.active) commit(SET_ACTIVE, true)
       if (!state.noPlayback) commit(SET_NO_PLAYBACK, false)
-  
-      dispatch('ping')
+    },
+
+    async retryAfter ({ commit, dispatch, rootState }, retry) {
+      commit(SET_RETRYING, true)
+      dispatch('ui/toast', {
+        message: `Spotify is busy! Retrying in ${retry} seconds.`,
+        subText: `Please don't refresh your browser.`,
+        autoHide: false
+      }, { root: true })
+      let remaining = parseInt(retry, 10)
+      const interval = setInterval(() => {
+        commit(`ui/${SET_TOAST_MESSAGE}`, {
+          ...rootState.ui.toast,
+          message: `Spotify is busy! Retrying in ${remaining} second${remaining === 1 ? '' : 's'}.`,
+        }, { root: true })
+        remaining--
+        if (remaining === 0) clearInterval(interval)
+      }, 1000)
+      await pause((retry * 1000) + 1000)
+      return dispatch('getCurrentlyPlaying')
     },
   
     async ping ({ dispatch }) {
