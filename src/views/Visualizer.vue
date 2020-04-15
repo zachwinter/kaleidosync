@@ -9,7 +9,7 @@
   transition(name="fadey")
     Toast(v-if="toast.visible")
   transition(name="fadey")
-    Announcement(v-if="educated")
+    Announcement(v-if="!educated")
   component(:is="activeVisualizer")
 </template>
 
