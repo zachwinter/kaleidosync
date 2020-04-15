@@ -6,9 +6,11 @@ import store from './store'
 import VueAnalytics from 'vue-analytics'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faTrash)
+library.add(faSyncAlt)
+
 Vue.component('icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false

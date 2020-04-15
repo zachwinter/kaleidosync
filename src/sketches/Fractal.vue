@@ -11,7 +11,7 @@ export default {
   computed: mapState({
     shader: ({ fractal }) => fractal.shader,
     queues: ({ fractal }) => fractal.queues,
-    uniforms: ({ flower }) => flower.uniforms
+    uniforms: ({ fractal }) => fractal.uniforms
   })
 }
 </script>

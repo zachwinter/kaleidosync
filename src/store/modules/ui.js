@@ -13,6 +13,7 @@ export const SET_TOAST_VISIBLE = 'SET_TOAST_VISIBLE'
 export const SET_TOAST_MESSAGE = 'SET_TOAST_MESSAGE'
 export const SET_SPINNER_VISIBLE = 'SET_SPINNER_VISIBLE'
 export const SET_SELECTED_VISUALIZER = 'SET_SELECTED_VISUALIZER'
+export const SET_EDUCATED = 'SET_EDUCATED'
 
 export default {
   namespaced: true,
@@ -33,7 +34,8 @@ export default {
       message: '',
       autohide: true
     },
-    selectedVisualizer: 'fractal'
+    selectedVisualizer: 'fractal',
+    educated: false
   },
   mutations: {
     [SET_ALWAYS_SHOW_TRACK_INFO] (state, val) {
@@ -78,6 +80,9 @@ export default {
     },
     [SET_SELECTED_VISUALIZER] (state, val) {
       state.selectedVisualizer = val
+    },
+    [SET_EDUCATED] (state, val) {
+      state.educated = val
     }
   },
 

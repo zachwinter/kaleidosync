@@ -1,6 +1,6 @@
 <template lang="pug">
 .visualizer
-  Buttons
+  Buttons(v-if="educated")
   transition(name="fadeyn")
     Header(v-if="menuVisible")
   NowPlaying
@@ -8,6 +8,8 @@
     Spinner(v-if="loadingNextSong")
   transition(name="fadey")
     Toast(v-if="toast.visible")
+  transition(name="fadey")
+    Announcement(v-if="educated")
   component(:is="activeVisualizer")
 </template>
 
@@ -19,6 +21,7 @@ import Spinner from '@/components/Spinner'
 import NowPlaying from '@/components/NowPlaying'
 import Toast from '@/components/Toast'
 import { pause } from '@/util/timing'
+import Announcement from '@/components/Announcement'
 import Trails from '@/sketches/Trails'
 import Fractal from '@/sketches/Fractal'
 import Gloop from '@/sketches/Gloop'
@@ -34,6 +37,7 @@ export default {
     NowPlaying,
     Spinner,
     Toast,
+    Announcement,
     Trails, 
     Fractal, 
     Blobs,
@@ -45,6 +49,7 @@ export default {
   computed: {
     ...mapState({
       selectedVisualizer: ({ ui }) => ui.selectedVisualizer,
+      educated: ({ ui }) => ui.educated,
       loadingNextSong: ({ spotify }) => spotify.loadingNextSong,
       toast: ({ ui }) => ui.toast,
       menuVisible: ({ ui }) => ui.menuVisible,

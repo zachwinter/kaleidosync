@@ -29,7 +29,7 @@ export const SET_BEAT_INTERVAL = 'SET_BEAT_INTERVAL'
 
 // eslint-disable-next-line 
 const LOCAL_ROOT = (PRODUCTION) ? '' : '/api' 
-const PING_DELAY = 7500
+const PING_DELAY = 30000
 
 export default {
   namespaced: true,
@@ -155,7 +155,7 @@ export default {
         // eslint-disable-next-line 
         cookies.set(SPOTIFY_ACCESS_TOKEN, data.access_token)
         commit(SET_ACCESS_TOKEN, data.access_token)
-        dispatch('ping')
+        dispatch('getCurrentlyPlaying')
       } catch (e) {
         dispatch('login')
       }
@@ -248,6 +248,11 @@ export default {
       commit(SET_TRACK_PROGRESS, (window.performance.now() - state.initialStart) + state.initialTrackProgress)
       await dispatch('setActiveIntervals')
       await dispatch('processVolumeQueues')
+      if (state.currentlyPlaying.duration_ms <= state.trackProgress && state.active) {
+        commit(SET_ACTIVE, false)
+        await pause(500)
+        dispatch('getCurrentlyPlaying')
+      }
     },
   
     setActiveIntervals ({ commit, state }) {
