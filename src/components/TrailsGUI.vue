@@ -103,6 +103,7 @@ export default {
     },
     async onInput () {
       await this.$nextTick()
+      this.$store.dispatch('ui/hover')
       this.$store.commit(`trails/${SET_MODEL}`, cloneDeep(this.groups))
     }
   },
@@ -123,7 +124,7 @@ export default {
   -webkit-overflow-scrolling: touch;
   overflow-y: scroll;
   padding: 30px;
-  width: 320px;
+  width: auto;
 }
 
 .group {

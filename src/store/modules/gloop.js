@@ -54,8 +54,6 @@ export default {
         gl_FragColor.bg *= cos(time/1000.); 
       }
     `,
-    xBase: 2,
-    xTick: 11,
     queues: [{
       name: 'gloop-size',
       totalSamples: 100,
@@ -64,6 +62,18 @@ export default {
       name: 'gloop-beat',
       totalSamples: 600,
       smoothing: 60
-    }]
+    }],
+    uniforms: {
+      xBase: {
+        value: 2,
+        min: 0,
+        max: 5
+      },
+      xTick: {
+        value: 11,
+        max: 15,
+        min: 0
+      }
+    }
   }
 }
