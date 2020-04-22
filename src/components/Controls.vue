@@ -29,14 +29,6 @@ const props =  {
   shader: {
     type: String,
     required: true
-  },
-  
-  xBase: {
-    required: true
-  },
-
-  xTick: {
-    required: true
   }
 }
 

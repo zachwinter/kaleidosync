@@ -5,7 +5,7 @@
     Header(v-if="menuVisible")
   NowPlaying
   transition(name="fade")
-    Spinner(v-if="loadingNextSong")
+    Spinner(v-if="showSpinner")
   transition(name="fadey")
     Toast(v-if="toast.visible")
   transition(name="fadey")
@@ -29,6 +29,8 @@ import Flower from '@/sketches/Flower'
 import Blobs from '@/sketches/Blobs'
 import Kaleidosync from '@/sketches/Kaleidosync'
 import Wavesync from '@/sketches/Wavesync'
+import { FETCHING } from '@/store/modules/spotify'
+import { SET_TOAST_VISIBLE } from '@/store/modules/ui'
 
 export default {
   components: {
@@ -54,7 +56,8 @@ export default {
       toast: ({ ui }) => ui.toast,
       menuVisible: ({ ui }) => ui.menuVisible,
       initialized: ({ spotify }) => spotify.initialized,
-      noPlayback: ({ spotify }) => spotify.noPlayback
+      noPlayback: ({ spotify }) => spotify.noPlayback,
+      showSpinner: ({ spotify }) => spotify.status.trackAnalysis === FETCHING
     }),
     activeVisualizer () {
       switch (this.selectedVisualizer) {
@@ -77,15 +80,19 @@ export default {
       }
     }
   },
+    watch: {
+      showSpinner (val) {
+        if (val) {
+          this.$store.commit(`ui/${SET_TOAST_VISIBLE}`, false)
+        }
+      }
+    },
   created () {
     this.$store.dispatch('ui/resetToast')
   },
   async mounted () {
     this.$store.dispatch('spotify/readTokens')
-    this.$store.dispatch('ui/toast', {
-      message: 'Connecting to Spotify',
-      autoHide: false
-    })
+    this.$store.dispatch('ui/toast', { message: 'Connecting to Spotify' })
     if (this.$ga) this.$ga.page('/visualizer')
     await pause(1000)
     this.$store.dispatch('spotify/getCurrentlyPlaying')

@@ -34,7 +34,7 @@ export default {
       message: '',
       autohide: true
     },
-    selectedVisualizer: 'fractal',
+    selectedVisualizer: 'flower',
     educated: false
   },
   mutations: {
@@ -75,6 +75,7 @@ export default {
       state.toast.message = message
       state.toast.autoHide = autoHide
       state.toast.subText = subText
+      state.toast.forceShow = !autoHide
     },
     [SET_SPINNER_VISIBLE] (state, val) {
       state.spinnerVisible = val

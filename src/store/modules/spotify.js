@@ -7,8 +7,7 @@ import { average } from '@/util/array'
 import interpolateNumber from 'd3-interpolate/src/number'
 import scaleLinear from 'd3-scale/src/linear'
 import ease from '@/util/ease'
-import { SET_TOAST_VISIBLE } from '@/store/modules/ui'
-import { SET_TOAST_MESSAGE } from './ui'
+import { SET_TOAST_MESSAGE, SET_TOAST_VISIBLE } from './ui'
 
 export const SET_AUTH_ID = 'SET_AUTH_ID'
 export const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN'
@@ -28,6 +27,11 @@ export const SET_VOLUME_QUEUES = 'SET_VOLUME_QUEUES'
 export const SET_ACTIVE_INTERVAL = 'SET_ACTIVE_INTERVAL'
 export const SET_BEAT_INTERVAL = 'SET_BEAT_INTERVAL'
 export const SET_RETRYING = 'SET_RETRYING'
+export const SET_STATUS = 'SET_STATUS'
+
+export const FETCHING = 'FETCHING'
+export const ERROR = 'ERROR'
+export const SUCCESS = 'SUCCESS'
 
 // eslint-disable-next-line 
 const LOCAL_ROOT = (PRODUCTION) ? '' : '/api' 
@@ -63,7 +67,11 @@ export default {
     noPlayback: false,
     loadingNextSong: false,
     retrying: false,
-    beatInterval: 'tatums'
+    beatInterval: 'tatums',
+    status: {
+      currentlyPlaying: null,
+      trackAnalysis: null
+    }
   },
 
   mutations: {
@@ -124,6 +132,9 @@ export default {
     },
     [SET_RETRYING] (state, val) {
       state.retrying = val
+    },
+    [SET_STATUS] (state, { key, value }) {
+      state.status[key] = value
     }
   },
 
@@ -163,16 +174,20 @@ export default {
         commit(SET_ACCESS_TOKEN, data.access_token)
         dispatch('getCurrentlyPlaying')
       } catch (e) {
-        dispatch('login')
+        console.log(e)
+        // dispatch('login')
       }
     },
   
     async getCurrentlyPlaying ({ state, commit, dispatch }) {
+      commit(SET_STATUS, { key: 'currentlyPlaying', value: FETCHING })
       try {
         var { data } = await get('https://api.spotify.com/v1/me/player/currently-playing', { headers: state.api.headers })
+        commit(SET_STATUS, { key: 'currentlyPlaying', value: SUCCESS })
       } catch (e) {
+        commit(SET_STATUS, { key: 'currentlyPlaying', value: ERROR })
         if (e.status === 401) return dispatch('refreshTokens')
-        if (e.status === 429) return dispatch('retryAfter', e.retry)
+        if (e.status === 429) return dispatch('retryAfter', { retry: e.retry, action: 'getCurrentlyPlaying' })
       }
       
       if (!data || !data.is_playing || !data.item) {
@@ -184,9 +199,7 @@ export default {
           subText: 'Play a song, then click the refresh icon.',
           autoHide: false
         }, { root: true })  
-      } else {
-        commit(`ui/${SET_TOAST_VISIBLE}`, false, { root: true })
-      }
+      } 
   
       const songsInSync = JSON.stringify(data.item) === JSON.stringify(state.currentlyPlaying)
   
@@ -196,19 +209,18 @@ export default {
     },
   
     async getTrackInfo ({ state, commit, dispatch }, currentlyPlaying) {
-      commit(SET_LOADING_NEXT_SONG, true)
+      commit(SET_STATUS, { key: 'trackAnalysis', value: FETCHING })
   
       try {
-        var [ analysis, features ] = await Promise.all([
+        var [ analysis /*, features */ ] = await Promise.all([
           get(`https://api.spotify.com/v1/audio-analysis/${currentlyPlaying.item.id}`, { headers: state.api.headers }).then(res => res.data),
-          get(`https://api.spotify.com/v1/audio-features/${currentlyPlaying.item.id}`, { headers: state.api.headers }).then(res => res.data),
+          // get(`https://api.spotify.com/v1/audio-features/${currentlyPlaying.item.id}`, { headers: state.api.headers }).then(res => res.data),
         ])
+        commit(SET_STATUS, { key: 'trackAnalysis', value: SUCCESS })
       } catch (e) {
-        if (e.status === 429) {
-          await pause((e.retry * 1000) + 1000)
-          return dispatch('getTrackInfo', currentlyPlaying)
-        }
-        return dispatch('login')
+        commit(SET_STATUS, { key: 'trackAnalysis', value: ERROR })
+        if (e.status === 401) return dispatch('refreshTokens')
+        if (e.status === 429) return dispatch('retryAfter', { retry: e.retry, action: 'getTrackInfo', param: currentlyPlaying })
       }
   
       commit(SET_CURRENTLY_PLAYING, currentlyPlaying.item)
@@ -227,7 +239,7 @@ export default {
         })
       })
   
-      commit(SET_TRACK_FEATURES, features)
+      // commit(SET_TRACK_FEATURES, features)
       commit(SET_TRACK_ANALYSIS, analysis)
       commit(SET_LOADING_NEXT_SONG, false)
       commit(SET_INITIAL_TRACK_PROGRESS, Date.now() - currentlyPlaying.timestamp)
@@ -242,14 +254,15 @@ export default {
       if (!state.noPlayback) commit(SET_NO_PLAYBACK, false)
     },
 
-    async retryAfter ({ commit, dispatch, rootState }, retry) {
+    async retryAfter ({ commit, dispatch, rootState, state }, { retry, action, param = null }) {
+      if (state.retrying) return
       commit(SET_RETRYING, true)
       dispatch('ui/toast', {
         message: `Spotify is busy! Retrying in ${retry} seconds.`,
         subText: `Please don't refresh your browser.`,
         autoHide: false
       }, { root: true })
-      let remaining = parseInt(retry, 10)
+      let remaining = parseInt(retry, 10) + 1
       const interval = setInterval(() => {
         commit(`ui/${SET_TOAST_MESSAGE}`, {
           ...rootState.ui.toast,
@@ -259,7 +272,9 @@ export default {
         if (remaining === 0) clearInterval(interval)
       }, 1000)
       await pause((retry * 1000) + 1000)
-      return dispatch('getCurrentlyPlaying')
+      commit(`ui/${SET_TOAST_VISIBLE}`, false, { root: true })
+      dispatch(action, param)
+      commit(SET_RETRYING, false)
     },
   
     async ping ({ dispatch }) {
@@ -315,7 +330,7 @@ export default {
   
     determineBeatInterval ({ commit, state }) {
       const average = state.trackAnalysis.tatums.reduce((total, tatum) => total + tatum.duration, 0) / state.trackAnalysis.tatums.length
-      const interval = average >= 300 ? 'tatum' : 'beat'
+      const interval = average >= 200 ? 'tatum' : 'beat'
       commit(SET_BEAT_INTERVAL, interval)
     },
   

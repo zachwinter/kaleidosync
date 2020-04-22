@@ -3,14 +3,22 @@
 </template>
 
 <script>
-import * as THREE from 'three'
 import visualizer from '@/mixins/visualizer'
-import { interpolateBasis } from 'd3-interpolate'
+import interpolateBasis from 'd3-interpolate/src/basis'
 import ease from '@/util/ease'
-// import cloneDeep from 'lodash/cloneDeep'
+import { Uniform } from 'three/src/core/Uniform'
+import { Vector2 } from 'three/src/math/Vector2'
+import { Scene } from 'three/src/scenes/Scene'
+import { WebGLRenderer } from 'three/src/renderers/WebGLRenderer'
+import { PerspectiveCamera } from 'three/src/cameras/PerspectiveCamera'
+import { PlaneGeometry } from 'three/src/geometries/PlaneGeometry'
+import { ShaderMaterial } from 'three/src/materials/ShaderMaterial'
+import { Mesh } from 'three/src/objects/Mesh'
+import { DoubleSide } from 'three/src/constants'
+import { scaleLinear } from 'd3-scale'
 
 const DEFAULT_UNIFORMS = {
-  resolution: new THREE.Uniform(new THREE.Vector2(window.innerWidth, window.innerHeight)),
+  resolution: new Uniform(new Vector2(window.innerWidth, window.innerHeight)),
   time: {
     value: 0
   },
@@ -72,19 +80,18 @@ export default {
       this.queues.forEach(({ name, totalSamples, smoothing }) => {
         this.registerVolumeQueue(name, totalSamples, smoothing)
       })
-      this.scene = new THREE.Scene()
-      this.renderer = new THREE.WebGLRenderer()
+      this.scene = new Scene()
+      this.renderer = new WebGLRenderer()
       this.renderer.setClearColor( '#000000', 1 )
-      this.camera = new THREE.PerspectiveCamera(170, window.innerWidth/window.innerHeight, .1, 1000)
-      this.camera.position.z = 10
+      this.camera = new PerspectiveCamera(45, window.innerWidth/window.innerHeight, .1, 1000)
+      this.camera.position.z = 947
       this.renderer.setSize(window.innerWidth, window.innerHeight)
       this.renderer.setPixelRatio(window.devicePixelRatio)
-      this.geometry = new THREE.PlaneGeometry(window.innerWidth, window.innerHeight,1,1)
-      this.clock = new THREE.Clock()
+      this.geometry = new PlaneGeometry(window.innerWidth, window.innerHeight,1,1)
       this.applyUniforms({ init: true })
-      this.material = new THREE.ShaderMaterial({
+      this.material = new ShaderMaterial({
         uniforms: this._uniforms,
-        side: THREE.DoubleSide,
+        side: DoubleSide,
         vertexShader: `
           ${this.printUniforms()}
           void main() {
@@ -99,7 +106,7 @@ export default {
         `
       })
 
-      this.mesh = new THREE.Mesh(this.geometry, this.material)
+      this.mesh = new Mesh(this.geometry, this.material)
       this.scene.add(this.mesh)
       document.body.appendChild(this.renderer.domElement)
       window.addEventListener('resize', this.onResize.bind(this))
@@ -153,7 +160,8 @@ export default {
       this.queues.forEach(queue => {
         volume *= this.getVolumeQueue(queue.name)
       })
-      const tatum = interpolateBasis([base, base + (tick * volume), base])(ease(this[this.beatInterval].progress))
+      const multiplier = scaleLinear([200, 350], [1.8, 1])(this[this.beatInterval].duration)
+      const tatum = interpolateBasis([base * multiplier, (base + (tick * volume)) * multiplier, base * multiplier])(ease(this[this.beatInterval].progress))
       if (!isNaN(tatum)) this._uniforms.stream.value += tatum 
       this._uniforms.bounce.value = interpolateBasis([1, 1 + (3 * volume), 1])(ease(this.beat.progress, 'easeOutCubic'))
       this._uniforms.time.value = now
@@ -161,7 +169,7 @@ export default {
     },
 
     onResize () {
-      if (this._uniforms) this._uniforms.resolution = new THREE.Uniform(new THREE.Vector2(window.innerWidth, window.innerHeight))
+      if (this._uniforms) this._uniforms.resolution = new Uniform(new Vector2(window.innerWidth, window.innerHeight))
       this.renderer.setSize(window.innerWidth, window.innerHeight)
       this.renderer.setPixelRatio(window.devicePixelRatio)
     }
