@@ -26,7 +26,7 @@ export default {
         color.b = dot(yIQ, kYIQToB);
         return color;
       }
-      
+        
       mat2 rotate(float angle) {
         float c = cos(angle);
         float s = sin(angle);
