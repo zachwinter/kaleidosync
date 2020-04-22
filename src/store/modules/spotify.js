@@ -147,6 +147,7 @@ export default {
           window.location.href = `${LOCAL_ROOT}/login?auth_id=${data.auth_id}`
         }
       } catch (e) {
+        window.location.href = '/'
         // eslint-disable-next-line 
         console.log(e)
       }
@@ -174,6 +175,7 @@ export default {
         commit(SET_ACCESS_TOKEN, data.access_token)
         dispatch('getCurrentlyPlaying')
       } catch (e) {
+        window.location.href = '/'
         // eslint-disable-next-line 
         console.log(e)
       }
