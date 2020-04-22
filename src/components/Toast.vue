@@ -13,19 +13,18 @@ export default {
       delay: 2000
     }
   },
-  computed: {
-    ...mapState({
-      message: ({ ui }) => ui.toast.message,
-      autoHide: ({ ui }) => ui.toast.autoHide,
-      subText: ({ ui }) => ui.toast.subText
-    })
-    
-  },
+  computed: mapState({
+    message: ({ ui }) => ui.toast.message,
+    autoHide: ({ ui }) => ui.toast.autoHide,
+    subText: ({ ui }) => ui.toast.subText,
+    forceShow: ({ ui }) => ui.toast.forceShow
+  }),
   mounted () {
     this.$store.commit(`ui/${SET_HOVER}`, false)
     
     if (this.autoHide === true) {
       setTimeout(() => {
+        if (this.forceShow) return
         this.$store.commit(`ui/${SET_TOAST_VISIBLE}`, false)
       }, this.delay)
     }

@@ -3,7 +3,7 @@ export const TWO_PI = PI * 2
 export const TWO_OVER_PI = PI / 2
 export const PI_OVER_180 = PI / 180
 
-import { interpolateBasis } from 'd3-interpolate'
+import interpolateBasis from 'd3-interpolate/src/basis'
 
 export function toRadians (angle) {
   return PI * angle / 180

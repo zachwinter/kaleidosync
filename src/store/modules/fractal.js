@@ -13,7 +13,7 @@ export default {
       vec2 p;
       void main() {                                                                                                                                                                                                                                                                                                                                                                        
         p = -1.0 + 2.0 * vUv.xy;
-        p *= .7;
+        p *= .2;
         p.x *= resolution.x/resolution.y;
         gl_FragColor = vec4(1, 1, 1, 1);
         for (float i = 1. ; i < 3. ; i++) {
@@ -34,11 +34,13 @@ export default {
     }],
     uniforms: {
       xBase: {
+        name: 'xBase',
         min: 0,
         max: 200,
         value: 120
       },
       xTick: {
+        name: 'xTick',
         min: 0,
         max: 1500,
         value: 800

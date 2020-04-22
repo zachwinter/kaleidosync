@@ -1,4 +1,5 @@
 const webpack = require('webpack')
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   css: {
@@ -27,7 +28,8 @@ module.exports = {
         PRODUCTION: JSON.stringify(process.env.NODE_ENV === 'production'),
         DEVELOPMENT: JSON.stringify(process.env.NODE_ENV !== 'production'),
         PROJECT_ROOT: JSON.stringify(process.env.PROJECT_ROOT)
-      })
+      }),
+      // new BundleAnalyzerPlugin()
     ]
   },
   chainWebpack: config => {

@@ -16,9 +16,15 @@ const root = path.resolve(__dirname, '../dist')
 const port = process.env.PORT || 8001
 
 const app = express()
+
 app.use(bodyParser())
 app.use(cookieParser())
 app.use(compression())
+
+authRouter(app)
+callbackRouter(app)
+loginRouter(app)
+refreshRouter(app)
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(root))
@@ -29,11 +35,6 @@ if (process.env.NODE_ENV === 'production') {
     next()
   })
 }
-
-authRouter(app)
-callbackRouter(app)
-loginRouter(app)
-refreshRouter(app)
 
 app.use(fallback('index.html', { root }))
 

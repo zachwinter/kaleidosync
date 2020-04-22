@@ -1,6 +1,6 @@
 {
   "name": "kaleidosync",
-  "version": "5.2.3",
+  "version": "5.3.0",
   "private": true,
   "scripts": {
     "serve": "concurrently \"node ./server/index.js\" \"vue-cli-service serve\"",
@@ -24,8 +24,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-history-api-fallback": "^2.2.1",
+    "humps": "^2.0.1",
     "lodash": "^4.17.15",
-    "proxy-polyfill": "^0.3.1",
     "querystring": "^0.2.0",
     "request": "^2.88.2",
     "three": "^0.115.0",
@@ -51,6 +51,7 @@
     "sass": "^1.25.0",
     "sass-loader": "^8.0.2",
     "vue-svg-loader": "^0.16.0",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "webpack-bundle-analyzer": "^3.7.0"
   }
 }

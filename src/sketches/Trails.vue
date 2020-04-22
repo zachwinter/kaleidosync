@@ -12,7 +12,6 @@ import visualizer from '@/mixins/visualizer'
 import { polygon, growingLine, toRadians } from '@/util/canvas'
 import ease from '@/util/ease'
 import interpolateBasis from 'd3-interpolate/src/basis'
-import interpolateRgb from 'd3-interpolate/src/rgb'
 import { rgbBasis } from 'd3-interpolate/src/rgb'
 import { hsl } from 'd3-color/src/color'
 
@@ -25,20 +24,13 @@ export default {
     model: null,
     offscreenSize: null
   }),
-  computed: {
-    ...mapState({
-      trailsModel: ({ trails }) => trails.model,
-      background: ({ trails }) => trails.background,
-      beatInterval: ({ spotify }) => spotify.beatInterval,
-      hover: ({ ui }) => ui.hover,
-      menuVisible: ({ ui }) => ui.menuVisible
-    })
-  },
-      // 'trails', 
-      // 'trailsBackground', 
-      // 'beatInterval', 
-      // 'hover',
-      // 'menuVisible'
+  computed: mapState({
+    trailsModel: ({ trails }) => trails.model,
+    background: ({ trails }) => trails.background,
+    beatInterval: ({ spotify }) => spotify.beatInterval,
+    hover: ({ ui }) => ui.hover,
+    menuVisible: ({ ui }) => ui.menuVisible
+  }),
   watch: {
     trailsModel () {
       this.initModel()
@@ -107,7 +99,7 @@ export default {
         this.colorIndex++
       }
       const to = this.colors[this.colorIndex]
-      this.iColor = interpolateRgb(from, to)
+      this.iColor = rgbBasis([from, to])
     },
 
     paintGroup ({ config }, index) {
@@ -186,7 +178,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

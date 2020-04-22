@@ -14,9 +14,9 @@ import { SET_SELECTED_VISUALIZER } from '@/store/modules/ui'
 export default {
   data: () => ({
     visualizers: [
-      ['fractal', true],
-      ['gloop', true],
-      // ['flower', true],
+      ['flower', true],
+      ['fractal', false],
+      ['gloop', false],
       ['trails', false],
       ['kaleidosync', false],
       ['blobs', false],

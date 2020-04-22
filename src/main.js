@@ -1,12 +1,12 @@
-import 'proxy-polyfill/src/proxy.js'
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueAnalytics from 'vue-analytics'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome/src/components/FontAwesomeIcon'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTrash, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import { faSyncAlt } from '@fortawesome/free-solid-svg-icons/faSyncAlt'
 
 library.add(faTrash)
 library.add(faSyncAlt)

@@ -13,7 +13,7 @@ Vue.use(Vuex)
 
 const { plugin } = new VuexPersistence({
   storage: window.localStorage,
-  key: 'kaleidosync-persist-v6',
+  key: 'kaleidosync-persist-v7',
   reducer ({ ui, trails }) {
     return { ui, trails }
   }

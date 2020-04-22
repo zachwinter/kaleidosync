@@ -5,114 +5,83 @@ export default {
   namespaced: true,
   state: {
     shader: `
-vec2 p;
-const vec3 W = vec3(0.21, 0.91, 0.57);
-// Made by @BradyInstead 
-// bradyinstead.tumblr.com
-
-#define PI 3.14159265358979323846
-
-vec2 rotate2D (vec2 _st, float _angle) {
-  _st -= 0.5;
-  _st =  mat2(cos(_angle),-sin(_angle), sin(_angle),cos(_angle)) * _st;
-  _st += 0.5;
-  return _st;
-}
-
-vec2 tile (vec2 _st, float _zoom){
-  _st *= _zoom;
-  return abs(fract(_st) - .5);
-}
-
-float box (vec2 _st, vec2 _size, float _smoothEdges) {
-  _size = vec2(0.5)-_size*0.5;
-  vec2 aa = vec2(_smoothEdges*0.5);
-  vec2 uv = smoothstep(_size,_size+aa,_st);
-  uv *= smoothstep(_size,_size+aa,vec2(1.0)-_st);
-  return uv.x*uv.y;
-}
-
-void main() {
-  // Get Time
-  highp float time = stream/400.;
-  
-  // Sample UVs and Colors
-  vec2 uv = gl_FragCoord.xy/resolution.xy;
-  vec3 color = vec3(0.0);
-  
-  // Sample Texture
-  vec4 texColor = sin(uv.xyxy / 10.);
-  
-  // Center
-  float aspectRatio = resolution.x / resolution.y;
-  uv.x *= aspectRatio;
-  uv.x -= aspectRatio * 1.;
-  uv.y -= 1.;
-  uv *= .5;
-  
-  // Get Distance
-  float dst = 1.-distance(uv,vec2(0));
-  
-  // Zoom
-  uv.xy *= sin(time*2.5 + dst*10.)/2. + 1.55;
-  
-  // Zoom out center
-  //uv.xy *= 1./smoothstep(0., .2, 1.-dst);
-  
-  // Fisheye
-  float strength = 1000.;
-  uv = mix(uv, uv*20., dst/strength);
-
-  // Divide the space in 4
-  uv = tile(uv,.1);
-  
-  // Use a matrix to rotate the space 45 degrees
-  uv = rotate2D(uv,PI*0.25 + time*(2.5 + dst/.1));
-  
-  float darkness = sin(abs(distance(uv, vec2(.5)))*40.);
-
-  // Draw a square
-  vec3 col = vec3(sin(length(uv)*30. + time *7.5));
-  color = col;
-  // color = vec3(st,0.0);
-  
-  float dst2 = (1.-distance(uv,vec2(0)) + dst)/2.;
-  
-  // Color It In
-  col = 0. + .4*sin(time*5.5 + vec3(0,2,4) + dst2*3.);
-  color.rgb -= mix(col, col-.1,color.r) + darkness;
-  
-  // Combine with Texture
-  color = mix(color, texColor.rgb, (color.r + color.g + color.b)/3.);
-  
-  //color = mix(color, -color*.1, fract(stream*10.));
-
-  // Frag colors
-  gl_FragColor = vec4(color,1.0);
-}
+      vec4 hue(vec4 color, float shift) {
+        const vec4 kRGBToYPrime = vec4(0.299, 0.587, 0.114, 0.0);
+        const vec4 kRGBToI = vec4(0.596, -0.275, -0.321, 0.0);
+        const vec4 kRGBToQ = vec4(0.212, -0.523, 0.311, 0.0);
+        const vec4 kYIQToR = vec4(1.0, 0.956, 0.621, 0.0);
+        const vec4 kYIQToG = vec4(1.0, -0.272, -0.647, 0.0);
+        const vec4 kYIQToB = vec4(1.0, -1.107, 1.704, 0.0);
+        float YPrime = dot(color, kRGBToYPrime);
+        float I = dot(color, kRGBToI);
+        float Q = dot(color, kRGBToQ);
+        float hue = atan(Q, I);
+        float chroma = sqrt(I * I + Q * Q);
+        hue += shift;
+        Q = chroma * sin(hue);
+        I = chroma * cos(hue);
+        vec4 yIQ = vec4(YPrime, I, Q, 0.0);
+        color.r = dot(yIQ, kYIQToR);
+        color.g = dot(yIQ, kYIQToG);
+        color.b = dot(yIQ, kYIQToB);
+        return color;
+      }
+      
+      mat2 rotate(float angle) {
+        float c = cos(angle);
+        float s = sin(angle);
+        return mat2(c, -s, s, c);
+      }
+      
+      void main() {
+        vec2 uv = -1.0 + 2.0 * vUv;
+        uv.x *= resolution.x / resolution.y;
+        uv *= .002;
+        uv = abs(fract(uv) - .5) * 2.1;
+        uv = abs(fract(uv) - .5) * .1;
+        uv = abs(fract(uv) - .5) * 1.;
+        uv = abs(fract(uv) - .5) * 1.;
+        uv *= 2. * atan(uv.x / 50. + stream / 100.) - .1;
+        vec4 result = vec4(0, 0, 0, 1);
+        float offset = stream;
+        float t = 1.8;
+        float base = 1000. * length(uv);
+        mat2 rot = rotate(5. * length(uv));
+        for (int p = 0; p < 3; p++) {
+          result[p] = 2.52 * cos((t * base) - stream / 1000.) + 1.7 * cos(660. * uv.x / .25 - stream / 100.) + base / 1000.;
+          t += 2.6;
+        }
+        result.xyz *= 12.7 * hue(result.xyxy, stream / 1000.).g;
+        result.xyz = (result.xyz);
+        result.xy *= abs(tan(uv.x * 200.));
+        gl_FragColor = log(abs(result));
+        gl_FragColor.rg *= .2;
+      }
     `,
     queues: [{
       name: 'flower-size',
-      totalSamples: 300,
-      smoothing: 5
+      totalSamples: 1000,
+      smoothing: 50
     }, {
       name: 'flower-beat',
-      totalSamples: 700,
+      totalSamples: 500,
       smoothing: 30
     }],
     uniforms: {
       xBase: {
+        name: 'xBase',
         min: 0,
         max: 10,
-        value: 1
+        value: 5.58
       },
       xTick: {
+        name: 'xTick',
         min: 0,
-        max: 100,
-        value: 10
+        max: 50,
+        value: 40
       }
     },
-    beatInterval: 'tatums'
+    beatInterval: 'auto'
   },
 
   mutations: {

@@ -1,3 +1,6 @@
+export const SET_UNIFORMS = 'SET_UNIFORMS'
+export const SET_SHADER = 'SET_SHADER'
+
 /**
  * Shout out to @iridule for the shader from which I derived this sketch.
  * https://www.shadertoy.com/view/MsyBRm
@@ -65,15 +68,25 @@ export default {
     }],
     uniforms: {
       xBase: {
+        name: 'xBase',
         value: 2,
         min: 0,
         max: 5
       },
       xTick: {
+        name: 'xTick',
         value: 11,
         max: 15,
         min: 0
       }
+    }
+  },
+  mutations: {
+    [SET_UNIFORMS] (state, val) {
+      state.uniforms = val
+    },
+    [SET_SHADER] (state, val) {
+      state.shader = val
     }
   }
 }
