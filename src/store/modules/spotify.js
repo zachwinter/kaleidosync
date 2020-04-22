@@ -190,6 +190,7 @@ export default {
         commit(SET_STATUS, { key: 'currentlyPlaying', value: ERROR })
         if (e.status === 401) return dispatch('refreshTokens')
         if (e.status === 429) return dispatch('retryAfter', { retry: e.retry, action: 'getCurrentlyPlaying' })
+        window.location.href = '/'
       }
       
       if (!data || !data.is_playing || !data.item) {
@@ -223,6 +224,7 @@ export default {
         commit(SET_STATUS, { key: 'trackAnalysis', value: ERROR })
         if (e.status === 401) return dispatch('refreshTokens')
         if (e.status === 429) return dispatch('retryAfter', { retry: e.retry, action: 'getTrackInfo', param: currentlyPlaying })
+        window.location.href = '/'
       }
   
       commit(SET_CURRENTLY_PLAYING, currentlyPlaying.item)
