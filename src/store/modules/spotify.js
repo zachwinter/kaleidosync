@@ -362,7 +362,7 @@ export default {
         index
       } = state.activeIntervals.segments
   
-      if (!state.trackAnalysis.segments[index + 1]) return 0
+      if (!state.trackAnalysis.segments || !state.trackAnalysis.segments[index + 1]) return .5
       
       const next = state.trackAnalysis.segments[index + 1].loudness_start
       const current = start + elapsed

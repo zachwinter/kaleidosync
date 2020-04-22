@@ -13,7 +13,7 @@ export default {
       vec2 p;
       void main() {                                                                                                                                                                                                                                                                                                                                                                        
         p = -1.0 + 2.0 * vUv.xy;
-        p *= 80.;
+        p *= .2;
         p.x *= resolution.x/resolution.y;
         gl_FragColor = vec4(1, 1, 1, 1);
         for (float i = 1. ; i < 3. ; i++) {
@@ -25,25 +25,27 @@ export default {
     `,
     queues: [{
       name: 'fractal-size',
-      totalSamples: 500,
-      smoothing: 50
+      totalSamples: 300,
+      smoothing: 30
     }, {
       name: 'fractal-beat',
       totalSamples: 1000,
-      smoothing: 70
+      smoothing: 60
     }],
     uniforms: {
       xBase: {
         name: 'xBase',
         min: 0,
         max: 20,
-        value: 14
+        value: 7.5,
+        step: .01
       },
       xTick: {
         name: 'xTick',
         min: 0,
         max: 75,
-        value: 65
+        value: 60,
+        step: .01
       }
     },
   },

@@ -61,7 +61,9 @@ export default {
   },
 
   data: () => ({
-    dead: false
+    dead: false,
+    width: window.innerWidth,
+    height: window.innerHeight
   }), 
 
   watch: {
@@ -97,7 +99,7 @@ export default {
       // this.camera.position.z = 800
       this.renderer.setSize(window.innerWidth, window.innerHeight)
       this.renderer.setPixelRatio(window.devicePixelRatio)
-      this.geometry = new PlaneGeometry(window.innerWidth, window.innerHeight)
+      this.geometry = new PlaneGeometry(2, 2)
       this.applyUniforms({ init: true })
       this.material = new ShaderMaterial({
         uniforms: this._uniforms,
@@ -171,7 +173,8 @@ export default {
         volume *= this.getVolumeQueue(queue.name)
       })
       const interval = this.beatIntervalOverride || this.beatInterval
-      const multiplier = this.multiply ? scaleLinear([150, 350], [1.8, 1])(this[interval].duration) : 1
+      let multiplier = this.multiply ? scaleLinear([150, 350], [1.8, 1])(this[interval].duration) : 1
+      if (!multiplier) multiplier = 1
       const tatum = interpolateBasis([base * multiplier, (base + (tick * volume)) * multiplier, base * multiplier])(ease(this[interval].progress))
       if (!isNaN(tatum)) this._uniforms.stream.value += tatum 
       this._uniforms.bounce.value = interpolateBasis([1, 1 + (3 * volume), 1])(ease(this.beat.progress, 'easeOutCubic'))

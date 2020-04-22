@@ -53,25 +53,25 @@ export default {
       
       void main() {
         vec2 p = .6 * gl_FragCoord.xy / resolution.xy - .5;
-        p.x *= .5 * (resolution.x / resolution.y);
+        p.x *=1. * (resolution.x / resolution.y);
         p *= rotate(((p.y - stream / 150.)));
-        p *= .5 * p.y * scale(1.);
+        p *= .2 * p.y * scale(.1);
         vec2 cen = vec2(.5);
         vec2 corn = vec2(0.0);
         float md = distance(corn, cen);
         float d = distance(p, cen);
-        float a = map(d, 0.0, md, 0.0, TWO_PI * 1.0);
+        float a = map(d, 0.0, md, 0.0, TWO_PI * 10.0);
         float col = circle(p - .5, cen - 0.5, 0.1, 0.8);
-        float inner = map((cos(stream * p.x) / 100.0 * sin(p.x)), -1.0, 1.0, 1.0, 1.0);
+        float inner = map((cos(stream * p.x/100.) / 10.0 * sin(p.x)), -1.0, 1.0, 1.0, 1.0);
         float radius = length(p - .5) * .5 - inner;
         float angle = atan(p.y - .5, p.x - .5) / PI;
         float spin = map((p.y * p.x), -1., 1., 1., .2);
-        float spiral = a - spin;
-        float arms = angle * TWO_PI * 20.0;
+        float spiral = sin(a - spin - stream/100.);
+        float arms = angle * TWO_PI * 10.0;
         col += sin(arms + spiral) - radius;
         col *= sin(arms - spiral) - radius;
         col *= sin(arms - spiral) + radius;
-        col *= sin(arms + spiral + (stream / 20.0)) + radius;
+        col *= sin(arms + spiral + (stream / 200.0)) + radius;
         vec3 mix1 = mix(
           vec3(1., 1., 0),
           vec3(0, 1., .0),
@@ -83,15 +83,15 @@ export default {
           cos(arms * spiral) * col
         );
         vec3 color = mix(mix1, mix2, col);
-        gl_FragColor = .5 - log(abs(vec4((color), 1)));
-        gl_FragColor.bg *= cos(time / 1000.);
-        gl_FragColor = hue(gl_FragColor, stream/450.);
+        gl_FragColor = log(abs(vec4((color*2.), 1)));
+        gl_FragColor.rb += cos(time / 500.);
+        gl_FragColor.gb = .5*hue(gl_FragColor, stream/500.).rg;
       }
     `,
     queues: [{
       name: 'gloop-size',
       totalSamples: 100,
-      smoothing: 5
+      smoothing: 10
     }, {
       name: 'gloop-beat',
       totalSamples: 600,
@@ -102,13 +102,15 @@ export default {
         name: 'xBase',
         value: 3,
         min: 0,
-        max: 5
+        max: 5,
+        step: .01
       },
       xTick: {
         name: 'xTick',
-        value: 9,
+        value: 12,
         max: 15,
-        min: 0
+        min: 0,
+        step: .01
       }
     }
   },
