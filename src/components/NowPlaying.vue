@@ -66,7 +66,8 @@ export default {
         }
       }, this.delay)
     },
-    getCurrentlyPlaying (val = this.currentlyPlaying) {
+    getCurrentlyPlaying (val = this.currentlyPlaying || null) {
+      if (!val) return {}
       const name = val.name || false
       const album = val.album 
       const image = album ? album.images[1].url : false
