@@ -1,6 +1,6 @@
 <template lang="pug">
 .flower
-  Three(:shader="shader" :queues="queues" :uniforms="uniforms")
+  Three(:shader="shader" :queues="queues" :uniforms="uniforms" :multiply="true")
   //- Controls(:uniforms="uniforms" :shader="shader" state-key="flower")
 </template>
 

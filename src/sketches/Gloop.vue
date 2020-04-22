@@ -1,6 +1,6 @@
 <template lang="pug">
 .gloop
-  Three(:shader="shader" :queues="queues" :uniforms="uniforms")
+  Three(:shader="shader" :queues="queues" :uniforms="uniforms" :beatIntervalOverride="'beat'")
   //- Controls(:uniforms="uniforms" :shader="shader" state-key="gloop")
 </template>
 
