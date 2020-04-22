@@ -84,7 +84,7 @@ export default {
       this.renderer = new WebGLRenderer()
       this.renderer.setClearColor( '#000000', 1 )
       this.camera = new PerspectiveCamera(45, window.innerWidth/window.innerHeight, .1, 1000)
-      this.camera.position.z = 947
+      this.camera.position.z = 800
       this.renderer.setSize(window.innerWidth, window.innerHeight)
       this.renderer.setPixelRatio(window.devicePixelRatio)
       this.geometry = new PlaneGeometry(window.innerWidth, window.innerHeight,1,1)
