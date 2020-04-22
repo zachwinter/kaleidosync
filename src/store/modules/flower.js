@@ -36,7 +36,7 @@ export default {
       void main() {
         vec2 uv = -1.0 + 2.0 * vUv;
         uv.x *= resolution.x / resolution.y;
-        uv *= .003;
+        uv *= 1.;
         uv = abs(fract(uv) - .5) * 2.1;
         uv = abs(fract(uv) - .5) * .1;
         uv = abs(fract(uv) - .5) * 1.;
@@ -72,13 +72,13 @@ export default {
         name: 'xBase',
         min: 0,
         max: 10,
-        value: 5.58
+        value: 4
       },
       xTick: {
         name: 'xTick',
         min: 0,
-        max: 50,
-        value: 40
+        max: 75,
+        value: 60
       }
     },
     beatInterval: 'auto'

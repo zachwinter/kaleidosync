@@ -1,7 +1,7 @@
 <template lang="pug">
 .fractal
-  Three(:shader="shader" :queues="queues" :uniforms="uniforms")
-  //- Controls(:uniforms="uniforms" :shader="shader" state-key="fractal")
+  Three(:shader="shader" :queues="queues" :uniforms="uniforms" :beatIntervalOverride="'beat'")
+  Controls(:uniforms="uniforms" :shader="shader" state-key="fractal")
 </template>
 
 <script>
