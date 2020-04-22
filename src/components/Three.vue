@@ -74,7 +74,7 @@ export default {
     this.init()
   },
 
-  destroyed () {
+  destroyed () { 
     window.removeEventListener('resize', this.onResize.bind(this))
     this.dead = true
     this.renderer.domElement.remove()
