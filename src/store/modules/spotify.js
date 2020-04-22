@@ -174,8 +174,8 @@ export default {
         commit(SET_ACCESS_TOKEN, data.access_token)
         dispatch('getCurrentlyPlaying')
       } catch (e) {
+        // eslint-disable-next-line 
         console.log(e)
-        // dispatch('login')
       }
     },
   
