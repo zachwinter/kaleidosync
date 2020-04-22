@@ -194,10 +194,10 @@ export default {
       }
       
       if (!data || !data.is_playing || !data.item) {
-        if (state.active) commit(SET_ACTIVE, false)
+        commit(SET_ACTIVE, false)
         commit(SET_NO_PLAYBACK, true)
         commit(SET_ACTIVE, false)
-        dispatch('ui/toast', {
+        return dispatch('ui/toast', {
           message: 'No playback detected',
           subText: 'Play a song, then click the refresh icon.',
           autoHide: false
@@ -224,6 +224,7 @@ export default {
         commit(SET_STATUS, { key: 'trackAnalysis', value: ERROR })
         if (e.status === 401) return dispatch('refreshTokens')
         if (e.status === 429) return dispatch('retryAfter', { retry: e.retry, action: 'getTrackInfo', param: currentlyPlaying })
+        console.log(e.status, e)
         window.location.href = '/'
       }
   
