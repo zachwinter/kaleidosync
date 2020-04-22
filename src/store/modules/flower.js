@@ -36,7 +36,7 @@ export default {
       void main() {
         vec2 uv = -1.0 + 2.0 * vUv;
         uv.x *= resolution.x / resolution.y;
-        uv *= .002;
+        uv *= .003;
         uv = abs(fract(uv) - .5) * 2.1;
         uv = abs(fract(uv) - .5) * .1;
         uv = abs(fract(uv) - .5) * 1.;
