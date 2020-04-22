@@ -224,7 +224,6 @@ export default {
         commit(SET_STATUS, { key: 'trackAnalysis', value: ERROR })
         if (e.status === 401) return dispatch('refreshTokens')
         if (e.status === 429) return dispatch('retryAfter', { retry: e.retry, action: 'getTrackInfo', param: currentlyPlaying })
-        console.log(e.status, e)
         window.location.href = '/'
       }
   
