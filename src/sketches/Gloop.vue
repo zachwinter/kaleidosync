@@ -7,10 +7,10 @@
 <script>
 import { mapState } from 'vuex'
 import Three from '@/components/Three'
-// import Controls from '@/components/Controls'
+import Controls from '@/components/Controls'
 
 export default {
-  components: { Three /*, Controls */ },
+  components: { Three, Controls },
   computed: mapState({
     shader: ({ gloop }) => gloop.shader,
     queues: ({ gloop }) => gloop.queues,

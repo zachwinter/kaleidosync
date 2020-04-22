@@ -10,7 +10,8 @@ import { Uniform } from 'three/src/core/Uniform'
 import { Vector2 } from 'three/src/math/Vector2'
 import { Scene } from 'three/src/scenes/Scene'
 import { WebGLRenderer } from 'three/src/renderers/WebGLRenderer'
-import { PerspectiveCamera } from 'three/src/cameras/PerspectiveCamera'
+// import { PerspectiveCamera } from 'three/src/cameras/PerspectiveCamera'
+import { OrthographicCamera } from 'three/src/cameras/OrthographicCamera'
 import { PlaneGeometry } from 'three/src/geometries/PlaneGeometry'
 import { ShaderMaterial } from 'three/src/materials/ShaderMaterial'
 import { Mesh } from 'three/src/objects/Mesh'
@@ -48,6 +49,10 @@ export default {
     uniforms: {
       type: Object,
       required: false
+    },
+    beatIntervalOverride: {
+      type: String,
+      default: null
     }
   },
 
@@ -66,6 +71,7 @@ export default {
   },
 
   mounted () {
+    console.log(this.beatIntervalOverride)
     this.init()
   },
 
@@ -83,11 +89,12 @@ export default {
       this.scene = new Scene()
       this.renderer = new WebGLRenderer()
       this.renderer.setClearColor( '#000000', 1 )
-      this.camera = new PerspectiveCamera(45, window.innerWidth/window.innerHeight, .1, 1000)
-      this.camera.position.z = 800
+      // this.camera = new PerspectiveCamera(45, window.innerWidth/window.innerHeight, .1, 1000)
+      this.camera = new OrthographicCamera(-1, 1, 1, -1, -1, 1)
+      // this.camera.position.z = 800
       this.renderer.setSize(window.innerWidth, window.innerHeight)
       this.renderer.setPixelRatio(window.devicePixelRatio)
-      this.geometry = new PlaneGeometry(window.innerWidth, window.innerHeight,1,1)
+      this.geometry = new PlaneGeometry(window.innerWidth, window.innerHeight)
       this.applyUniforms({ init: true })
       this.material = new ShaderMaterial({
         uniforms: this._uniforms,
@@ -160,8 +167,9 @@ export default {
       this.queues.forEach(queue => {
         volume *= this.getVolumeQueue(queue.name)
       })
-      const multiplier = scaleLinear([200, 350], [1.8, 1])(this[this.beatInterval].duration)
-      const tatum = interpolateBasis([base * multiplier, (base + (tick * volume)) * multiplier, base * multiplier])(ease(this[this.beatInterval].progress))
+      const interval = this.beatIntervalOverride || this.beatInterval
+      const multiplier = scaleLinear([200, 350], [1.8, 1])(this[interval].duration)
+      const tatum = interpolateBasis([base * multiplier, (base + (tick * volume)) * multiplier, base * multiplier])(ease(this[interval].progress))
       if (!isNaN(tatum)) this._uniforms.stream.value += tatum 
       this._uniforms.bounce.value = interpolateBasis([1, 1 + (3 * volume), 1])(ease(this.beat.progress, 'easeOutCubic'))
       this._uniforms.time.value = now
