@@ -44,6 +44,8 @@ npm run serve
 
 > #### Version 5.4
 * Reduces the complexity of adding new visualizers. 
+* Reverts back to the traditional polling when running the dev server.
+* Surfaces a control interface for WebGL scenes. 
 
 > #### Version 5.3
 * There are now 7 visualizers to choose from.
