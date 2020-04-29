@@ -18,7 +18,7 @@ $transition-duration: 400ms ease-in-out;
 }
 
 .fadeyn-enter-active, .fadeyn-leave-active {
-  transition: opacity $transition-duration, transform $transition-duration;
+  transition: all $transition-duration, transform $transition-duration;
 }
 
 .fadeyn-enter, .fadeyn-leave-to {

@@ -21,7 +21,8 @@ export default {
       ['kaleidosync', false],
       ['blobs', false],
       ['wavesync', false]
-    ]
+    ],
+    production: PRODUCTION // eslint-disable-line
   }),
   computed: mapState({
     selectedVisualizer: ({ ui }) => ui.selectedVisualizer
@@ -78,6 +79,13 @@ li span {
 
 img {
   @include size(50px);
+  display: block;
+  border-radius: 100px;
+}
+
+svg {
+  @include size(50px);
+  padding: 10px;
   display: block;
   border-radius: 100px;
 }

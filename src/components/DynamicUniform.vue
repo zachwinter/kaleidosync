@@ -1,15 +1,15 @@
 <template lang="pug">
 .uniform
   .flex
-    button(@click.prevent="$emit('delete', uniform.name)"): icon(icon="trash")
-    input(type="text" :value="uniform.name" @keypress="onNameChange" :class="{ hidden: showValue }").name
+    button(@click.prevent="$emit('delete', uniform.name)" v-if="!production"): icon(icon="trash")
+    input(type="text" :value="uniform.name" @change="onNameChange" :disabled="production" :class="{ hidden: showValue }").name
     .value(:class="{ visible: showValue }") {{ uniform.value}}
   .flex
-    input(type="text" :value="uniform.min" @input="onMinChange")
+    input(type="text" ref="min" :value="uniform.min" @input="onMinChange" v-if="!production")
     input(type="range" :min="uniform.min" :max="uniform.max" :step="uniform.step" :value="uniform.value" @input="onInput")
-    input(type="text" :value="uniform.max" @input="onMaxChange")
-    span @
-    input(type="text" :value="uniform.step" @input="onStepChange")
+    input(type="text" ref="max" :value="uniform.max" @input="onMaxChange" v-if="!production")
+    span(v-if="!production") @
+    input(type="text" ref="step" :value="uniform.step" @input="onStepChange" v-if="!production")
 </template>
 
 <script>
@@ -23,19 +23,24 @@ export default {
   data () {
     return {
       showValue: false,
-      timeout: null
+      timeout: null,
+      production: PRODUCTION // eslint-disable-line
     }
   },
   methods: {
-    onMinChange ({ target }) {
+    async onMinChange ({ target }) {
+      this.$store.dispatch('ui/hover')
       this.$emit('update', {
         uniform: {
           ...this.uniform,
           min: target.value
         }
       })
+      await this.$nextTick()
+      target.focus()
     },
-    onInput ({ target }) {
+    async onInput ({ target }) {
+      this.$store.dispatch('ui/hover')
       clearTimeout(this.timeout)
       this.showValue = true
       this.$emit('update', {
@@ -47,24 +52,33 @@ export default {
       this.timeout = setTimeout(() => {
         this.showValue = false
       }, 500)
+      await this.$nextTick()
+      target.focus()
     },
-    onMaxChange ({ target }) {
+    async onMaxChange ({ target }) {
+      this.$store.dispatch('ui/hover')
       this.$emit('update', {
         uniform: {
           ...this.uniform,
           max: target.value
         }
       })
+      await this.$nextTick()
+      target.focus()
     },
-    onStepChange ({ target }) {
+    async onStepChange ({ target }) {
+      this.$store.dispatch('ui/hover')
       this.$emit('update', {
         uniform: {
           ...this.uniform,
           step: target.value
         }
       })
+      await this.$nextTick()
+      target.focus()
     },
-    onNameChange ({ target, keyCode }) {
+    async onNameChange ({ target, keyCode }) {
+      this.$store.dispatch('ui/hover')
       if (keyCode === 13) {
         this.$emit('update', {
           uniform: {
@@ -75,6 +89,8 @@ export default {
           from: this.uniform.name
         })
       }
+      await this.$nextTick()
+      target.focus()
     }
   }
 }
@@ -96,16 +112,17 @@ button {
 }
 
 .uniform {
-  @include flex;
+  @include flex(center, space-evenly);
   font-family: monospace;
   text-align: left;
+  width: 100%;
 }
 
 .flex:first-of-type {
   @include flex(flex-start, center);
   position: relative;
   height: 20px;
-  width: $input-height * 4 + 20px;
+  width: $input-height * 8 + 20px;
   font-family: monospace;
 
   button {
@@ -120,6 +137,9 @@ button {
   line-height: 20px;
   transition: opacity 300ms ease-in-out;
   height: 20px !important;
+  padding: 0 10px;
+  text-align: right;
+  margin: 0;
   &.visible { opacity: 1; }
   &.hidden { opacity: 0; }
 }
@@ -136,6 +156,7 @@ input {
   outline: 0;
   background: transparent;
   color: white;
+  margin: 0 10px;
 }
 
 input[type="text"] {
@@ -148,7 +169,8 @@ input[type="text"] {
   appearance: none;
 
   &.name {
-    width: $input-height * 4;
+    width: $input-height * 8;
+    text-align: right;
   }
 }
 
@@ -161,11 +183,12 @@ input[type=range] {
   width: 100%; /* Specific width is required for Firefox. */
   background: $white;
   border-radius: 10px; /* Otherwise white in Chrome */
+  height: $input-height/1.5;
 }
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  @include size($input-height/1.5);
+  @include size($input-height);
   background: $blue;
   border-radius: 100px;
 }

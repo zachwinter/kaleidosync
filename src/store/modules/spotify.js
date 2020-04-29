@@ -35,7 +35,7 @@ export const SUCCESS = 'SUCCESS'
 
 // eslint-disable-next-line 
 const LOCAL_ROOT = (PRODUCTION) ? '' : '/api' 
-const PING_DELAY = 60000
+const PING_DELAY = 5000
 
 export default {
   namespaced: true,
@@ -71,7 +71,8 @@ export default {
     status: {
       currentlyPlaying: null,
       trackAnalysis: null
-    }
+    },
+    polling: !PRODUCTION // eslint-disable-line
   },
 
   mutations: {
@@ -163,7 +164,7 @@ export default {
   
       commit(SET_ACCESS_TOKEN, accessToken)
       commit(SET_REFRESH_TOKEN, refreshToken)
-      commit(SET_REFRESH_TOKEN, refreshCode)
+      commit(SET_REFRESH_CODE, refreshCode)
     },
   
     async refreshTokens ({ state, commit, dispatch }) {
@@ -171,17 +172,18 @@ export default {
         // eslint-disable-next-line 
         const { data } = await get(`${LOCAL_ROOT}/refresh?token=${state.api.refreshToken}`)
         // eslint-disable-next-line 
-        cookies.set(SPOTIFY_ACCESS_TOKEN, data.access_token)
+        cookies.set(ACCESS_TOKEN, data.access_token)
         commit(SET_ACCESS_TOKEN, data.access_token)
         dispatch('getCurrentlyPlaying')
       } catch (e) {
-        window.location.href = '/'
+        dispatch('login')
         // eslint-disable-next-line 
         console.log(e)
       }
     },
   
     async getCurrentlyPlaying ({ state, commit, dispatch }) {
+      if (state.status.currentlyPlaying === FETCHING) return
       commit(SET_STATUS, { key: 'currentlyPlaying', value: FETCHING })
       try {
         var { data } = await get('https://api.spotify.com/v1/me/player/currently-playing', { headers: state.api.headers })
@@ -190,18 +192,19 @@ export default {
         commit(SET_STATUS, { key: 'currentlyPlaying', value: ERROR })
         if (e.status === 401) return dispatch('refreshTokens')
         if (e.status === 429) return dispatch('retryAfter', { retry: e.retry, action: 'getCurrentlyPlaying' })
-        window.location.href = '/'
+        return dispatch('login')
       }
       
       if (!data || !data.is_playing || !data.item) {
         commit(SET_ACTIVE, false)
         commit(SET_NO_PLAYBACK, true)
         commit(SET_ACTIVE, false)
-        return dispatch('ui/toast', {
+        dispatch('ui/toast', {
           message: 'No playback detected',
           subText: 'Play a song, then click the refresh icon.',
           autoHide: false
         }, { root: true })  
+        return state.polling ? dispatch('ping') : false
       } 
   
       const songsInSync = JSON.stringify(data.item) === JSON.stringify(state.currentlyPlaying)
@@ -209,6 +212,8 @@ export default {
       if (!state.initialized || !songsInSync || !state.active) {
         return dispatch('getTrackInfo', data)
       }
+
+      if (state.polling) dispatch('ping')
     },
   
     async getTrackInfo ({ state, commit, dispatch }, currentlyPlaying) {
@@ -224,7 +229,7 @@ export default {
         commit(SET_STATUS, { key: 'trackAnalysis', value: ERROR })
         if (e.status === 401) return dispatch('refreshTokens')
         if (e.status === 429) return dispatch('retryAfter', { retry: e.retry, action: 'getTrackInfo', param: currentlyPlaying })
-        window.location.href = '/'
+        return dispatch('login')
       }
   
       commit(SET_CURRENTLY_PLAYING, currentlyPlaying.item)
@@ -256,6 +261,8 @@ export default {
       if (!state.initialized) commit(SET_INITIALIZED, true)
       if (!state.active) commit(SET_ACTIVE, true)
       if (!state.noPlayback) commit(SET_NO_PLAYBACK, false)
+
+      if (state.polling) dispatch('ping')
     },
 
     async retryAfter ({ commit, dispatch, rootState, state }, { retry, action, param = null }) {

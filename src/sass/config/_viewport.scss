@@ -7,3 +7,7 @@ $breakpoints: (
   mobile-sm: 480,
   tiny: 320
 );
+
+@function spacer ($multiplier) {
+  @return $multiplier * 20px;
+}
