@@ -170,7 +170,6 @@ export default {
         volume *= this.getVolumeQueue(queue.name)
       })
       const interval = this.beatIntervalOverride || this.beatInterval
-      console.log(interval)
       let multiplier = 1//this.multiply ? scaleLinear([150, 350], [1.5, 1])(this[interval].duration) : 1
       if (!multiplier) multiplier = 1
       const tatum = interpolateBasis([base * multiplier, (base + (tick * volume)) * multiplier, base * multiplier])(ease(this[interval].progress))
