@@ -1,5 +1,5 @@
 <template lang="pug">
-label
+label.root
   .checkbox-container(:class="{ [variant]: variant, [size]: size }")
     input(type="checkbox" :checked="value" ref="input" @change="updateValue")
     Check
@@ -21,6 +21,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.root { @include flex(center, flex-end); }
+
 .checkbox-container {
   @include size(40px);
   position: relative;

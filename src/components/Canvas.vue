@@ -4,10 +4,15 @@ canvas(ref="canvas" :width="artboard.width" :height="artboard.height" :style="{ 
 
 <script>
 export default {
+  props: {
+    hidpi: {
+      type: Boolean,
+      default: false
+    }
+  },
   data: () => ({
     width: window.innerWidth,
     height: window.innerHeight,
-    dpi: 1, // window.devicePixelRatio,
     offscreens: []
   }),
   computed: {
@@ -22,6 +27,10 @@ export default {
         width: this.width + 'px',
         height: this.height + 'px'
       }
+    },
+    dpi () {
+      if (this.hidpi) return window.devicePixelRatio
+      return 1
     }
   },
   mounted () {

@@ -42,10 +42,13 @@ npm run serve
 
 ## Changelog
 
-> ### Version 5.3
+> #### Version 5.4
+* Reduces the complexity of adding new visualizers. 
+
+> #### Version 5.3
 * There are now 7 visualizers to choose from.
 
-> ### Version 5.2
+> #### Version 5.2
 * Refactor / rate limit debugging.
 
 > #### Version 5.1

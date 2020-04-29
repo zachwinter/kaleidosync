@@ -1,26 +1,33 @@
 <template lang="pug">
-.container
-  .controls
-    div(v-for="(uniform, i) in iterableUniforms" :key="i").uniforms
-      DynamicUniform(:uniform="uniform" :index="i" @update="onUpdate" @delete="deleteUniform")
-    .adding(v-if="adding")
-      input(type="text" v-model="addingModel" autofocus placeholder="Uniform Name")
-      button(@click="addUniform") Save
-    button(v-else @click="adding = true") Add Uniform
-  textarea(v-model="localShader")
+.container(:class="{ production }")
+  transition(name="fadeyn")
+    .controls(v-if="!menuVisible && iterableUniforms.length && hover")
+      div(v-for="(uniform, i) in iterableUniforms" :key="i").uniforms
+        DynamicUniform(:uniform="uniform" :index="i" @update="onUpdate" @delete="deleteUniform")
+      .adding(v-if="adding")
+        input(type="text" ref="adding" v-model="addingModel" @input="onAddingChange" placeholder="Uniform Name")
+        button(@click="addUniform") Save
+      CheckBox(v-model="showShader" label="Show Shader" size="sm" variant="light" v-if="!production").checkbox
+      .buttons
+        button(v-if="!adding && !production" @click="adding = true") Add Uniform
+        button(v-if="adding" @click="adding = false") Cancel
+        button(@click="$emit('copyShader')" v-if="!production") Copy Shader
+        button(@click="$emit('copyUniforms')" v-if="!production") Copy Uniforms
+        button(@click="reset") Reset
+  transition(name="fadeyn")
+    textarea(v-model="localShader" v-if="!production && !menuVisible && hover && showShader" @input="onInput" @keypress="onInput")
+    //- textarea(v-model="localShader" @input="onInput")
+    //- prism-editor(:code="localShader" v-if="!production && !menuVisible" language="javascript" :emitEvents="true" @change="onShaderChange")
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import cloneDeep from 'lodash/cloneDeep'
-import { SET_UNIFORMS, SET_SHADER } from '@/store/modules/flower'
 import DynamicUniform from '@/components/DynamicUniform'
+import CheckBox from '@/components/CheckBox'
+import { SET_SHOW_SHADER } from '@/store/modules/ui'
 
 const props =  {
-  stateKey: {
-    type: String,
-    required: true
-  },
-  
   uniforms: {
     type: Object,
     required: true
@@ -34,28 +41,44 @@ const props =  {
 
 export default {
   props,
-  components: { DynamicUniform },
+  components: { DynamicUniform , CheckBox },
   data: () => ({
     model: null,
     addingModel: '',
     adding: false,
-    localShader: null
+    localShader: null,
+    production: PRODUCTION // eslint-disable-line
   }),
   computed: {
+    ...mapState({
+      menuVisible: ({ ui }) => ui.menuVisible,
+      hover: ({ ui }) => ui.hover
+    }),
     iterableUniforms () {
       let arr = []
       for (let key in this.model) {
-        arr.push(this.model[key])
+        if (!((this.production && key === 'xBase') || this.production && key === 'xTick')) {
+          arr.push(this.model[key])
+        }
       }
       return arr
+    },
+    showShader: {
+      get () {
+        return this.$store.state.ui.showShader
+      },
+
+      set (val) {
+        this.$store.commit(`ui/${SET_SHOW_SHADER}`, val)
+      }
     }
   },
   watch: {
-    uniforms (val) {
-      this.model = cloneDeep(val)
+    uniforms (value) {
+      this.model = cloneDeep(value)
     },
-    localShader (val) {
-      this.$store.commit(`${this.stateKey}/${SET_SHADER}`, val)
+    localShader (value) {
+      this.$emit('update', { key: 'shader', value })
     }
   },
   created () {
@@ -63,15 +86,15 @@ export default {
     this.localShader = this.shader
   },
   methods: {
-    async onUpdate ({ uniform }) {
+    onUpdate ({ uniform }) {
       const model = cloneDeep(this.model)
       model[uniform.name] = uniform
-      this.$store.commit(`${this.stateKey}/${SET_UNIFORMS}`, model)
+      this.$emit('update', { key: 'uniforms', value: model })
     },
 
     deleteUniform (uniform) {
       delete this.model[uniform]
-      this.$store.commit(`${this.stateKey}/${SET_UNIFORMS}`, this.model)
+      this.$emit('update', { key: 'uniforms', value: this.model })
     },
 
     addUniform () {
@@ -83,16 +106,36 @@ export default {
         step: .01,
         value: .5
       }
-      this.$store.commit(`${this.stateKey}/${SET_UNIFORMS}`, model)
+      this.$emit('update', { key: 'uniforms', value: model })
       this.adding = false
     },
+    
+    onShaderChange (val) {
+      this.localShader = val
+    },
+
+    onAddingChange ({ target }) {
+      target.focus()
+    },
+
+    async reset () {
+      this.$emit('reset')
+      await this.$nextTick()
+      this.localShader = this.shader
+    },
+
+    onInput () {
+      this.$store.dispatch('ui/hover')
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+$width: 500px;
+
 .container {
-  @include position(fixed, 0 0 null null);
+  @include position(fixed, 30px 30px null null);
   @include flex;
   text-align: center;
   z-index: 200;
@@ -101,15 +144,21 @@ export default {
 }
 
 .controls {
-  padding: spacer(.5);
-  background: rgba(0, 0, 0, .5);
+  width: 100%;
+  background: $black;
   color: white;
+  padding: 20px;
+}
 
-  > * + * { margin-top: spacer(.25); }
+.checkbox {
+  margin: spacer(1) 0;
 }
 
 .uniforms {
+  width: 100%;
   margin: 10px 0;
+
+  &:first-of-type { margin-top: 0; }
 }
 
 .current {
@@ -135,6 +184,10 @@ button {
   height: 40px;
 }
 
+input {
+  margin: 0 10px;
+}
+
 .adding input {
   width: 100%;
   border: 0;
@@ -151,14 +204,41 @@ p {
   text-transform: uppercase;
 }
 
-textarea {
-  @include position(fixed, null 0 0 0);
-  width: 100%;
+.prism-editor-wrapper, textarea {
+  @include position(fixed, 30px null 210px 140px);
+  @include size(700px, auto);
+  padding: 20px;
   font-family: monospace;
-  height: 400px;
   border: 0;
-  background: rgba(0, 0, 0, .5);
+  background: rgba($black, .8);
   color: white;
   padding: spacer(.5);
+  font-size: 14px;
+  text-align: left;
+}
+
+.buttons {
+  @include flex;
+
+  > * { margin: 0 10px; }
+}
+
+.production .buttons {
+  @include flex(center, flex-end);
+}
+</style>
+
+<style lang="scss">
+.prism-editor-wrapper {
+  padding: 20px !important;
+  background: $black !important;
+  opacity: .7;
+  
+  pre, code {
+    background: transparent !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+  }
 }
 </style>

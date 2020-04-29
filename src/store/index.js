@@ -4,10 +4,7 @@ import VuexPersistence from 'vuex-persist'
 import getters from './getters'
 import spotify from './modules/spotify'
 import ui from './modules/ui'
-import fractal from './modules/fractal'
 import trails from './modules/trails'
-import gloop from './modules/gloop'
-import flower from './modules/flower'
 
 Vue.use(Vuex)
 
@@ -24,10 +21,7 @@ export default new Vuex.Store({
   modules: {
     spotify,
     ui,
-    fractal,
-    trails,
-    gloop,
-    flower
+    trails
   },
   plugins: [plugin]
 })

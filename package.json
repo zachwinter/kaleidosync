@@ -1,6 +1,6 @@
 {
   "name": "kaleidosync",
-  "version": "5.3.7",
+  "version": "5.4.0",
   "private": true,
   "scripts": {
     "serve": "concurrently \"node ./server/index.js\" \"vue-cli-service serve\"",
@@ -25,12 +25,15 @@
     "express-history-api-fallback": "^2.2.1",
     "humps": "^2.0.1",
     "lodash": "^4.17.15",
+    "prism": "^4.1.2",
+    "prismjs": "^1.20.0",
     "querystring": "^0.2.0",
     "request": "^2.88.2",
     "three": "^0.115.0",
     "vue": "^2.6.11",
     "vue-analytics": "^5.22.1",
     "vue-color": "^2.7.1",
+    "vue-prism-editor": "^0.5.1",
     "vue-router": "^3.1.5",
     "vuex": "^3.1.2",
     "vuex-persist": "^2.2.0"

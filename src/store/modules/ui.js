@@ -14,6 +14,7 @@ export const SET_TOAST_MESSAGE = 'SET_TOAST_MESSAGE'
 export const SET_SPINNER_VISIBLE = 'SET_SPINNER_VISIBLE'
 export const SET_SELECTED_VISUALIZER = 'SET_SELECTED_VISUALIZER'
 export const SET_EDUCATED = 'SET_EDUCATED'
+export const SET_SHOW_SHADER = 'SET_SHOW_SHADER'
 
 export default {
   namespaced: true,
@@ -35,7 +36,8 @@ export default {
       autohide: true
     },
     selectedVisualizer: 'flower',
-    educated: false
+    educated: false,
+    showShader: false
   },
   mutations: {
     [SET_ALWAYS_SHOW_TRACK_INFO] (state, val) {
@@ -85,6 +87,9 @@ export default {
     },
     [SET_EDUCATED] (state, val) {
       state.educated = val
+    },
+    [SET_SHOW_SHADER] (state, val) {
+      state.showShader = val
     }
   },
 

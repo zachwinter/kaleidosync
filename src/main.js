@@ -7,6 +7,12 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome/src/components/FontAwe
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons/faSyncAlt'
+import 'prismjs'
+import "prismjs/themes/prism-twilight.css";
+import VuePrismEditor from 'vue-prism-editor';
+import "vue-prism-editor/dist/VuePrismEditor.css";
+
+Vue.component("prism-editor", VuePrismEditor);
 
 library.add(faTrash)
 library.add(faSyncAlt)

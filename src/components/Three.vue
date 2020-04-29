@@ -10,13 +10,12 @@ import { Uniform } from 'three/src/core/Uniform'
 import { Vector2 } from 'three/src/math/Vector2'
 import { Scene } from 'three/src/scenes/Scene'
 import { WebGLRenderer } from 'three/src/renderers/WebGLRenderer'
-// import { PerspectiveCamera } from 'three/src/cameras/PerspectiveCamera'
 import { OrthographicCamera } from 'three/src/cameras/OrthographicCamera'
 import { PlaneGeometry } from 'three/src/geometries/PlaneGeometry'
 import { ShaderMaterial } from 'three/src/materials/ShaderMaterial'
 import { Mesh } from 'three/src/objects/Mesh'
 import { DoubleSide } from 'three/src/constants'
-import { scaleLinear } from 'd3-scale'
+// import { scaleLinear } from 'd3-scale'
 
 const DEFAULT_UNIFORMS = {
   resolution: new Uniform(new Vector2(window.innerWidth, window.innerHeight)),
@@ -56,7 +55,7 @@ export default {
     },
     multiply: {
       type: Boolean,
-      required: false
+      required: true
     }
   },
 
@@ -94,9 +93,7 @@ export default {
       this.scene = new Scene()
       this.renderer = new WebGLRenderer()
       this.renderer.setClearColor( '#000000', 1 )
-      // this.camera = new PerspectiveCamera(45, window.innerWidth/window.innerHeight, .1, 1000)
       this.camera = new OrthographicCamera(-1, 1, 1, -1, -1, 1)
-      // this.camera.position.z = 800
       this.renderer.setSize(window.innerWidth, window.innerHeight)
       this.renderer.setPixelRatio(window.devicePixelRatio)
       this.geometry = new PlaneGeometry(2, 2)
@@ -173,7 +170,8 @@ export default {
         volume *= this.getVolumeQueue(queue.name)
       })
       const interval = this.beatIntervalOverride || this.beatInterval
-      let multiplier = this.multiply ? scaleLinear([150, 350], [1.8, 1])(this[interval].duration) : 1
+      console.log(interval)
+      let multiplier = 1//this.multiply ? scaleLinear([150, 350], [1.5, 1])(this[interval].duration) : 1
       if (!multiplier) multiplier = 1
       const tatum = interpolateBasis([base * multiplier, (base + (tick * volume)) * multiplier, base * multiplier])(ease(this[interval].progress))
       if (!isNaN(tatum)) this._uniforms.stream.value += tatum 
