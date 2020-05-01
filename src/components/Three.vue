@@ -174,7 +174,7 @@ export default {
       if (!multiplier) multiplier = 1
       const tatum = interpolateBasis([base * multiplier, (base + (tick * volume)) * multiplier, base * multiplier])(ease(this[interval].progress))
       if (!isNaN(tatum)) this._uniforms.stream.value += tatum 
-      this._uniforms.bounce.value = interpolateBasis([1, 1 + (3 * volume), 1])(ease(this.beat.progress, 'easeOutCubic'))
+      this._uniforms.bounce.value = interpolateBasis([1, 2, 1])(ease(this.beat.progress, 'easeOutCubic'))
       this._uniforms.time.value = now
       this.renderer.render(this.scene, this.camera)
     },

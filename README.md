@@ -42,6 +42,10 @@ npm run serve
 
 ## Changelog
 
+> #### Version 5.5
+* Cleanup / bug fixes.
+* There are now 8 visualizers to choose from.
+
 > #### Version 5.4
 * Reduces the complexity of adding new visualizers. 
 * Reverts back to the traditional polling when running the dev server.
