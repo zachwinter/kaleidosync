@@ -197,13 +197,15 @@ export default {
       
       if (!data || !data.is_playing || !data.item) {
         commit(SET_ACTIVE, false)
-        commit(SET_NO_PLAYBACK, true)
         commit(SET_ACTIVE, false)
-        dispatch('ui/toast', {
-          message: 'No playback detected',
-          subText: 'Play a song, then click the refresh icon.',
-          autoHide: false
-        }, { root: true })  
+        if (!state.noPlayback) {
+          commit(SET_NO_PLAYBACK, true)
+          dispatch('ui/toast', {
+            message: 'No playback detected',
+            subText: 'Play a song, then click the refresh icon.',
+            autoHide: false
+          }, { root: true })  
+        }
         return state.polling ? dispatch('ping') : false
       } 
   

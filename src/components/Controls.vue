@@ -1,7 +1,7 @@
 <template lang="pug">
 .container(:class="{ production }")
   transition(name="fadeyn")
-    .controls(v-if="!menuVisible && iterableUniforms.length && hover")
+    .controls(v-if="(!menuVisible && iterableUniforms.length && hover)")
       div(v-for="(uniform, i) in iterableUniforms" :key="i").uniforms
         DynamicUniform(:uniform="uniform" :index="i" @update="onUpdate" @delete="deleteUniform")
       .adding(v-if="adding")
@@ -15,7 +15,7 @@
         button(@click="$emit('copyUniforms')" v-if="!production") Copy Uniforms
         button(@click="reset") Reset
   transition(name="fadeyn")
-    textarea(v-model="localShader" v-if="!production && !menuVisible && hover && showShader" @input="onInput" @keypress="onInput")
+    textarea(v-model="localShader" v-if="!production && (!menuVisible && showShader)" @input="onInput" @keypress="onInput")
     //- textarea(v-model="localShader" @input="onInput")
     //- prism-editor(:code="localShader" v-if="!production && !menuVisible" language="javascript" :emitEvents="true" @change="onShaderChange")
 </template>

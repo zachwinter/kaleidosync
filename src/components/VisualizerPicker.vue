@@ -5,6 +5,7 @@
       span(:class="{ selected: selectedVisualizer === viz }")
         img(:src="`/images/${viz}.jpg`" :alt="viz")
       i(v-if="isNew") New
+    li(@click="select('template')" v-if="!production") Template
 </template>
 
 <script>
@@ -15,6 +16,7 @@ export default {
   data: () => ({
     visualizers: [
       ['flower', true],
+      ['neon', true],
       ['fractal', false],
       ['gloop', false],
       ['trails', false],
