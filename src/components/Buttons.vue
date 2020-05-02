@@ -3,6 +3,7 @@
   Hamburger
   Instagram
   Refresh
+  SettingsButton
   FullScreen
 </template>
 
@@ -10,6 +11,7 @@
 import Hamburger from '@/components/Hamburger'
 import FullScreen from '@/components/FullScreen'
 import Refresh from '@/components/Refresh'
+import SettingsButton from '@/components/SettingsButton'
 import Instagram from '@/components/Instagram'
 
 export default { 
@@ -17,7 +19,8 @@ export default {
     FullScreen, 
     Hamburger, 
     Refresh,
-    Instagram
+    Instagram,
+    SettingsButton
   }
 }
 </script>

@@ -1,7 +1,5 @@
 import { pause } from '@/util/timing'
 
-export const SET_ALWAYS_SHOW_ALBUM_ART = 'SET_ALWAYS_SHOW_ALBUM_ART'
-export const SET_ALWAYS_SHOW_TRACK_INFO = 'SET_ALWAYS_SHOW_TRACK_INFO'
 export const SET_MENU_VISIBLE = 'SET_MENU_VISIBLE'
 export const SET_HOVER = 'SET_HOVER'
 export const SET_HOVER_TIMEOUT = 'SET_HOVER_TIMEOUT'
@@ -12,20 +10,15 @@ export const SET_HIDE_ALL = 'SET_HIDE_ALL'
 export const SET_TOAST_VISIBLE = 'SET_TOAST_VISIBLE'
 export const SET_TOAST_MESSAGE = 'SET_TOAST_MESSAGE'
 export const SET_SPINNER_VISIBLE = 'SET_SPINNER_VISIBLE'
-export const SET_SELECTED_VISUALIZER = 'SET_SELECTED_VISUALIZER'
-export const SET_EDUCATED = 'SET_EDUCATED'
-export const SET_SHOW_SHADER = 'SET_SHOW_SHADER'
 
 export default {
   namespaced: true,
   state: {
-    alwaysShowAlbumArt: false,
-    alwaysShowTrackInfo: false,
     albumArtVisible: false,
     trackInfoVisible: false,
     hover: false,
     hoverTimeout: null,
-    hoverDelay: 2000,
+    hoverDelay: 1200,
     spinnerVisible: false,
     hideAll: false,
     menuVisible: false,
@@ -34,18 +27,9 @@ export default {
       visible: false,
       message: '',
       autohide: true
-    },
-    selectedVisualizer: 'flower',
-    educated: false,
-    showShader: false
+    }
   },
   mutations: {
-    [SET_ALWAYS_SHOW_TRACK_INFO] (state, val) {
-      state.alwaysShowTrackInfo = val
-    },
-    [SET_ALWAYS_SHOW_ALBUM_ART] (state, val) {
-      state.alwaysShowAlbumArt = val
-    },
     [SET_HOVER] (state, val) {
       state.hover = val
     },
@@ -81,15 +65,6 @@ export default {
     },
     [SET_SPINNER_VISIBLE] (state, val) {
       state.spinnerVisible = val
-    },
-    [SET_SELECTED_VISUALIZER] (state, val) {
-      state.selectedVisualizer = val
-    },
-    [SET_EDUCATED] (state, val) {
-      state.educated = val
-    },
-    [SET_SHOW_SHADER] (state, val) {
-      state.showShader = val
     }
   },
 

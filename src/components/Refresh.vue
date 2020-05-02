@@ -1,7 +1,7 @@
 <template lang="pug">
 .refresh
   transition(name="fadeyn")
-    button(v-if="!menuVisible && hover" @click="ping" :disabled="retrying"): RefreshIcon
+    button(v-if="!menuVisible && (hover || showSettings)" @click="ping" :disabled="retrying"): RefreshIcon
 </template>
 
 <script>
@@ -13,7 +13,8 @@ export default {
   computed: mapState({
     menuVisible: ({ ui }) => ui.menuVisible,
     hover: ({ ui }) => ui.hover,
-    retrying: ({ spotify }) => spotify.retrying
+    retrying: ({ spotify }) => spotify.retrying,
+    showSettings: ({ user }) => user.showSettings
   }),
   methods: {
     ping () {
@@ -42,7 +43,8 @@ button {
   }
 
   svg {
-    @include size(100%);
+    @include size(100%, auto);
+    display: block;
 
     * {
       fill: white;

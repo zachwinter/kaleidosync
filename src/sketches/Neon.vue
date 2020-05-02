@@ -3,7 +3,7 @@ Scene(
   :shader="shader"
   :uniforms="uniforms"
   :queues="queues"
-  :multiply="false"
+  :multiply="true"
   @update="update"
   @reset="reset"
   @copyUniforms="copyUniforms"
@@ -58,32 +58,31 @@ void main () {
   for (float i = 7.; i < 9.; i++) {
     p = abs(fract(p) - .5);
     p *= gloop*i;
-    float dist = distance(p, vec2(sin(stream/10.)/100.)) +(stream/100.);
+    float dist = distance(p, vec2(sin(stream/100.)/10.)) +(stream/100.);
     p = rotate2d(abs(cos(dist)) - stream/100.) * p;
-    gl_FragColor.r += 8.*sin(p.x * p.y);
-    gl_FragColor.g += 8.*cos(p.y * i) + sin(p.y * i);
-    gl_FragColor.b += 8.*sin(p.x * i) - sin(p.y / i);
+    gl_FragColor.r += sin(p.x * p.y);
+    gl_FragColor.g += cos(p.y * i) + sin(p.y * i);
+    gl_FragColor.b += sin(p.x * i) * sin(p.y / i);
   }
 
   gl_FragColor.r *= red;
   gl_FragColor.g *= green;
   gl_FragColor.b *= blue;
-  gl_FragColor = brightness * (hue(1. - log(abs(gl_FragColor)), stream/50.));
-
+  gl_FragColor = brightness * (hue(1.-2.*log(abs(gl_FragColor)), stream/150.));
+  gl_FragColor.r *= red;
+  gl_FragColor.g *= green;
+  gl_FragColor.b *= blue;
 }
 `
+
 const queues = [{
-  name: 'neon-c',
+  name: 'neon-a',
   totalSamples: 600,
   smoothing: 60
 },{
   name: 'neon-b',
   totalSamples: 600,
-  smoothing: 30
-}, {
-  name: 'neon-a',
-  totalSamples: 150,
-  smoothing: 5
+  smoothing: 10
 }]
 
 const uniforms = {
@@ -91,57 +90,57 @@ const uniforms = {
     "name": "xBase",
     "min": 0,
     "max": "5",
-    "value": "0.876",
+    "value": "0.544",
     "step": "0.001"
   },
   "xTick": {
     "name": "xTick",
     "min": 0,
     "max": "26",
-    "value": "6.18",
+    "value": "6.46",
     "step": 0.01
   },
   "red": {
     "name": "red",
     "min": 0,
-    "max": 1,
+    "max": "1",
     "step": 0.01,
-    "value": "0.33"
+    "value": "0.49"
   },
   "green": {
     "name": "green",
     "min": 0,
-    "max": 1,
+    "max": "1",
     "step": 0.01,
-    "value": "0.34"
+    "value": "0.63"
   },
   "blue": {
     "name": "blue",
     "min": 0,
-    "max": 1,
+    "max": "1",
     "step": 0.01,
-    "value": "1"
+    "value": "0.39"
   },
   "brightness": {
     "name": "brightness",
     "min": ".05",
     "max": "1",
     "step": 0.01,
-    "value": "0.58"
+    "value": "0.17"
   },
   "zoom": {
     "name": "zoom",
     "min": ".04",
-    "max": ".5",
+    "max": ".3",
     "step": "0.0001",
-    "value": "0.1602"
+    "value": "0.2101"
   },
   "gloop": {
     "name": "gloop",
     "min": ".2",
     "max": ".8",
     "step": 0.01,
-    "value": "0.63"
+    "value": "0.47"
   }
 }
 
@@ -151,7 +150,7 @@ export default {
   name: 'neon',
   mixins: [sketch],
   data: () => ({
-    version: '1.0.0',
+    version: '2.0.0',
     shader,
     queues,
     uniforms,

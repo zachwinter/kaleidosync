@@ -5,14 +5,15 @@ import getters from './getters'
 import spotify from './modules/spotify'
 import ui from './modules/ui'
 import trails from './modules/trails'
+import user from './modules/user'
 
 Vue.use(Vuex)
 
 const { plugin } = new VuexPersistence({
   storage: window.localStorage,
-  key: 'kaleidosync-persist-v7',
-  reducer ({ ui, trails }) {
-    return { ui, trails }
+  key: 'kaleidosync-persist-v8',
+  reducer ({ user, trails }) {
+    return { user, trails }
   }
 })
 
@@ -21,7 +22,8 @@ export default new Vuex.Store({
   modules: {
     spotify,
     ui,
-    trails
+    trails,
+    user
   },
   plugins: [plugin]
 })

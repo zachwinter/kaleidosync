@@ -1,19 +1,19 @@
 <template lang="pug">
-.fullscreen
+.settings
   transition(name="fadeyn")
-    button(v-if="(!menuVisible && (hover || showSettings)) && offerFullscreen" @click="fullScreen")
-      FullScreenIcon
+    button(v-if="(!menuVisible && (hover || showSettings))" @click="$store.dispatch('user/toggleSettings')")
+      SettingsIcon
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import FullScreenIcon from '@/assets/svg/full-screen.svg'
+import SettingsIcon from '@/assets/svg/settings-icon.svg'
 
 export default {
-  components: { FullScreenIcon },
+  components: { SettingsIcon },
   data () {
     return {
-      offerFullscreen: false,
+      offerFullscreen: false, 
       isFullscreen: false
     }
   },
@@ -49,7 +49,7 @@ export default {
 <style lang="scss" scoped>
 button {
   @include size(80px, 80px);
-  @include position(fixed, 470px null null 30px);
+  @include position(fixed, 360px null null 30px);
   z-index: 100000;
   background: black;
   padding: 30px;
@@ -61,11 +61,12 @@ button {
   @include max-width(header) {
     @include size(40px);
     padding: 10px;
-    top: 270px;
+    top: 210px;
   }
 
   svg {
-    @include size(100%);
+    @include size(100%, auto);
+    display: block;
 
     * {
       fill: white;

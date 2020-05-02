@@ -15,7 +15,7 @@ import { PlaneGeometry } from 'three/src/geometries/PlaneGeometry'
 import { ShaderMaterial } from 'three/src/materials/ShaderMaterial'
 import { Mesh } from 'three/src/objects/Mesh'
 import { DoubleSide } from 'three/src/constants'
-// import { scaleLinear } from 'd3-scale'
+import { scaleLinear } from 'd3-scale'
 
 const DEFAULT_UNIFORMS = {
   resolution: new Uniform(new Vector2(window.innerWidth, window.innerHeight)),
@@ -170,12 +170,13 @@ export default {
         volume *= this.getVolumeQueue(queue.name)
       })
       const interval = this.beatIntervalOverride || this.beatInterval
-      let multiplier = 1//this.multiply ? scaleLinear([150, 350], [1.5, 1])(this[interval].duration) : 1
+      let multiplier = this.multiply ? scaleLinear([150, 350], [2, 1])(this[interval].duration) : 1
       if (!multiplier) multiplier = 1
       const tatum = interpolateBasis([base * multiplier, (base + (tick * volume)) * multiplier, base * multiplier])(ease(this[interval].progress))
       if (!isNaN(tatum)) this._uniforms.stream.value += tatum 
       this._uniforms.bounce.value = interpolateBasis([1, 2, 1])(ease(this.beat.progress, 'easeOutCubic'))
       this._uniforms.time.value = now
+      this._uniforms.volume.value = volume
       this.renderer.render(this.scene, this.camera)
     },
 
