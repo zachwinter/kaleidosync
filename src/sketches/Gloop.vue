@@ -45,8 +45,9 @@ vec4 hue(vec4 color, float shift) {
 }
 
 void main() {
-  vec2 uv = (gl_FragCoord.xy - 1. * resolution.xy) / resolution.y;
-  uv *= (zoom);
+  vec2 uv = -1.0 + 2.0 * vUv.xy;
+  uv *= zoom;
+  uv.x *= resolution.x / resolution.y;
   vec4 result = vec4(0, 0, 0, 1);
   float t = sin(uv.x);
   float base = domain * length(uv);
@@ -56,15 +57,15 @@ void main() {
   float dist = distance(uv, vec2(-domain));
   uv = abs(rot * uv) * dist;
   for (int p = 0; p < 3; p++) {
-    float a = 2.*cos(uv.x - stream/5.)*sin(stream/10. + t * base);
-    float b = atan(-stream/1.)*cos(3.* uv.x - stream);
-    float c = 8.*tan(2.5 * uv.y)*sin(uv.y - stream/5.);
+    float a = 1.*cos(uv.x - stream/5.)*sin(stream/10. + t * base);
+    float b = atan(-stream/1.)*cos(scales* uv.x - stream);
+    float c = 2.*tan(gloop * uv.y)*sin(uv.y - stream/5.);
     uv *= rotate(atan(uv.x+stream));
     result[p] = a * b / c * atan(dist);
     t += dist * offset;
   }
   result.xyz *= result.xyz;
-  gl_FragColor = hue(log(result), stream/10.);
+  gl_FragColor = hue(log(abs(result)), stream/5.);
 }
 `
 const queues = [{
@@ -80,14 +81,14 @@ const queues = [{
 const uniforms = {
   "xBase": {
     "name": "xBase",
-    "value": "0.024",
+    "value": "0.036",
     "min": 0,
     "max": ".1",
     "step": "0.001"
   },
   "xTick": {
     "name": "xTick",
-    "value": "0.23",
+    "value": "0.25",
     "max": ".8",
     "min": 0,
     "step": 0.01
@@ -97,21 +98,35 @@ const uniforms = {
     "min": ".001",
     "max": ".07",
     "step": "0.0001",
-    "value": "0.0178"
+    "value": "0.0278"
   },
   "domain": {
     "name": "domain",
     "min": 0,
     "max": "40",
     "step": 0.01,
-    "value": "22.56"
+    "value": "6.34"
   },
   "offset": {
     "name": "offset",
     "min": 0,
     "max": "10",
     "step": 0.01,
-    "value": "3.69"
+    "value": "1.16"
+  },
+  "scales": {
+    "name": "scales",
+    "min": 0,
+    "max": "300",
+    "step": 0.01,
+    "value": "164.39"
+  },
+  "gloop": {
+    "name": "gloop",
+    "min": "1",
+    "max": "10",
+    "step": 0.01,
+    "value": "5.43"
   }
 }
 
@@ -121,7 +136,7 @@ export default {
   name: 'gloop',
   mixins: [sketch],
   data: () => ({
-    version: '3.0.0',
+    version: '5.0.0',
     shader,
     queues,
     uniforms,
