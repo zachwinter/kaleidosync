@@ -150,7 +150,7 @@ export default {
   name: 'neon',
   mixins: [sketch],
   data: () => ({
-    version: '3.0.0',
+    version: '4.0.0',
     shader,
     queues,
     uniforms,
