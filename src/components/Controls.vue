@@ -19,7 +19,7 @@
   transition(name="fade")
     textarea(v-model="localShader" v-if="!production && (!menuVisible && showSettings && showShader)" @input="onInput" @keypress="onInput")
     //- textarea(v-model="localShader" @input="onInput")
-    //- prism-editor(:code="localShader" v-if="!production && !menuVisible" language="javascript" :emitEvents="true" @change="onShaderChange")
+    //- prism-editor(:code="localShader" v-if="!production && (!menuVisible && showSettings && showShader)" language="javascript" :emitEvents="true" @change="onShaderChange")
 </template>
 
 <script>

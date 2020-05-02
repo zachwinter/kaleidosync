@@ -16,9 +16,9 @@ export default {
   data: () => ({
     visualizers: [
       ['neon', true],
-      ['flower', true],
+      ['gloop', true],
+      ['flower', false],
       ['fractal', false],
-      ['gloop', false],
       ['trails', false],
       ['kaleidosync', false],
       ['blobs', false],
