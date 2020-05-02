@@ -10,7 +10,7 @@ export default {
   state: {
     alwaysShowAlbumArt: false,
     alwaysShowTrackInfo: false,
-    selectedVisualizer: 'neon',
+    selectedVisualizer: 'gloop',
     educated: false,
     showShader: false,
     showSettings: false

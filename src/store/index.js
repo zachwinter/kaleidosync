@@ -11,7 +11,7 @@ Vue.use(Vuex)
 
 const { plugin } = new VuexPersistence({
   storage: window.localStorage,
-  key: 'kaleidosync-persist-v8',
+  key: 'kaleidosync-persist-v9',
   reducer ({ user, trails }) {
     return { user, trails }
   }
