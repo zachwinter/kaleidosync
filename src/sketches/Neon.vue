@@ -90,14 +90,14 @@ const uniforms = {
     "name": "xBase",
     "min": 0,
     "max": "5",
-    "value": "0.797",
+    "value": "1.419",
     "step": "0.001"
   },
   "xTick": {
     "name": "xTick",
     "min": 0,
     "max": "26",
-    "value": "4.2",
+    "value": "6.4",
     "step": 0.01
   },
   "red": {
@@ -150,7 +150,7 @@ export default {
   name: 'neon',
   mixins: [sketch],
   data: () => ({
-    version: '4.0.0',
+    version: '5.0.0',
     shader,
     queues,
     uniforms,
