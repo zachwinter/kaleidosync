@@ -2,19 +2,20 @@
 .container(:class="{ production }")
   transition(name="fade")
     .controls(v-if="(!menuVisible && iterableUniforms.length && showSettings)")
-      div(v-for="(uniform, i) in iterableUniforms" :key="i").uniforms
-        DynamicUniform(:uniform="uniform" :index="i" @update="onUpdate" @delete="deleteUniform")
-      .adding(v-if="adding")
-        input(type="text" ref="adding" v-model="addingModel" @input="onAddingChange" placeholder="Uniform Name")
-        button(@click="addUniform") Save
-      CheckBox(v-model="showShader" label="Show Shader" size="sm" variant="light" v-if="!production").checkbox
-      .buttons
-        button(v-if="!adding && !production" @click="adding = true") Add Uniform
-        button(v-if="adding" @click="adding = false") Cancel
-        button(@click="$emit('copyShader')" v-if="!production") Copy Shader
-        button(@click="$emit('copyUniforms')" v-if="!production") Copy Uniforms
-        button(@click="reset") Reset
-        button(@click="$store.dispatch('user/toggleSettings')") Hide
+      div
+        div(v-for="(uniform, i) in iterableUniforms" :key="i").uniforms
+          DynamicUniform(:uniform="uniform" :index="i" @update="onUpdate" @delete="deleteUniform")
+        .adding(v-if="adding")
+          input(type="text" ref="adding" v-model="addingModel" @input="onAddingChange" placeholder="Uniform Name")
+          button(@click="addUniform") Save
+        CheckBox(v-model="showShader" label="Show Shader" size="sm" variant="light" v-if="!production").checkbox
+        .buttons
+          button(v-if="!adding && !production" @click="adding = true") Add Uniform
+          button(v-if="adding" @click="adding = false") Cancel
+          button(@click="$emit('copyShader')" v-if="!production") Copy Shader
+          button(@click="$emit('copyUniforms')" v-if="!production") Copy Uniforms
+          button(@click="reset") Reset
+          button(@click="$store.dispatch('user/toggleSettings')") Hide
   transition(name="fade")
     textarea(v-model="localShader" v-if="!production && (!menuVisible && showSettings && showShader)" @input="onInput" @keypress="onInput")
     //- textarea(v-model="localShader" @input="onInput")
@@ -155,6 +156,7 @@ $width: 500px;
 
 .controls {
   @include size(100%);
+  @include flex;
   background: $black;
   color: white;
   padding: 20px;
@@ -229,7 +231,6 @@ p {
 
 .buttons {
   @include flex;
-  padding: 15px 0;
 
   > * { margin: 0 10px; }
 }

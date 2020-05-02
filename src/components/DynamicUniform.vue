@@ -119,7 +119,7 @@ button {
   font-family: monospace;
   text-align: left;
   width: 100%;
-  padding: 8px 0;
+  padding: 4px 0;
 }
 
 .flex:first-of-type {
@@ -192,7 +192,7 @@ input[type=range] {
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  @include size($input-height * 2.5);
+  @include size($input-height * 2);
   border: 4px solid $black;
   background: $blue;
   border-radius: 100px;

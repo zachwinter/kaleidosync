@@ -55,7 +55,7 @@ void main () {
   p *= zoom;
   p += .5;
   gl_FragColor = vec4(0.);
-  for (float i = 7.; i < 9.; i++) {
+  for (float i = 8.; i < 10.; i++) {
     p = abs(fract(p) - .5);
     p *= gloop*i;
     float dist = distance(p, vec2(sin(stream/100.)/10.)) +(stream/100.);
@@ -90,14 +90,14 @@ const uniforms = {
     "name": "xBase",
     "min": 0,
     "max": "5",
-    "value": "0.544",
+    "value": "0.797",
     "step": "0.001"
   },
   "xTick": {
     "name": "xTick",
     "min": 0,
     "max": "26",
-    "value": "6.46",
+    "value": "4.2",
     "step": 0.01
   },
   "red": {
@@ -105,42 +105,42 @@ const uniforms = {
     "min": 0,
     "max": "1",
     "step": 0.01,
-    "value": "0.49"
+    "value": "0.76"
   },
   "green": {
     "name": "green",
     "min": 0,
     "max": "1",
     "step": 0.01,
-    "value": "0.63"
+    "value": "0.76"
   },
   "blue": {
     "name": "blue",
     "min": 0,
     "max": "1",
     "step": 0.01,
-    "value": "0.39"
+    "value": "0.57"
   },
   "brightness": {
     "name": "brightness",
-    "min": ".05",
-    "max": "1",
+    "min": ".1",
+    "max": ".6",
     "step": 0.01,
-    "value": "0.17"
+    "value": "0.2"
   },
   "zoom": {
     "name": "zoom",
     "min": ".04",
-    "max": ".3",
+    "max": ".16",
     "step": "0.0001",
-    "value": "0.2101"
+    "value": "0.1056"
   },
   "gloop": {
     "name": "gloop",
     "min": ".2",
     "max": ".8",
     "step": 0.01,
-    "value": "0.47"
+    "value": "0.56"
   }
 }
 
@@ -150,7 +150,7 @@ export default {
   name: 'neon',
   mixins: [sketch],
   data: () => ({
-    version: '2.0.0',
+    version: '3.0.0',
     shader,
     queues,
     uniforms,
