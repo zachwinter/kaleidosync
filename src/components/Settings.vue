@@ -1,8 +1,8 @@
 <template lang="pug">
 .settings
   form
-    CheckBox(v-model="alwaysShowAlbumArt" label="Always Show Album Artwork")
-    CheckBox(v-model="alwaysShowTrackInfo" label="Always Show Track Info")
+    CheckBox(v-model="alwaysShowAlbumArt" label="Always Show Album Artwork" size="sm")
+    CheckBox(v-model="alwaysShowTrackInfo" label="Always Show Track Info" size="sm")
 </template>
 
 <script>
@@ -10,17 +10,17 @@ import CheckBox from '@/components/CheckBox'
 import {
   SET_ALWAYS_SHOW_TRACK_INFO, 
   SET_ALWAYS_SHOW_ALBUM_ART
-} from '@/store/modules/ui'
+} from '@/store/modules/user'
 
 export default {
   components: { CheckBox },
   computed: {
     alwaysShowTrackInfo: {
       get () {
-        return this.$store.state.ui.alwaysShowTrackInfo
+        return this.$store.state.user.alwaysShowTrackInfo
       },
       set (value) {
-        this.$store.commit(`ui/${SET_ALWAYS_SHOW_TRACK_INFO}`, value)
+        this.$store.commit(`user/${SET_ALWAYS_SHOW_TRACK_INFO}`, value)
       }
     },
     alwaysShowAlbumArt: {
@@ -28,7 +28,7 @@ export default {
         return this.$store.state.ui.alwaysShowAlbumArt
       },
       set (value) {
-        this.$store.commit(`ui/${SET_ALWAYS_SHOW_ALBUM_ART}`, value)
+        this.$store.commit(`user/${SET_ALWAYS_SHOW_ALBUM_ART}`, value)
       }
     }
   }

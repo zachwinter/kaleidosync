@@ -231,6 +231,14 @@ export default {
         commit(SET_STATUS, { key: 'trackAnalysis', value: ERROR })
         if (e.status === 401) return dispatch('refreshTokens')
         if (e.status === 429) return dispatch('retryAfter', { retry: e.retry, action: 'getTrackInfo', param: currentlyPlaying })
+        if (e.status === 404) {
+          dispatch('ui/toast', {
+            message: 'Uh oh...',
+            subText: `Track analysis data isn't available for this song. Try another!`,
+            autoHide: false
+          }, { root: true })  
+          return state.polling ? dispatch('ping') : false
+        }
         return dispatch('login')
       }
   

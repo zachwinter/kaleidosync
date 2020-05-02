@@ -10,28 +10,28 @@
 
 <script>
 import { mapState } from 'vuex'
-import { SET_SELECTED_VISUALIZER } from '@/store/modules/ui'
+import { SET_SELECTED_VISUALIZER } from '@/store/modules/user'
 
 export default {
   data: () => ({
     visualizers: [
-      ['flower', true],
       ['neon', true],
+      ['flower', true],
       ['fractal', false],
       ['gloop', false],
       ['trails', false],
       ['kaleidosync', false],
       ['blobs', false],
-      ['wavesync', false]
+      // ['wavesync', false]
     ],
     production: PRODUCTION // eslint-disable-line
   }),
   computed: mapState({
-    selectedVisualizer: ({ ui }) => ui.selectedVisualizer
+    selectedVisualizer: ({ user }) => user.selectedVisualizer
   }),
   methods: {
     select (name) {
-      this.$store.commit(`ui/${SET_SELECTED_VISUALIZER}`, name)
+      this.$store.commit(`user/${SET_SELECTED_VISUALIZER}`, name)
     }
   }
 }

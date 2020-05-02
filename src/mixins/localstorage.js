@@ -18,14 +18,6 @@ export default {
 
     uniforms (val) {
       this.saveValue('uniforms', val)
-    },
-
-    queues (val) {
-      this.saveValue('queues', val)
-    },
-
-    beatInterval (val) {
-      this.saveValue('beatInterval', val)
     }
   },
 
@@ -68,9 +60,7 @@ export default {
       const state = JSON.stringify({
         version: this.version,
         shader: this.shader,
-        uniforms: this.uniforms,
-        queues: this.queues,
-        beatInterval: this.beatInterval || null
+        uniforms: this.uniforms
       })
 
       window.localStorage.setItem(this.key, state)

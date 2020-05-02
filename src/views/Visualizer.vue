@@ -54,8 +54,8 @@ export default {
   },
   computed: {
     ...mapState({
-      selectedVisualizer: ({ ui }) => ui.selectedVisualizer,
-      educated: ({ ui }) => ui.educated,
+      selectedVisualizer: ({ user }) => user.selectedVisualizer,
+      educated: ({ user }) => user.educated,
       loadingNextSong: ({ spotify }) => spotify.loadingNextSong,
       toast: ({ ui }) => ui.toast,
       menuVisible: ({ ui }) => ui.menuVisible,

@@ -9,12 +9,12 @@
 </template>
 
 <script>
-import { SET_EDUCATED } from '@/store/modules/ui'
+import { SET_EDUCATED } from '@/store/modules/user'
 
 export default {
   methods: {
     dismiss () {
-      this.$store.commit(`ui/${SET_EDUCATED}`, true)
+      this.$store.commit(`user/${SET_EDUCATED}`, true)
     }
   }
 }

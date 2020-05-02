@@ -1,7 +1,7 @@
 <template lang="pug">
 .container
   transition(name="fadeyn")
-    .hamburger-container(:class="{ open: menuVisible }" @click="toggleMenu" v-if="menuVisible || hover")
+    .hamburger-container(:class="{ open: menuVisible }" @click="toggleMenu" v-if="menuVisible || (hover || showSettings)")
       .hamburger
         .inner
         .inner
@@ -14,7 +14,8 @@ import { SET_MENU_VISIBLE } from '@/store/modules/ui'
 export default {
   computed: mapState({
     menuVisible: ({ ui }) => ui.menuVisible,
-    hover: ({ ui }) => ui.hover
+    hover: ({ ui }) => ui.hover,
+    showSettings: ({ user }) => user.showSettings
   }),
   methods: {
     toggleMenu() {

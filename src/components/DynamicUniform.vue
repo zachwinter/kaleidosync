@@ -1,15 +1,18 @@
 <template lang="pug">
-.uniform
+.uniform(v-if="!production")
   .flex
-    button(@click.prevent="$emit('delete', uniform.name)" v-if="!production"): icon(icon="trash")
-    input(type="text" :value="uniform.name" @change="onNameChange" :disabled="production" :class="{ hidden: showValue }").name
+    button(@click.prevent="$emit('delete', uniform.name)"): icon(icon="trash")
+    input(type="text" :value="uniform.name" @change="onNameChange" :class="{ hidden: showValue }").name
     .value(:class="{ visible: showValue }") {{ uniform.value}}
   .flex
-    input(type="text" ref="min" :value="uniform.min" @input="onMinChange" v-if="!production")
+    input(type="text" ref="min" :value="uniform.min" @input="onMinChange")
     input(type="range" :min="uniform.min" :max="uniform.max" :step="uniform.step" :value="uniform.value" @input="onInput")
-    input(type="text" ref="max" :value="uniform.max" @input="onMaxChange" v-if="!production")
+    input(type="text" ref="max" :value="uniform.max" @input="onMaxChange")
     span(v-if="!production") @
-    input(type="text" ref="step" :value="uniform.step" @input="onStepChange" v-if="!production")
+    input(type="text" ref="step" :value="uniform.step" @input="onStepChange")
+.uniform(v-else)
+  label {{ uniform.name }}
+  input(type="range" :min="uniform.min" :max="uniform.max" :step="uniform.step" :value="uniform.value" @input="onInput")
 </template>
 
 <script>
@@ -116,6 +119,7 @@ button {
   font-family: monospace;
   text-align: left;
   width: 100%;
+  padding: 8px 0;
 }
 
 .flex:first-of-type {
@@ -138,7 +142,7 @@ button {
   transition: opacity 300ms ease-in-out;
   height: 20px !important;
   padding: 0 10px;
-  text-align: right;
+  text-align: center;
   margin: 0;
   &.visible { opacity: 1; }
   &.hidden { opacity: 0; }
@@ -168,9 +172,9 @@ input[type="text"] {
   -webkit-appearance: none;
   appearance: none;
 
-  &.name {
+  &.name, &.value {
     width: $input-height * 8;
-    text-align: right;
+    // text-align: right;
   }
 }
 
@@ -183,17 +187,35 @@ input[type=range] {
   width: 100%; /* Specific width is required for Firefox. */
   background: $white;
   border-radius: 10px; /* Otherwise white in Chrome */
-  height: $input-height/1.5;
+  height: 10px;
 }
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  @include size($input-height);
+  @include size($input-height * 2.5);
+  border: 4px solid $black;
   background: $blue;
   border-radius: 100px;
 }
 
 input[type=range]:focus {
   outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+
+.production {
+  .flex {
+    width: auto;
+  }
+  .name {
+    position: static;
+    width: auto !important;
+    // text-align: right;
+  }
+}
+
+label {
+  font-family: Share, sans-serif;
+  text-transform: uppercase;
+  padding: 0 30px 0 0;
 }
 </style>

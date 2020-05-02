@@ -1,7 +1,7 @@
 <template lang="pug">
 .container(:class="{ production }")
-  transition(name="fadeyn")
-    .controls(v-if="(!menuVisible && iterableUniforms.length && hover)")
+  transition(name="fade")
+    .controls(v-if="(!menuVisible && iterableUniforms.length && showSettings)")
       div(v-for="(uniform, i) in iterableUniforms" :key="i").uniforms
         DynamicUniform(:uniform="uniform" :index="i" @update="onUpdate" @delete="deleteUniform")
       .adding(v-if="adding")
@@ -14,8 +14,9 @@
         button(@click="$emit('copyShader')" v-if="!production") Copy Shader
         button(@click="$emit('copyUniforms')" v-if="!production") Copy Uniforms
         button(@click="reset") Reset
-  transition(name="fadeyn")
-    textarea(v-model="localShader" v-if="!production && (!menuVisible && showShader)" @input="onInput" @keypress="onInput")
+        button(@click="$store.dispatch('user/toggleSettings')") Hide
+  transition(name="fade")
+    textarea(v-model="localShader" v-if="!production && (!menuVisible && showSettings && showShader)" @input="onInput" @keypress="onInput")
     //- textarea(v-model="localShader" @input="onInput")
     //- prism-editor(:code="localShader" v-if="!production && !menuVisible" language="javascript" :emitEvents="true" @change="onShaderChange")
 </template>
@@ -25,7 +26,7 @@ import { mapState } from 'vuex'
 import cloneDeep from 'lodash/cloneDeep'
 import DynamicUniform from '@/components/DynamicUniform'
 import CheckBox from '@/components/CheckBox'
-import { SET_SHOW_SHADER } from '@/store/modules/ui'
+import { SET_SHOW_SHADER } from '@/store/modules/user'
 
 const props =  {
   uniforms: {
@@ -52,7 +53,8 @@ export default {
   computed: {
     ...mapState({
       menuVisible: ({ ui }) => ui.menuVisible,
-      hover: ({ ui }) => ui.hover
+      hover: ({ ui }) => ui.hover,
+      showSettings: ({ user }) => user.showSettings
     }),
     iterableUniforms () {
       let arr = []
@@ -65,11 +67,11 @@ export default {
     },
     showShader: {
       get () {
-        return this.$store.state.ui.showShader
+        return this.$store.state.user.showShader
       },
 
       set (val) {
-        this.$store.commit(`ui/${SET_SHOW_SHADER}`, val)
+        this.$store.commit(`user/${SET_SHOW_SHADER}`, val)
       }
     }
   },
@@ -141,10 +143,18 @@ $width: 500px;
   z-index: 200;
 
   > * + * { margin-top: spacer(.25); }
+
+  @include max-width(mobile) {
+    @include position(fixed, auto 0 0 0);
+  }
+
+  @include mobile-landscape {
+    @include position(fixed, 0 0 0 auto);
+  }
 }
 
 .controls {
-  width: 100%;
+  @include size(100%);
   background: $black;
   color: white;
   padding: 20px;
@@ -219,12 +229,13 @@ p {
 
 .buttons {
   @include flex;
+  padding: 15px 0;
 
   > * { margin: 0 10px; }
 }
 
 .production .buttons {
-  @include flex(center, flex-end);
+  @include flex(center, center);
 }
 </style>
 

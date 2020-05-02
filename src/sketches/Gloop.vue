@@ -109,15 +109,15 @@ const queues = [{
 const uniforms = {
   "xBase": {
     "name": "xBase",
-    "value": "0.95",
+    "value": "5",
     "min": 0,
     "max": 5,
     "step": 0.01
   },
   "xTick": {
     "name": "xTick",
-    "value": "4.9",
-    "max": 15,
+    "value": "30",
+    "max": "30",
     "min": 0,
     "step": 0.01
   }
@@ -129,7 +129,7 @@ export default {
   name: 'gloop',
   mixins: [sketch],
   data: () => ({
-    version: '1.0.0',
+    version: '2.0.0',
     shader,
     queues,
     uniforms,

@@ -1,6 +1,6 @@
 <template lang="pug">
   transition(name="fadeyn")
-    a(v-if="!menuVisible && hover" href="https://www.instagram.com/zachary.io" target="instagram"): Instagram
+    a(v-if="!menuVisible && (hover || showSettings )" href="https://www.instagram.com/zachary.io" target="instagram"): Instagram
 </template>
 
 <script>
@@ -11,7 +11,8 @@ export default {
   components: { Instagram },
   computed: mapState({
     menuVisible: ({ ui }) => ui.menuVisible,
-    hover: ({ ui }) => ui.hover
+    hover: ({ ui }) => ui.hover,
+    showSettings: ({ user }) => user.showSettings
   })
 }
 </script>
@@ -36,7 +37,7 @@ a {
   } 
 
   svg {
-    @include size(100%);
+    @include size(100%, auto);
     display: block;
 
     * {
