@@ -130,7 +130,7 @@ const uniforms = {
   }
 }
 
-const beatInterval = 'tatum'
+const beatInterval = null
 
 export default {
   name: 'gloop',
