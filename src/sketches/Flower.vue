@@ -69,20 +69,20 @@ void main() {
 
 const queues = [{
   name: 'flower-size',
-  totalSamples: 500,
-  smoothing: 50
+  totalSamples: 600,
+  smoothing: 60
 }, {
   name: 'flower-beat',
-  totalSamples: 400,
-  smoothing: 5
+  totalSamples: 300,
+  smoothing: 15
 }]
 
 const uniforms = {
   "xBase": {
     "name": "xBase",
     "min": 0,
-    "max": 10,
-    "value": "7.02",
+    "max": 12,
+    "value": "10.02",
     "step": 0.01
   },
   "xTick": {
@@ -135,7 +135,7 @@ export default {
   name: 'flower',
   mixins: [sketch],
   data: () => ({
-    version: '2.0.0',
+    version: '3.0.0',
     shader,
     queues,
     uniforms,

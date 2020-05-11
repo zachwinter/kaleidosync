@@ -86,6 +86,7 @@ export default {
   padding: 30px;
   z-index: 200;
   text-align: left;
+  pointer-events: none;
 }
 
 img {

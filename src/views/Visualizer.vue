@@ -1,5 +1,6 @@
 <template lang="pug">
 .visualizer
+  Hamburger
   Buttons(v-if="educated")
   transition(name="fadeyn")
     Header(v-if="menuVisible")
@@ -22,6 +23,7 @@ import NowPlaying from '@/components/NowPlaying'
 import Toast from '@/components/Toast'
 import { pause } from '@/util/timing'
 import Announcement from '@/components/Announcement'
+import Hamburger from '@/components/Hamburger'
 import Trails from '@/sketches/Trails'
 import Fractal from '@/sketches/Fractal'
 import Gloop from '@/sketches/Gloop'
@@ -41,6 +43,7 @@ export default {
     NowPlaying,
     Spinner,
     Toast,
+    Hamburger,
     Announcement,
     Trails, 
     Fractal, 

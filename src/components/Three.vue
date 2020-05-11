@@ -1,5 +1,5 @@
 <template lang="pug">
-.three
+.three(@mousemove="onMouseMove")
 </template>
 
 <script>
@@ -30,7 +30,8 @@ const DEFAULT_UNIFORMS = {
   },
   bounce: {
     value: 0
-  }
+  },
+  mouse: new Uniform(new Vector2(0, 0))
 }
 
 export default {
@@ -119,13 +120,14 @@ export default {
       this.scene.add(this.mesh)
       document.body.appendChild(this.renderer.domElement)
       window.addEventListener('resize', this.onResize.bind(this))
+      this.onResize()
     },
 
     printUniforms () {
       let string = ''
       for (let key in this._uniforms) {
         if (key !== '0') {
-          if (key === 'resolution') {
+          if (key === 'resolution' || key === 'mouse') {
             string += `uniform vec2 ${key};\n`
           } else {
             string += `uniform float ${key};\n`
@@ -184,7 +186,21 @@ export default {
       if (this._uniforms) this._uniforms.resolution = new Uniform(new Vector2(window.innerWidth, window.innerHeight))
       this.renderer.setSize(window.innerWidth, window.innerHeight)
       this.renderer.setPixelRatio(window.devicePixelRatio)
+    },
+
+    onMouseMove ({ pageX, pageY }) {
+      const x = scaleLinear([0, this.width], [-1, 1])(pageX)
+      const y = scaleLinear([0, this.height], [1, -1])(pageY)
+      this._uniforms.mouse = new Uniform(new Vector2(x, y))
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.three {
+  @include position(fixed, 0 0 0 0);
+  @include size(100%);
+  z-index: 1;
+}
+</style>

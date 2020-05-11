@@ -18,34 +18,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-a {
-  @include size(80px, 80px);
-  @include position(fixed, 140px null null 30px);
-  z-index: 100000;
-  background: black;
-  padding: 30px;
-  border: 0;
-  outline: 0;
-  display: block;
-  
-  &:hover { outline: 0; }
-
-  @include max-width(header) {
-    @include size(40px);
-    padding: 10px;
-    top: 90px;
-  } 
-
-  svg {
-    @include size(100%, auto);
-    display: block;
-
-    * {
-      fill: white;
-      transition: fill 100ms linear;
-    }
-  }
-
-  &:hover svg * { fill: $blue; }
-}
+a { @include menu-button; }
 </style>
