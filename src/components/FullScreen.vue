@@ -47,32 +47,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-button {
-  @include size(80px, 80px);
-  @include position(fixed, 470px null null 30px);
-  z-index: 100000;
-  background: black;
-  padding: 30px;
-  border: 0;
-  outline: 0;
-  
-  &:hover { outline: 0; }
-
-  @include max-width(header) {
-    @include size(40px);
-    padding: 10px;
-    top: 270px;
-  }
-
-  svg {
-    @include size(100%);
-
-    * {
-      fill: white;
-      transition: fill 100ms linear;
-    }
-  }
-
-  &:hover svg * { fill: $blue; }
-}
+button { @include menu-button; }
 </style>

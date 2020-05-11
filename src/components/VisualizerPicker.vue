@@ -3,7 +3,7 @@
   ul
     li(v-for="([viz, isNew], i) in visualizers" :key="i" @click="select(viz)")
       span(:class="{ selected: selectedVisualizer === viz }")
-        img(:src="`/images/${viz}.jpg`" :alt="viz")
+        img(:src="`https://s3-us-west-1.amazonaws.com/kaleidosync.com/${viz}.jpg`" :alt="viz")
       i(v-if="isNew") New
     li(@click="select('template')" v-if="!production") Template
 </template>
@@ -15,8 +15,8 @@ import { SET_SELECTED_VISUALIZER } from '@/store/modules/user'
 export default {
   data: () => ({
     visualizers: [
-      ['gloop', true],
       ['neon', true],
+      ['gloop', true],
       ['flower', false],
       ['fractal', false],
       ['trails', false],
