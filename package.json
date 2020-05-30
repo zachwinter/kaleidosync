@@ -1,6 +1,6 @@
 {
   "name": "kaleidosync",
-  "version": "5.7.3",
+  "version": "5.8.0",
   "private": true,
   "scripts": {
     "serve": "concurrently \"node ./server/index.js\" \"vue-cli-service serve\"",
@@ -17,6 +17,7 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
     "core-js": "^3.6.4",
+    "d3": "^5.16.0",
     "d3-array": "^2.4.0",
     "d3-color": "^1.4.0",
     "d3-scale": "^3.2.1",

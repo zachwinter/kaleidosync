@@ -15,14 +15,14 @@ import { SET_SELECTED_VISUALIZER } from '@/store/modules/user'
 export default {
   data: () => ({
     visualizers: [
-      ['neon', true],
-      ['gloop', true],
+      ['zoom', true],
+      ['neon', false],
+      ['gloop', false],
       ['flower', false],
       ['fractal', false],
       ['trails', false],
       ['kaleidosync', false],
-      ['blobs', false],
-      // ['wavesync', false]
+      ['blobs', false]
     ],
     production: PRODUCTION // eslint-disable-line
   }),
