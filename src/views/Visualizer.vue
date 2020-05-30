@@ -30,8 +30,8 @@ import Gloop from '@/sketches/Gloop'
 import Flower from '@/sketches/Flower'
 import Blobs from '@/sketches/Blobs'
 import Kaleidosync from '@/sketches/Kaleidosync'
-import Wavesync from '@/sketches/Wavesync'
 import Neon from '@/sketches/Neon'
+import Zoom from '@/sketches/Zoom'
 import Template from '@/sketches/Template'
 import { FETCHING } from '@/store/modules/spotify'
 import { SET_TOAST_VISIBLE } from '@/store/modules/ui'
@@ -49,11 +49,11 @@ export default {
     Fractal, 
     Blobs,
     Kaleidosync,
-    Wavesync,
     Neon,
     Gloop,
     Flower,
-    Template
+    Template,
+    Zoom
   },
   computed: {
     ...mapState({
@@ -76,8 +76,6 @@ export default {
           return 'Blobs'
         case 'kaleidosync':
           return 'Kaleidosync'
-        case 'wavesync':
-          return 'Wavesync'
         case 'gloop':
           return 'Gloop'
         case 'flower':
@@ -86,6 +84,8 @@ export default {
           return 'Template'
         case 'neon':
           return 'Neon'
+        case 'zoom':
+          return 'Zoom'
         default:
           return null
       }

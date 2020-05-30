@@ -1,9 +1,11 @@
+import { createElement } from './dom'
+import interpolateBasis from 'd3-interpolate/src/basis'
+
 export const PI = Math.PI
 export const TWO_PI = PI * 2
 export const TWO_OVER_PI = PI / 2
 export const PI_OVER_180 = PI / 180
 
-import interpolateBasis from 'd3-interpolate/src/basis'
 
 export function toRadians (angle) {
   return PI * angle / 180
@@ -103,7 +105,7 @@ export function growingLine (ctx, x1, y1, x2, y2, startWidth, endWidth) {
 }
 
 export function growingLineGroup (ctx, vertices) {
-  const iRadius = interpolateBasis([0, 30, 0])
+  const iRadius = interpolateBasis([0, 15, 0])
   for (let i = 0; i < vertices.length - 1; i++) {
     const p1 = (i/(vertices.length-1))
     const p2 = (i+1)/(vertices.length-1)
@@ -230,4 +232,49 @@ export function scaleCanvas (ctx, x, y, reset = true) {
   ctx.translate(width/2, height/2)
   ctx.scale(x, y)
   ctx.translate(-width/2, -height/2)
+}
+
+export function createCanvas ({
+  width = window.innerWidth,
+  height = window.innerHeight, 
+  dpi = window.devicePixelRatio, 
+  target = null,
+  alpha = true
+} = {}) {
+  const canvas = createElement('canvas', target)
+  const ctx = canvas.getContext('2d', { alpha })
+  ctx.imageSmoothingQuality = 'high'
+  sizeCtx({ ctx, width, height, dpi })
+  return { canvas, ctx }
+}
+
+export function sizeCtx ({
+  ctx, 
+  width = window.innerWidth, 
+  height = window.innerHeight, 
+  dpi = window.devicePixelRatio
+} = {}) {
+  ctx.resetTransform()
+  ctx.canvas.width = width * dpi
+  ctx.canvas.height = height * dpi
+  ctx.canvas.style.width = width + 'px'
+  ctx.canvas.style.height = height + 'px'
+  ctx.scale(dpi, dpi)
+}
+
+export class Sprite {
+  constructor ({ width, height, paint }) {
+    const { canvas, ctx } = createCanvas({ width, height })
+    this.width = width
+    this.height = height
+    this.canvas = canvas
+    this.ctx = ctx
+    paint.call(this)
+  }
+}
+
+export function sprite (width, height, paint) {
+  const { canvas, ctx } = createCanvas({ width, height })
+  paint({ ctx, width, height })
+  return canvas
 }

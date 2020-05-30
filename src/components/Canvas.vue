@@ -33,6 +33,12 @@ export default {
       return 1
     }
   },
+  created () {
+    this.ctx = new Proxy({}, {
+      get: () => () => {},
+      set: () => {}
+    })
+  },
   mounted () {
     this.initCtx()
     window.addEventListener('resize', this.onResize.bind(this))
