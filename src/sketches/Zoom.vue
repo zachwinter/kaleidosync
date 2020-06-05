@@ -89,7 +89,7 @@ void main() {
 const queues = [{
   name: 'zoom-size',
   totalSamples: 300,
-  smoothing: 30
+  smoothing: 10
 }]
 
 const uniforms = {
@@ -97,88 +97,88 @@ const uniforms = {
     "name": "xBase",
     "min": 0,
     "max": "10",
-    "value": "6.417",
+    "value": "6.988",
     "step": "0.001"
   },
   "xTick": {
     "name": "xTick",
     "min": 0,
     "max": "50",
-    "value": "33.45",
+    "value": "42.71",
     "step": 0.01
   },
   "zoom": {
     "name": "zoom",
     "min": ".01",
-    "max": ".2",
+    "max": ".1",
     "step": "0.0001",
-    "value": "0.045"
+    "value": "0.0298"
   },
   "brightness": {
     "name": "brightness",
     "min": "0.001",
     "max": "2",
     "step": "0.001",
-    "value": "0.138"
+    "value": "0.632"
   },
   "red": {
     "name": "red",
     "min": 0,
     "max": "1",
     "step": 0.01,
-    "value": "0.47"
+    "value": "0.15"
   },
   "green": {
     "name": "green",
     "min": 0,
     "max": 1,
     "step": 0.01,
-    "value": "0.35"
+    "value": "0.2"
   },
   "blue": {
     "name": "blue",
     "min": 0,
     "max": 1,
     "step": 0.01,
-    "value": "0.13"
+    "value": "0.25"
   },
   "sides": {
     "name": "sides",
     "min": "2",
     "max": "8",
     "step": "1",
-    "value": "3"
+    "value": "6"
   },
   "offset": {
     "name": "offset",
     "min": "1",
     "max": "150",
     "step": ".01",
-    "value": "103.05"
+    "value": "90.97"
   },
   "lines": {
     "name": "lines",
     "min": "0",
     "max": "15",
     "step": ".01",
-    "value": "2.59"
+    "value": "1.37"
   },
   "ySpread": {
     "name": "ySpread",
     "min": "20",
     "max": "800",
     "step": 0.01,
-    "value": "369.33"
+    "value": "346.65"
   }
 }
 
-const beatInterval = 'beat'
+const beatInterval = null
 
 export default {
   name: 'zoom',
   mixins: [sketch],
   data: () => ({
-    version: '1.0.0',
+    version: '2.0.0',
     shader,
     queues,
     uniforms,
