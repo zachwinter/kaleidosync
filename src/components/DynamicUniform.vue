@@ -2,7 +2,7 @@
 .uniform(v-if="!production")
   .flex
     button(@click.prevent="$emit('delete', uniform.name)"): icon(icon="trash")
-    input(type="text" :value="uniform.name" @change="onNameChange" :class="{ hidden: showValue }").name
+    input(type="text" :value="uniform.name" @keypress="onNameChange" :class="{ hidden: showValue }").name
     .value(:class="{ visible: showValue }") {{ uniform.value}}
   .flex
     input(type="text" ref="min" :value="uniform.min" @input="onMinChange")
@@ -10,7 +10,7 @@
     input(type="text" ref="max" :value="uniform.max" @input="onMaxChange")
     span(v-if="!production") @
     input(type="text" ref="step" :value="uniform.step" @input="onStepChange")
-.uniform(v-else)
+.uniform(v-else :class="{ disabled }")
   label {{ uniform.name }}
   input(type="range" :min="uniform.min" :max="uniform.max" :step="uniform.step" :value="uniform.value" @input="onInput")
 </template>
@@ -21,6 +21,10 @@ export default {
     uniform: {
       type: Object,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -120,6 +124,9 @@ button {
   text-align: left;
   width: 100%;
   padding: 4px 0;
+  transition: opacity .3s ease-in-out;
+
+  &.disabled { opacity: .5; }
 }
 
 .flex:first-of-type {

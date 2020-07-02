@@ -1,7 +1,9 @@
 import { mapState, mapGetters } from 'vuex'
 import Canvas from '@/components/Canvas'
+import addRemovedHook from 'vue-removed-hook-mixin'
 
 export default {
+  mixins: [addRemovedHook],
   components: { Canvas },
   computed: {
     ...mapState({
@@ -47,7 +49,7 @@ export default {
       if (typeof this.onBar === 'function' && val.index !== index) this.onBar(val)
     }
   },
-  destroyed () {
+  removed () {
     this.__stop__ = true
     this.stop()
   },

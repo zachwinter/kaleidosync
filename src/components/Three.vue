@@ -1,5 +1,5 @@
 <template lang="pug">
-.three(@mousemove="onMouseMove")
+.three(@mousemove="onMouseMove" ref="container")
 </template>
 
 <script>
@@ -50,6 +50,10 @@ export default {
       type: Object,
       required: false
     },
+    booleans: {
+      type: Object,
+      default: null
+    },
     beatIntervalOverride: {
       type: String,
       default: null
@@ -73,6 +77,9 @@ export default {
     },
     shader (val) {
       this.updateShader(val)
+    },
+    booleans () {
+      this.updateShader()
     }
   },
 
@@ -82,8 +89,6 @@ export default {
 
   destroyed () { 
     window.removeEventListener('resize', this.onResize.bind(this))
-    this.dead = true
-    this.renderer.domElement.remove()
   },
 
   methods: {
@@ -111,6 +116,7 @@ export default {
           }
         `,
         fragmentShader: `
+          ${this.printBooleans()}
           ${this.printUniforms()}
           ${this.shader}
         `
@@ -118,7 +124,7 @@ export default {
 
       this.mesh = new Mesh(this.geometry, this.material)
       this.scene.add(this.mesh)
-      document.body.appendChild(this.renderer.domElement)
+      this.$refs.container.appendChild(this.renderer.domElement)
       window.addEventListener('resize', this.onResize.bind(this))
       this.onResize()
     },
@@ -140,6 +146,15 @@ export default {
       return string
     },
 
+    printBooleans () {
+      if (!this.booleans) return ''
+      return Object.keys(this.booleans).reduce((acc, boolean) => {
+        const { name, value } = this.booleans[boolean]
+        acc += `#define ${name} ${value ? 'true' : 'false' }\n`
+        return acc
+      }, '')
+    },
+
     applyUniforms ({ init = false, update = false } = {}) {
       if (init) {
         this._uniforms = {
@@ -155,9 +170,10 @@ export default {
       this.updateShader(this.shader)
     },
 
-    updateShader (val) {
+    updateShader (val = this.shader) {
       if (!this.material) return
       this.material.fragmentShader = `
+        ${this.printBooleans()}
         ${this.printUniforms()}
         ${val}
       `
@@ -172,7 +188,7 @@ export default {
         volume *= this.getVolumeQueue(queue.name)
       })
       const interval = this.beatIntervalOverride || this.beatInterval
-      let multiplier = this.multiply ? scaleLinear([150, 350], [1.5, 1])(this[interval].duration) : 1
+      let multiplier = this.multiply ? scaleLinear([150, 350], [2, 1])(this[interval].duration) : 1
       if (!multiplier) multiplier = 1
       const tatum = interpolateBasis([base * multiplier, (base + (tick * volume)) * multiplier, base * multiplier])(ease(this[interval].progress))
       if (!isNaN(tatum)) this._uniforms.stream.value += tatum 
@@ -196,11 +212,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.three {
-  @include position(fixed, 0 0 0 0);
-  @include size(100%);
-  z-index: 1;
-}
-</style>

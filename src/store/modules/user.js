@@ -10,7 +10,7 @@ export default {
   state: {
     alwaysShowAlbumArt: false,
     alwaysShowTrackInfo: false,
-    selectedVisualizer: 'zoom',
+    selectedVisualizer: 'orbs',
     educated: false,
     showShader: false,
     showSettings: false

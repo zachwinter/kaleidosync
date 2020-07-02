@@ -33,6 +33,7 @@ import Kaleidosync from '@/sketches/Kaleidosync'
 import Neon from '@/sketches/Neon'
 import Zoom from '@/sketches/Zoom'
 import Template from '@/sketches/Template'
+import Orbs from '@/sketches/Orbs'
 import { FETCHING } from '@/store/modules/spotify'
 import { SET_TOAST_VISIBLE } from '@/store/modules/ui'
 
@@ -53,7 +54,8 @@ export default {
     Gloop,
     Flower,
     Template,
-    Zoom
+    Zoom,
+    Orbs
   },
   computed: {
     ...mapState({
@@ -67,28 +69,7 @@ export default {
       showSpinner: ({ spotify }) => spotify.status.trackAnalysis === FETCHING
     }),
     activeVisualizer () {
-      switch (this.selectedVisualizer) {
-        case 'trails':
-          return 'Trails'
-        case 'fractal':
-          return 'Fractal'
-        case 'blobs':
-          return 'Blobs'
-        case 'kaleidosync':
-          return 'Kaleidosync'
-        case 'gloop':
-          return 'Gloop'
-        case 'flower':
-          return 'Flower'
-        case 'template':
-          return 'Template'
-        case 'neon':
-          return 'Neon'
-        case 'zoom':
-          return 'Zoom'
-        default:
-          return null
-      }
+      return this.selectedVisualizer.charAt(0).toUpperCase() + this.selectedVisualizer.slice(1)
     }
   },
     watch: {
@@ -123,3 +104,29 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.component-fade-enter-active, .component-fade-leave-active {
+  transition: opacity 1s $slide-easing;
+}
+
+.component-fade-enter {
+  z-index: 1;
+  opacity: 0;
+}
+
+.component-fade-enter-to {
+  z-index: 1;
+  opacity: 1;
+}
+
+.component-fade-leave {
+  z-index: 0;
+  opacity: 1;
+}
+
+.component-fade-leave-to {
+  z-index: 0;
+  opacity: 1;
+}
+</style>

@@ -1,9 +1,10 @@
 <template lang="pug">
 .scene
-  Three(:shader="shader" :queues="queues" :uniforms="uniforms" :multiply="multiply" :beatIntervalOverride="beatInterval")
+  Three(:shader="shader" :queues="queues" :booleans="booleans" :uniforms="uniforms" :multiply="multiply" :beatIntervalOverride="beatInterval")
   Controls(
     :uniforms="uniforms" 
     :shader="shader" 
+    :booleans="booleans"
     @update="onUpdate" 
     @reset="$emit('reset')" 
     @copyShader="$emit('copyShader')"
@@ -32,6 +33,11 @@ export default {
       required: true
     },
 
+    booleans: {
+      type: Object,
+      default: null
+    },
+
     beatInterval: {
       type: String,
       default: null
@@ -50,3 +56,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.scene {
+  @include position(fixed, 0 null null 0);
+  @include size(100vw, 100vh);
+  will-change: opacity;
+}
+</style>
