@@ -3,8 +3,10 @@
   transition(name="fade")
     .controls(v-if="(!menuVisible && iterableUniforms.length && showSettings)")
       div
-        div(v-for="(uniform, i) in iterableUniforms" :key="i").uniforms
-          DynamicUniform(:uniform="uniform" :index="i" @update="onUpdate" @delete="deleteUniform")
+        div(v-for="(boolean, j) in iterableBooleans" :key="`boolean-${j}`").booleans
+          Boolean(v-model="boolean.value" :label="boolean.name" @input="onBooleanChange(boolean)" :disabled="isBooleanDisabled(boolean)")
+        div(v-for="(uniform, i) in iterableUniforms" :key="`uniform-${i}`").uniforms
+          DynamicUniform(:uniform="uniform" :index="i" @update="onUpdate" @delete="deleteUniform" :disabled="isUniformDisabled(uniform)")
         .adding(v-if="adding")
           input(type="text" ref="adding" v-model="addingModel" @input="onAddingChange" placeholder="Uniform Name")
           button(@click="addUniform") Save
@@ -27,12 +29,18 @@ import { mapState } from 'vuex'
 import cloneDeep from 'lodash/cloneDeep'
 import DynamicUniform from '@/components/DynamicUniform'
 import CheckBox from '@/components/CheckBox'
+import Boolean from '@/components/Boolean'
 import { SET_SHOW_SHADER } from '@/store/modules/user'
 
 const props =  {
   uniforms: {
     type: Object,
     required: true
+  },
+
+  booleans: {
+    type: Object,
+    default: null
   },
 
   shader: {
@@ -43,9 +51,10 @@ const props =  {
 
 export default {
   props,
-  components: { DynamicUniform , CheckBox },
+  components: { DynamicUniform , CheckBox, Boolean },
   data: () => ({
-    model: null,
+    uniformModel: null,
+    booleanModel: null,
     addingModel: '',
     adding: false,
     localShader: null,
@@ -59,10 +68,17 @@ export default {
     }),
     iterableUniforms () {
       let arr = []
-      for (let key in this.model) {
+      for (let key in this.uniformModel) {
         if (!((this.production && key === 'xBase') || this.production && key === 'xTick')) {
-          arr.push(this.model[key])
+          arr.push(this.uniformModel[key])
         }
+      }
+      return arr
+    },
+    iterableBooleans () {
+      let arr = []
+      for (let key in this.booleanModel) {
+        arr.push(this.booleanModel[key])
       }
       return arr
     },
@@ -78,30 +94,35 @@ export default {
   },
   watch: {
     uniforms (value) {
-      this.model = cloneDeep(value)
+      this.uniformModel = cloneDeep(value)
     },
     localShader (value) {
       this.$emit('update', { key: 'shader', value })
+    },
+    booleans (value) {
+      this.booleanModel = cloneDeep(value)
     }
   },
   created () {
-    this.model = cloneDeep(this.uniforms)
+    this.uniformModel = cloneDeep(this.uniforms)
+    this.booleanModel = cloneDeep(this.booleans)
     this.localShader = this.shader
   },
   methods: {
-    onUpdate ({ uniform }) {
-      const model = cloneDeep(this.model)
+    onUpdate ({ uniform, rename, from }) {
+      const model = cloneDeep(this.uniformModel)
+      if (rename) delete model[from]
       model[uniform.name] = uniform
       this.$emit('update', { key: 'uniforms', value: model })
     },
 
     deleteUniform (uniform) {
-      delete this.model[uniform]
-      this.$emit('update', { key: 'uniforms', value: this.model })
+      delete this.uniformModel[uniform]
+      this.$emit('update', { key: 'uniforms', value: this.uniformModel })
     },
 
     addUniform () {
-      const model = cloneDeep(this.model)
+      const model = cloneDeep(this.uniformModel)
       model[this.addingModel] = {
         name: this.addingModel,
         min: 0,
@@ -129,6 +150,26 @@ export default {
 
     onInput () {
       this.$store.dispatch('ui/hover')
+    },
+
+    onBooleanChange () {
+      this.$emit('update', { key: 'booleans', value: this.booleanModel })
+    },
+
+    isBooleanDisabled ({ boolean }) {
+      if (boolean) {
+        return !this.booleanModel[boolean].value
+      }
+
+      return false
+    },
+
+    isUniformDisabled (uniform) {
+      if (uniform.boolean) {
+        return !this.booleanModel[uniform.boolean].value
+      }
+
+      return false
     }
   }
 }

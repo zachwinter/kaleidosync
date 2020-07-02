@@ -9,11 +9,12 @@ export default {
       this[key] = value
     },
 
-    onReset ({ shader, queues, uniforms, beatInterval }) {
+    onReset ({ shader, queues, uniforms, booleans, beatInterval }) {
       this.shader = shader
       this.queues = queues
       this.uniforms = uniforms
       this.beatInterval = beatInterval
+      this.booleans = booleans
     },
 
     copyShader () {

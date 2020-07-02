@@ -15,9 +15,10 @@ import { SET_SELECTED_VISUALIZER } from '@/store/modules/user'
 export default {
   data: () => ({
     visualizers: [
-      ['zoom', true],
+      ['orbs', true],
+      ['zoom', false],
       ['neon', false],
-      ['gloop', false],
+      // ['gloop', false],
       ['flower', false],
       ['fractal', false],
       ['trails', false],

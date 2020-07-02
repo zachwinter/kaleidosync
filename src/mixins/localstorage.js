@@ -1,5 +1,3 @@
-import cloneDeep from "lodash/cloneDeep"
-
 const NAMESPACE = '__KALEIDOSYNC__'
 
 function namespace (key) {
@@ -12,12 +10,16 @@ export default {
   },
 
   watch: {
-    shader (val) {
-      this.saveValue('shader', val)
+    shader () {
+      this.saveToLocalStorage()
     },
 
-    uniforms (val) {
-      this.saveValue('uniforms', val)
+    uniforms () {
+      this.saveToLocalStorage()
+    },
+
+    booleans () {
+      this.saveToLocalStorage()
     }
   },
 
@@ -32,13 +34,6 @@ export default {
   },
 
   methods: {
-    saveValue (key, val) {
-      if (!this.initialized) return
-      const state = this.getState()
-      state[key] = cloneDeep(val)
-      this.saveToLocalStorage()
-    },
-
     getState () {
       const state = window.localStorage.getItem(this.key)
       return JSON.parse(state)
@@ -60,7 +55,8 @@ export default {
       const state = JSON.stringify({
         version: this.version,
         shader: this.shader,
-        uniforms: this.uniforms
+        uniforms: this.uniforms,
+        booleans: this.booleans
       })
 
       window.localStorage.setItem(this.key, state)
