@@ -16,8 +16,7 @@ Scene(
 import sketch from '@/mixins/sketch'
 
 const shader = `
-#define PI 3.14159265358979323846264338327950
-#define balls 8
+#define PI 3.14159265359
 
 vec2 kale(vec2 uv, vec2 offset, float splits) {
   float angle = atan(uv.y, uv.x);
@@ -37,8 +36,8 @@ void main() {
   vec2 uv = -1.0 + 2.0 * vUv.xy;
   uv.x *= resolution.x / resolution.y;
   uv *= zoom;
-  gl_FragColor = vec4(0);
-  float dist = distance(uv, vec2(0));
+  gl_FragColor = vec4(0.);
+  float dist = distance(uv, vec2(0.));
   if (kaleidoscope) {
     if (warp) {
       vec2 kale1 = kale(uv, vec2(2.), sides);
@@ -49,12 +48,11 @@ void main() {
       uv = kale(uv, vec2(0.), sides);
     }
   }
-  for (int i = 0; i < balls; i++) {
-    float t = stream/2. - float(i) * PI / float(balls) * cos(stream / float(i));
-    vec2 path = vec2(cos(t), sin(t));
-    path /= cos(float(i) / float(balls) * PI / dist + stream);
-    vec3 col = cos(vec3(0, 1, -1) * PI * 2. / 3. + PI * (stream / 2. + float(i) / 5.)) * (glow) + (glow);
-    gl_FragColor += vec4(dist * .1 / length(uv - path * 0.2519) * col, 1.0);
+  for (float i = 0.; i < 5.0; i++) {
+    float t = stream/2. - i * PI / 5.0 * cos(stream / i);
+    vec2 path = vec2(cos(t), sin(t)) / cos(i / 5.0 * PI / dist + stream);
+    vec3 col = cos(vec3(0, 1, -1) * PI * 2. / 3. + PI * (stream / 2. + i / 5.)) * (glow) + (glow);
+    gl_FragColor += vec4(vec3(dist * .1 / length(uv - path * 0.2519) * col), 1.0);
   }
   gl_FragColor.xyz = pow(gl_FragColor.xyz, vec3(3.));
 }
@@ -129,6 +127,7 @@ export default {
   name: 'orbs',
   mixins: [sketch],
   data: () => ({
+    version: '2.0.0',
     shader,
     queues,
     uniforms,
