@@ -4,6 +4,7 @@ export const SET_SELECTED_VISUALIZER = 'SET_SELECTED_VISUALIZER'
 export const SET_EDUCATED = 'SET_EDUCATED'
 export const SET_SHOW_SHADER = 'SET_SHOW_SHADER'
 export const SET_SHOW_SETTINGS = 'SET_SHOW_SETTINGS'
+export const SET_COOKIES = 'SET_COOKIES'
 
 export default {
   namespaced: true,
@@ -12,6 +13,7 @@ export default {
     alwaysShowTrackInfo: false,
     selectedVisualizer: 'orbs',
     educated: false,
+    cookies: false,
     showShader: false,
     showSettings: false
   },
@@ -33,11 +35,17 @@ export default {
     },
     [SET_SHOW_SETTINGS] (state, val) {
       state.showSettings = val
+    },
+    [SET_COOKIES] (state, val) {
+      state.cookies = val
     }
   },
   actions: {
     toggleSettings ({ state, commit }) {
       commit(SET_SHOW_SETTINGS, !state.showSettings)
+    },
+    hideCookieNotice ({ commit }) {
+      commit(SET_COOKIES, true)
     }
   }
 }
