@@ -1,6 +1,6 @@
 <template lang="pug">
-.cookies(:class="{ visible: !cookies }")
-  p Kaleidosync uses cookies to analyze web traffic and to serve more relevant ads. Learn more by visiting our #[strong #[router-link(to="/privacy") Privacy Policy]] #[button(@click="dismiss") OK]
+.cookies(:class="{ visible: true }")
+  p Kaleidosync uses cookies to analyze web traffic and to serve more relevant ads. Learn more by visiting our #[strong #[router-link(to="/privacy") Privacy Policy]]
 </template>
 
 <script>
@@ -20,15 +20,15 @@ export default {
 
 <style lang="scss" scoped>
 .cookies {
-  @include position(fixed, 0 0 null 0);
+  @include position(fixed, null 0 0 0);
   background: $black;
   color: $white;
   margin: 0 auto;
   opacity: 0;
-  line-height: 30px;
+  line-height: 24px;
   transition: opacity 300ms ease-in-out;
   text-align: center;
-  padding: 5px;
+  padding: 5px $outer-padding;
 
   &.visible { opacity: 1; }
 }
