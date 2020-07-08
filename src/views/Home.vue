@@ -1,5 +1,6 @@
 <template lang="pug">
 div.home(:class="{ hide, show }")
+  Cookies
   div.splash
     h1(ref="logo")
       span(data-letter="1") K
@@ -26,6 +27,7 @@ div.home(:class="{ hide, show }")
 </template>
 
 <script>
+import Cookies from '@/components/Cookies'
 import GitHub from '@/assets/svg/github.svg'
 import Spotify from '@/assets/svg/spotify.svg'
 import Instagram from '@/assets/svg/instagram.svg'
@@ -33,7 +35,7 @@ import { pause } from '@/util/timing'
 
 export default {
   name: 'home',
-  components: { GitHub, Spotify, Instagram },
+  components: { GitHub, Spotify, Instagram, Cookies },
   data () {
     return {
       show: false,
@@ -127,6 +129,7 @@ button {
     @include flex;
     text-decoration: none;
     font-weight: bold;
+    color: $black;
     @include share;
   }
 
@@ -137,6 +140,8 @@ button {
 
     &:hover { fill: rgba(0, 0, 0, .5); }
   }
+
+  .link { margin-left: 30px; }
 }
 
 .show {

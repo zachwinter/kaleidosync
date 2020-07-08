@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home'
 import Visualizer from '@/views/Visualizer'
-
+import Privacy from '@/views/Privacy'
 Vue.use(VueRouter)
 
 const routes = [
@@ -15,6 +15,11 @@ const routes = [
     path: '/visualizer',
     name: 'Visualizer',
     component: Visualizer
+  },
+  {
+    path: '/privacy',
+    name: 'privacy',
+    component: Privacy 
   }
 ]
 
