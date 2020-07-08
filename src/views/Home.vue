@@ -1,6 +1,7 @@
 <template lang="pug">
 div.home(:class="{ hide, show }")
-  Cookies
+  transition(name="fadey")
+    Cookies(v-if="!hide")
   div.splash
     h1(ref="logo")
       span(data-letter="1") K
@@ -21,9 +22,10 @@ div.home(:class="{ hide, show }")
         button(@click="login")
           span Log In
           Spotify
-  .links
-    .github: a(href="https://github.com/zachwinter/kaleidosync" target="github"): GitHub
-    .instagram: a(href="https://instagram.com/zachary.io" target="instagram"): Instagram
+      .links
+        .link: a(href="https://github.com/zachwinter/kaleidosync" target="github"): GitHub
+        .link: a(href="https://instagram.com/zachary.io" target="instagram"): Instagram
+
 </template>
 
 <script>
@@ -120,28 +122,26 @@ button {
 }
 
 .links {
-  @include position(fixed, null null 30px null);
   @include flex;
-  opacity: 0;
-  transition: all $splash-hide-duration;
+  margin-top: 10px;
+}
 
-  a {
-    @include flex;
-    text-decoration: none;
-    font-weight: bold;
-    color: $black;
-    @include share;
-  }
+.link {
+  @include flex;
+  text-decoration: none;
+  font-weight: bold;
+  color: $black;
+  @include share;
 
   svg {
-    @include size(40px);
+    @include size(30px);
     margin-right: 8px;
     transition: fill 200ms ease-in-out;
 
     &:hover { fill: rgba(0, 0, 0, .5); }
   }
 
-  .link { margin-left: 30px; }
+  &+.link { margin-left: 5px; }
 }
 
 .show {
