@@ -5,7 +5,7 @@
       span(:class="{ selected: selectedVisualizer === viz }")
         img(:src="`https://s3-us-west-1.amazonaws.com/kaleidosync.com/${viz}.jpg`" :alt="viz")
       i(v-if="isNew") New
-    li(@click="select('template')" v-if="!production") Template
+    li(@click="select('template')" v-if="!production").template Template
 </template>
 
 <script>
@@ -108,4 +108,6 @@ i {
   font-size: 10px;
   font-style: normal;
 }
+
+.template { @include button($black); }
 </style>

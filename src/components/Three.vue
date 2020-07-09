@@ -190,9 +190,10 @@ export default {
       const interval = this.beatIntervalOverride || this.beatInterval
       let multiplier = this.multiply ? scaleLinear([150, 350], [2, 1])(this[interval].duration) : 1
       if (!multiplier) multiplier = 1
+      multiplier = 1
       const tatum = interpolateBasis([base * multiplier, (base + (tick * volume)) * multiplier, base * multiplier])(ease(this[interval].progress))
       if (!isNaN(tatum)) this._uniforms.stream.value += tatum 
-      this._uniforms.bounce.value = interpolateBasis([1, 1 + volume/3., 1])(ease(this.beat.progress, 'easeOutCubic'))
+      this._uniforms.bounce.value = interpolateBasis([1, 1, 1])(ease(this.beat.progress, 'easeInOutCubic'))
       this._uniforms.time.value = now
       this._uniforms.volume.value = volume
       this.renderer.render(this.scene, this.camera)
