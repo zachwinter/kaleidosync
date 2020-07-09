@@ -1,7 +1,6 @@
 <template lang="pug">
 div.home(:class="{ hide, show }")
-  transition(name="fadey")
-    Cookies(v-if="!hide")
+  Cookies(:visible="showCookies")
   div.splash
     h1(ref="logo")
       span(data-letter="1") K
@@ -41,12 +40,14 @@ export default {
   data () {
     return {
       show: false,
-      hide: false
+      hide: false,
+      showCookies: false
     }
   },
   methods: {
     async login () {
       this.hide = true
+      this.showCookies = false
       this.$refs.animate.addEventListener('animationend', () => {
         this.$store.dispatch('spotify/login')
       })
@@ -54,6 +55,7 @@ export default {
     
     init () {
       this.show = true
+      this.showCookies = true
       if (this.$ga) {
         this.$ga.page('/')
       }
@@ -73,6 +75,10 @@ export default {
 
 <style lang="scss" scoped>
 $splash-hide-duration: 1000ms;
+
+.home {
+  @include size(100vw, 100vh);
+}
 
 .splash {
   z-index: 100;

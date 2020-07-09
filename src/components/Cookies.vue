@@ -1,18 +1,14 @@
 <template lang="pug">
-.cookies(:class="{ visible: true }")
+.cookies(:class="{ visible }")
   p Kaleidosync uses cookies to analyze web traffic and to serve more relevant ads. Learn more by visiting our #[strong #[router-link(to="/privacy") Privacy Policy]]
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
-  computed: mapState({
-    cookies: ({ user }) => user.cookies
-  }),
-  methods: {
-    dismiss () {
-      this.$store.dispatch('user/hideCookieNotice')
+  props: {
+    visible: {
+      type: Boolean,
+      default: true
     }
   }
 }
@@ -24,13 +20,13 @@ export default {
   background: $black;
   color: $white;
   margin: 0 auto;
-  opacity: 0;
+  transform: translateY(100%);
   line-height: 24px;
-  transition: opacity 300ms ease-in-out;
+  transition: transform 1000ms $bounce-easing;
   text-align: center;
   padding: 5px $outer-padding;
 
-  &.visible { opacity: 1; }
+  &.visible { transform: translateY(0%); }
 }
 
 button {
