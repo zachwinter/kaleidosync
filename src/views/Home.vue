@@ -1,6 +1,6 @@
 <template lang="pug">
 div.home(:class="{ hide, show }")
-  Cookies(:visible="showCookies")
+  //- Cookies(:visible="showCookies")
   div.splash
     h1(ref="logo")
       span(data-letter="1") K
@@ -128,6 +128,7 @@ button {
 }
 
 .links {
+  @include position(fixed, null 0 30px 0);
   @include flex;
   margin-top: 10px;
 }
