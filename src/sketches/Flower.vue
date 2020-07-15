@@ -69,65 +69,15 @@ void main() {
 
 const queues = [{
   name: 'flower-size',
-  totalSamples: 600,
-  smoothing: 60
+  totalSamples: 800,
+  smoothing: 80
 }, {
   name: 'flower-beat',
-  totalSamples: 300,
-  smoothing: 15
+  totalSamples: 800,
+  smoothing: 30
 }]
 
-const uniforms = {
-  "xBase": {
-    "name": "xBase",
-    "min": 0,
-    "max": 12,
-    "value": "10.02",
-    "step": 0.01
-  },
-  "xTick": {
-    "name": "xTick",
-    "min": 0,
-    "max": 75,
-    "value": "65.77",
-    "step": 0.01
-  },
-  "zoom": {
-    "name": "zoom",
-    "min": ".002",
-    "max": ".01",
-    "step": "0.0001",
-    "value": "0.002"
-  },
-  "brightness": {
-    "name": "brightness",
-    "min": 0,
-    "max": "50",
-    "step": 0.01,
-    "value": "26.95"
-  },
-  "red": {
-    "name": "red",
-    "min": 0,
-    "max": 1,
-    "step": 0.01,
-    "value": "0.19"
-  },
-  "green": {
-    "name": "green",
-    "min": 0,
-    "max": 1,
-    "step": 0.01,
-    "value": "0.18"
-  },
-  "blue": {
-    "name": "blue",
-    "min": 0,
-    "max": 1,
-    "step": 0.01,
-    "value": "1"
-  }
-}
+const uniforms = {"xBase":{"name":"xBase","min":0,"max":"20","value":"11.36","step":0.01},"xTick":{"name":"xTick","min":0,"max":75,"value":"45.1","step":0.01},"zoom":{"name":"zoom","min":".002","max":".01","step":"0.0001","value":"0.002"},"brightness":{"name":"brightness","min":0,"max":"50","step":0.01,"value":"26.95"},"red":{"name":"red","min":0,"max":1,"step":0.01,"value":"0.19"},"green":{"name":"green","min":0,"max":1,"step":0.01,"value":"0.18"},"blue":{"name":"blue","min":0,"max":1,"step":0.01,"value":"1"}}
 
 const beatInterval = null
 
@@ -135,7 +85,7 @@ export default {
   name: 'flower',
   mixins: [sketch],
   data: () => ({
-    version: '3.0.0',
+    version: '5.0.0',
     shader,
     queues,
     uniforms,

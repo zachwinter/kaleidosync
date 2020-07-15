@@ -42,12 +42,12 @@ void main() {
 `
 const queues = [{
   name: 'fractal-size',
-  totalSamples: 500,
+  totalSamples: 800,
   smoothing: 30
 }, {
   name: 'fractal-beat',
-  totalSamples: 500,
-  smoothing: 60
+  totalSamples: 800,
+  smoothing: 80
 }]
 
 const uniforms = {
@@ -115,7 +115,7 @@ export default {
   name: 'fractal',
   mixins: [sketch],
   data: () => ({
-    version: '2.0.0',
+    version: '3.0.0',
     shader,
     queues,
     uniforms,
