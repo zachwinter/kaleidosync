@@ -14,4 +14,6 @@ html, body, .home, .visualizer {
 }
 
 body { font-family: 'Open Sans', sans-serif; }
+
+canvas { @include position(fixed, 0 null null 0); }
 </style>

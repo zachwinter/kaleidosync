@@ -60,11 +60,11 @@ void main() {
 
 const queues = [{
   name: 'orb-a',
-  totalSamples: 600,
+  totalSamples: 800,
   smoothing: 30
 }, {
   name: 'orb-b',
-  totalSamples: 600,
+  totalSamples: 800,
   smoothing: 60
 }]
 
@@ -110,7 +110,7 @@ const uniforms = {
 const booleans = {
   "kaleidoscope": {
     "name": "kaleidoscope",
-    "default": false,
+    "default": true,
     "value": false
   },
   "warp": {
@@ -127,7 +127,7 @@ export default {
   name: 'orbs',
   mixins: [sketch],
   data: () => ({
-    version: '2.0.0',
+    version: '3.0.0',
     shader,
     queues,
     uniforms,

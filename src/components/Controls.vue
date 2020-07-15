@@ -14,7 +14,7 @@
         .buttons
           button(v-if="!adding && !production" @click="adding = true") Add Uniform
           button(v-if="adding" @click="adding = false") Cancel
-          button(@click="$emit('copyShader')" v-if="!production") Copy Shader
+          button(@click="exportSketch" v-if="!production") Export Sketch
           button(@click="$emit('copyUniforms')" v-if="!production") Copy Uniforms
           button(@click="reset") Reset
           button(@click="$store.dispatch('user/toggleSettings')") Hide
@@ -170,6 +170,10 @@ export default {
       }
 
       return false
+    },
+    
+    exportSketch () {
+
     }
   }
 }
