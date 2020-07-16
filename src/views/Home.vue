@@ -1,6 +1,6 @@
 <template lang="pug">
 div.home(:class="{ hide, show }")
-  //- Cookies(:visible="showCookies")
+  Beta(:visible="showCookies")
   div.splash
     h1(ref="logo")
       span(data-letter="1") K
@@ -28,15 +28,16 @@ div.home(:class="{ hide, show }")
 </template>
 
 <script>
-import Cookies from '@/components/Cookies'
+// import Cookies from '@/components/Cookies'
 import GitHub from '@/assets/svg/github.svg'
 import Spotify from '@/assets/svg/spotify.svg'
 import Instagram from '@/assets/svg/instagram.svg'
 import { pause } from '@/util/timing'
+import Beta from '@/components/Beta'
 
 export default {
   name: 'home',
-  components: { GitHub, Spotify, Instagram, Cookies },
+  components: { GitHub, Spotify, Instagram, Beta },
   data () {
     return {
       show: false,
