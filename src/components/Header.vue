@@ -3,16 +3,19 @@ header
   h1 Kaleidosync
   VisualizerPicker
   Settings
+  Beta(:interior="true")
 </template>
 
 <script>
 import Settings from '@/components/Settings'
 import VisualizerPicker from '@/components/VisualizerPicker'
+import Beta from '@/components/Beta'
 
 export default {
   components: {
     VisualizerPicker, 
-    Settings
+    Settings,
+    Beta
   }
 }
 </script>
