@@ -62,7 +62,6 @@ const actions = {
 
   async legacyConnect ({ commit, dispatch, state }) {
     if (!state.legacy) commit('SET_LEGACY', true)
-    await pause(500)
     const track = await dispatch('spotify/getCurrentlyPlaying', null, { root: true })
     if (track.is_playing) {
       if (!state.connected) commit('SET_CONNECTED', true)
