@@ -7,7 +7,7 @@
     .buttons
       a(href="https://www.instagram.com/zachary.io" target="instagram"): IconButton(set="fab" icon="instagram").button
       FullScreen
-      IconButton(v-if="legacy" icon="sync-alt" @click.native="$store.dispatch('spotify/legacySync')")
+      IconButton(v-if="legacy" icon="sync-alt" @click.native="$store.dispatch('player/legacyConnect')")
       IconButton(icon="sliders-h" @click.native="$store.dispatch('ui/toggleSideBar')")
     SketchSelector
 </template>
