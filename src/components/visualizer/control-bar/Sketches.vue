@@ -8,6 +8,8 @@
       :class="{ active: activeSketchId === _id}"
     ): Thumbnail(:sketch="{ shader, uniforms: buildUniforms(uniforms[0]) }")
   .buttons
+    .info
+      p #[strong TIP:] If the screen goes black when you select a sketch, just click it again. I'll fix this soon.
     IconButton(icon="chevron-left" @click="onLeft" class="previous" :class="{ visible: showPrevious }")
     nav: a(v-for="(page, i) in pages" @click="selectPage(i)" :class="{ active: navigatorIndex === i }") {{ page }}
     IconButton(icon="chevron-right" @click="onRight"  class="next" :class="{ visible: showNext }")
@@ -96,6 +98,21 @@ export default {
 $size: 200px;
 $mobile-portrait-size: 60px;
 $mobile-landscape-size: 100px;
+
+.info {
+  @include position(absolute, null $outer-padding $outer-padding $outer-padding);
+  @include flex;
+  
+  p {
+    color: white;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  strong {
+    font-family: 'Share', sans-serif;
+  }
+}
 
 .sketches {
   @include flex(center, center, row);
