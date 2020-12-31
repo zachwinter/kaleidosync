@@ -1,7 +1,7 @@
 <template lang="pug">
 .visualizer
   transition(name="fade"): Connect(v-if="initialized && !connected && !legacy")
-  Sketch
+  Sketch(v-if="connected")
   transition(name="fade"): Education(v-if="(connected && !educated) || (legacy && !educated)")
   transition(name="slide-y"): ControlBar(v-if="(connected && showControlBar && !sketchSelectorVisible && hover) || (connected && !educated) || showSideBar")
   transition(name="slide-x"): SideBar(v-if="showSideBar && !sketchSelectorVisible")
@@ -61,5 +61,6 @@ export default {
 .visualizer {
   @include page;
   @include flex;
+  background: black;
 }
 </style>

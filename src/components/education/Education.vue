@@ -1,11 +1,10 @@
 <template lang="pug">
 .education(:class="{ full: legacy }")
   h3 Welcome to Kaleidosync!
-  p(v-if="legacy") This version of Kaleidosync only works if you listen to entire songs. If you change songs before a song ends, make sure you click the refresh icon!
-  p(v-if="legacy && paused") Play a song to get started!
-  p(v-if="!legacy || legacy && !paused") Click the circle at the bottom right to choose one of {{ sketches.length }} customizable visualizers!
+  p(v-if="legacy") Play a song to get started! This version of Kaleidosync only works if you listen to entire songs. If you change songs before a song ends, make sure you click the refresh icon!
+  p(v-if="!legacy") Click the circle at the bottom right to choose one of {{ sketches.length }} customizable visualizers!
   .keyboard(v-if="!isMobile")
-    p You can also use the following keyboard shortcuts:
+    p Keyboard Shortcuts
     Keys(:horizontal="true")
   .buttons
     button(@click="dismiss") OK!
@@ -50,7 +49,7 @@ h3 {
   @include scale(font-size 1.5rem 4rem);
   font-weight: bold;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 }
 
 p {
@@ -62,7 +61,7 @@ p {
 }
 
 p + p {
-  margin-bottom: 1rem;
+  margin-bottom: .5rem;
 }
 
 .buttons {
@@ -81,5 +80,17 @@ button {
   border: 2px solid $white;
   color: $white;
   background: transparent;
+}
+
+.keyboard {
+  margin-top: 2rem;
+    p {
+    text-align: center;
+    margin: 0 auto;
+    padding: 0;
+    font-family: 'Share', sans-serif;
+    text-transform: uppercase;
+    font-weight: 300; 
+  }
 }
 </style>
