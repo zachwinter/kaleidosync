@@ -2,7 +2,7 @@
 
 @mixin separator ($color: $red, $spacing: 3px) {
   @include flex(flex-start, space-between);
-  margin: 3rem 0 .5rem 0;
+  margin: 2rem 0 .5rem 0;
   width: 100%;
   line-height: 40px;
   padding-bottom: $spacing;

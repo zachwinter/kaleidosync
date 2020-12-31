@@ -1,9 +1,9 @@
 <template lang="pug">
 .visualizer
   transition(name="fade"): Connect(v-if="initialized && !connected && !legacy")
-  Sketch(v-if="connected")
+  Sketch(v-if="connected || legacy")
   transition(name="fade"): Education(v-if="(connected && !educated) || (legacy && !educated)")
-  transition(name="slide-y"): ControlBar(v-if="(connected && showControlBar && !sketchSelectorVisible && hover) || (connected && !educated) || showSideBar")
+  transition(name="slide-y"): ControlBar(v-if="!editingUniform && ((connected && showControlBar && !sketchSelectorVisible && hover) || (connected && !educated) || showSideBar)")
   transition(name="slide-x"): SideBar(v-if="showSideBar && !sketchSelectorVisible")
   transition(name="fade"): Sketches(v-if="sketchSelectorVisible")  
 </template>
@@ -39,6 +39,7 @@ export default {
       'ui/showSideBar',
       'ui/controlPanelVisible',
       'ui/sketchSelectorVisible',
+      'ui/editingUniform',
       'education/educated'
     ])
   },

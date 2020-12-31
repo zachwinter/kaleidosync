@@ -92,7 +92,7 @@ export default {
       this.scene = new Scene()
       this.renderer = new WebGLRenderer({
         canvas: el,
-        // powerPreference: 'high-performance'
+        powerPreference: 'high-performance'
       })
       if (!this.homepage) {
         this.renderer.domElement.addEventListener('webglcontextlost', () => {
@@ -106,7 +106,7 @@ export default {
       this.camera = new OrthographicCamera(-1, 1, 1, -1, -1, 1)
       this.renderer.setSize(width, height)
 
-      if (this.hidpi) this.renderer.setPixelRatio(window.devicePixelRatio)
+      if (this.hidpi) this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
       window.renderer = this.renderer
       this.geometry = new PlaneGeometry(2, 2)
     },
@@ -221,8 +221,8 @@ export default {
       if (this.autosize) {
         const _styles = window.getComputedStyle(parent)
         const border = parseFloat(_styles['border-right-width'])
-        width = parent.offsetWidth - border * (this.hidpi ? window.devicePixelRatio : 1)
-        height = parent.offsetHeight - border * (this.hidpi ? window.devicePixelRatio : 1)
+        width = parent.offsetWidth - border * (this.hidpi ? Math.min(window.devicePixelRatio, 2) : 1)
+        height = parent.offsetHeight - border * (this.hidpi ? Math.min(window.devicePixelRatio, 2) : 1)
       }
 
       return { width, height }
@@ -233,7 +233,7 @@ export default {
       const { width, height } = this.getSize()
       if (this._uniforms) this._uniforms.resolution = new Uniform(new Vector2(width, height))
       this.renderer?.setSize(width, height)
-      this.renderer?.setPixelRatio(this.hidpi ? window.devicePixelRatio : 1)
+      this.renderer?.setPixelRatio(this.hidpi ? Math.min(window.devicePixelRatio, 2) : 1)
     },
 
     async tick (now = window.performance.now()) {

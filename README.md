@@ -5,12 +5,12 @@
 #### Try it out at [www.kaleidosync.com](https://www.kaleidosync.com)!
 
 ## Background
-The Echo Nest represents the comprehensive algorithmic analysis of music. Having been acquired by Spotify, their analysis resources are available via the [Spotify API](https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-analysis/). Each song within Spotify's library have been fully analyzed: broken up into individual beats, segments, tatums, bars, and sections. There are variables assigned to describe mood, active volume, pitch, timbre, and more – even how "danceable" a track is. One can even derive realtime volume information, all without processing the audio stream directly. 
+The Echo Nest represents the comprehensive algorithmic analysis of music. Having been acquired by Spotify, their analysis resources are available via the [Spotify API](https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-analysis/). Each song within Spotify's library has been fully analyzed: broken up into individual beats, segments, tatums, bars, and sections. There are variables assigned to describe pitch, timbre, and more esoteric descriptors like mood and "danceability." It's even possible to derive realtime volume information, all without processing the audio stream directly. 
 
-This project is my take on using this data to produce visual experiences.
+This project is my take on using this data to produce visual experiences using the power of WebGL. 
 
 ## Running Locally
-As of version 6.0.0, you will not be able to run this project locally in any reasonable way due to its dependencies on my (unpublished) authoring tools. If you absolutely must get this running on your machine, feel free to reach out to me and I'll walk you through the hurdles and what you'll need to build in order for it to be useful. 
+As of version 6.0.0 you won't be able to run this project locally in any reasonable/useful way due to how coupled it is with my (unpublished) shader authoring tools. If you absolutely must get this running on your machine, feel free to reach out to me and I'll walk you through the hurdles and what you'll need to build in order for it to be useful. 
 
 ## Changelog
 >  #### Version 6.0
