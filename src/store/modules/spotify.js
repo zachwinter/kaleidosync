@@ -20,6 +20,7 @@ const actions = {
     commit('SET_ACCESS_TOKEN', cookies.get(ACCESS_TOKEN)) // eslint-disable-line 
     commit('SET_REFRESH_TOKEN', cookies.get(REFRESH_TOKEN)) // eslint-disable-line 
     commit('SET_REFRESH_CODE', cookies.get(REFRESH_CODE)) // eslint-disable-line 
+    if (!state.accessToken || !state.refreshToken || !state.refreshCode) return dispatch('login')
     commit('SET_AUTHENTICATED', true)
     commit('SET_USER', await dispatch('getUser'))
     commit('SET_PLAYLISTS', Object.freeze(await dispatch('getAllPlaylists')))
