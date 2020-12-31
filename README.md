@@ -1,91 +1,65 @@
-# kaleidosync
-> An HTML5 Spotify visualizer, built with [spotify-viz](https://github.com/zachwinter/spotify-viz) and [Vue](https://github.com/vuejs/vue).
 
-####  Try it out at [www.kaleidosync.com](https://www.kaleidosync.com)!
+# kaleidosync
+> An WebGL Spotify visualizer made with [Vue](https://github.com/vuejs/vue), [D3](https://github.com/d3/d3), and [Three.js](https://github.com/mrdoob/three.js/).
+
+#### Try it out at [www.kaleidosync.com](https://www.kaleidosync.com)!
 
 ## Background
+The Echo Nest represents the comprehensive algorithmic analysis of music. Having been acquired by Spotify, their analysis resources are available via the [Spotify API](https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-analysis/). Each song within Spotify's library have been fully analyzed: broken up into individual beats, segments, tatums, bars, and sections. There are variables assigned to describe mood, active volume, pitch, timbre, and more – even how "danceable" a track is. One can even derive realtime volume information, all without processing the audio stream directly. 
 
-The Echo Nest prides itself on the comprehensive algorithmic analysis of music. Having been acquired by Spotify, their analysis resources are available publically via the Spotify API. Each song within Spotify's library have been fully analyzed: broken up into individual beats, segments, tatums, bars, and sections. There are variables assigned to describe mood, active volume, pitch, timbre, and more – even how "danceable" a track is.
+This project is my take on using this data to produce visual experiences.
 
-This project is my take on using their data to produce visual experiences. If you're interested in doing the same, I created [spotify-viz](https://github.com/zachwinter/spotify-viz) as a reasonable starting point.
-
-
-## Run Locally
-1) Create a new Spotify app in your [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/).
-2) Add `http://localhost:8001/callback` to your app's Redirect URIs. Make note to save your `Client ID` and `Client Secret`.
-3) Create a file named `.env` and place it in the project's root directory. Populate it with the following values:
-
-```bash
-CLIENT_ID=YOUR_CLIENT_ID_HERE
-CLIENT_SECRET=YOUR_CLIENT_SECRET_HERE
-REDIRECT_URI=http://localhost:8001/callback
-PROJECT_ROOT=http://localhost:8001
-NODE_ENV=development
-STATE_KEY=KALEIDOSYNC_STATE_KEY
-ACCESS_TOKEN=KALEIDOSYNC_ACCESS_TOKEN
-REFRESH_TOKEN=KALEIDOSYNC_REFRESH_TOKEN
-REFRESH_CODE=KALEIDOSYNC_REFRESH_CODE
-```
-
-> Note: `STATE_KEY`, `ACCESS_TOKEN`, `REFRESH_TOKEN`, and `REFRESH_CODE` can all be set to any unique strings. If you use [www.kaleidosync.com](https://www.kaleidosync.com) regularly it might be worth choosing your own values to avoid state conflict.
-
-4) In the project's root directory, install dependencies using NPM:
-```bash
-npm i
-```
-5) Then build and serve the project via @vue/cli:
-```bash
-npm run serve
-```
-6) Once running, visit [http://localhost:8080](http://localhost:8080) and log in with your Spotify account. 
-7) Play a song in your Spotify client of choice. The visualizer will take a moment to sync before initializing.
+## Running Locally
+As of version 6.0.0, you will not be able to run this project locally in any reasonable way due to its dependencies on my (unpublished) authoring tools. If you absolutely must get this running on your machine, feel free to reach out to me and I'll walk you through the hurdles and what you'll need to build in order for it to be useful. 
 
 ## Changelog
+>  #### Version 6.0
+* Complete re-write.
+* Sketches have been removed from the codebase and are now stored in a database.
+* New architecture connects directly with my visualizer authoring tools, enabling the publishing of new visualizers with the push of a button.
+* Leverages the Spotify Web Playback SDK ([when available](https://developer.spotify.com/documentation/web-playback-sdk/#supported-browsers)), and falls back to legacy polling in browsers that are unsupported.
 
-> #### Version 5.5
+>  #### Version 5.5
 * Cleanup / bug fixes.
 * There are now 8 visualizers to choose from.
 
-> #### Version 5.4
-* Reduces the complexity of adding new visualizers. 
+>  #### Version 5.4
+* Reduces the complexity of adding new visualizers.
 * Reverts back to the traditional polling when running the dev server.
-* Surfaces a control interface for WebGL scenes. 
+* Surfaces a control interface for WebGL scenes.
 
-> #### Version 5.3
+>  #### Version 5.3
 * There are now 7 visualizers to choose from.
 
-> #### Version 5.2
+>  #### Version 5.2
 * Refactor / rate limit debugging.
 
-> #### Version 5.1
+>  #### Version 5.1
 * There are now 6 visualizers to choose from.
 
-> #### Version 5.0
+>  #### Version 5.0
 * Major refactor.
 * There are now 5 visualizers to choose from.
 * Includes an interface for rendering fragment shaders.
 
-> #### Version 4.0
+>  #### Version 4.0
 * Project backbone has been abstracted away into its own library, [spotify-viz](https://github.com/zachwinter/spotify-viz).
 * Adoped [@vue/cli](https://cli.vuejs.org) for the UI layer.
 * There are now 4 visualizers to choose from.
-* User settings now persist when revisiting the site. 
-* More graceful error handling and authentication flow. 
-* This project now fully represents what's hosted on [www.kaleidosync.com](https://www.kaleidosync.com), instead of the bare-bones implementation that it was before. 
-
-
-> #### Version 3.0
+* User settings now persist when revisiting the site.
+* More graceful error handling and authentication flow.
+* This project now fully represents what's hosted on [www.kaleidosync.com](https://www.kaleidosync.com), instead of the bare-bones implementation that it was before.
+>  #### Version 3.0
 * Complete refactor with no front end dependencies.
-* Transitioned to webpack from gulp. 
+* Transitioned to webpack from gulp.
 * Reactive data store using ES6 Proxies, semi-inspired by Vuex.
-* (Hopefully) less spaghetti and more comments. 
+* (Hopefully) less spaghetti and more comments.
 
-> #### Version 2.0
-* Re-implemented with `requestAnimationFrame()` 
+>  #### Version 2.0
+* Re-implemented with `requestAnimationFrame()`
 * Now mobile-friendly, even on older devices.
 * Improved tweening.
 * Adjusts itself on window resize.
 * More accurate syncing with Spotify, including automatic self-correction.
-
-> #### Version 1.0
-* Holy shit, it's working... kind of. 
+>  #### Version 1.0
+* Holy shit, it's working... kind of.

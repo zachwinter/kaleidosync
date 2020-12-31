@@ -1,6 +1,5 @@
 <template lang="pug">
 div.home(:class="{ hide, show }")
-  Beta(:visible="showCookies")
   div.splash
     h1(ref="logo")
       span(data-letter="1") K
@@ -14,63 +13,111 @@ div.home(:class="{ hide, show }")
       span(data-letter="9" ref="animate") y  
       span(data-letter="10") n
       span(data-letter="11") c
-    div.text
-      h2 a Spotify visualizer
-      noscript Please enable JavaScript before logging in.
-      .buttons
-        button(@click="login")
-          span Log In
-          Spotify
-      .links
-        .link: a(href="https://github.com/zachwinter/kaleidosync" target="github"): GitHub
-        .link: a(href="https://instagram.com/zachary.io" target="instagram"): Instagram
-
+    h2 A Spotify Visualizer
+    p A growing collection of {{ sketches.length }} customizable WebGL sketches by #[a(href="https://instagram.com/zachary.io" target="instagram") @zachary.io], fully in sync with every song in Spotify's library.
+    .buttons
+      button(@click="login")
+        span Log In
+        icon(name="spotify" set="fab")
+      .link: a(href="https://instagram.com/zachary.io" target="instagram"): icon(name="instagram" set="fab")
+      .link: a(href="https://github.com/zachwinter/kaleidosync" target="github"): icon(name="github" set="fab")
+  Renderer(
+    :class="{ visible: showRenderer }"
+    class="renderer"
+    ref="renderer" 
+    :hidpi="false" 
+    :stayAlive="true"
+    :homepage="true"
+    v-if="localShader && localUniforms" 
+    :sketch="{ shader: localShader, uniforms: localUniforms }"
+  )
 </template>
 
 <script>
-// import Cookies from '@/components/Cookies'
-import GitHub from '@/assets/svg/github.svg'
-import Spotify from '@/assets/svg/spotify.svg'
-import Instagram from '@/assets/svg/instagram.svg'
-import { pause } from '@/util/timing'
-import Beta from '@/components/Beta'
+import { buildUniforms } from '@/util/uniforms'
+import { bind } from '@zach.winter/vue-common/util/store'
+import { mapState } from 'vuex'
+import Renderer from '@/components/common/Renderer'
+import { pause } from '@zach.winter/common/js/timing'
 
 export default {
-  name: 'home',
-  components: { GitHub, Spotify, Instagram, Beta },
-  data () {
+  name: 'Home',
+  components: { Renderer },
+  data () { 
     return {
       show: false,
       hide: false,
-      showCookies: false
+      sketchIndex: 0,
+      sketchInterval: null,
+      showRenderer: true,
+      localShader: null,
+      localUniforms: null,
+      initialized: false
     }
+  },
+  computed: {
+    ...mapState(['loaded']),
+    ...bind([
+      'visualizer/activeSketch',
+      'visualizer/hidpi',
+      'visualizer/sketches',
+      'visualizer/activeVariant',
+    ]),
+    shader () {
+      return this.activeSketch?.shader || null
+    },
+    uniforms () {
+      return buildUniforms(this.activeSketch?.uniforms?.[this.activeVariant] || null)
+    }
+  },
+  watch: {
+    loaded (val) {
+      if (!val) return
+      this.localShader = this.shader
+      this.localUniforms = this.uniforms
+      this.show = true
+      if (this.$ga) this.$ga.page('/')
+    },
+    async activeSketch () {
+      if (!this.initialized) return
+      this.showRenderer = false
+      await pause(1000)
+      this.localShader = this.shader
+      this.localUniforms = this.uniforms
+      this.showRenderer = true
+    }
+  },
+  async mounted () {
+    this.id = window.__KALEIDOSYNC_LOOP__.watch('tick', async (now) => {
+     if (this.$refs.renderer) this.$refs.renderer.tick(now) 
+    })
+    this.sketchInterval  = setInterval(() => {
+      if (this.sketchIndex === this.sketches.length - 1) {
+        this.sketchIndex = 0
+      } else {
+         this.sketchIndex++
+      }
+      this.$store.dispatch('visualizer/selectByIndex', this.sketchIndex)
+    }, 5000)
+    await this.$nextTick()
+    this.initialized = true
+  },
+  beforeDestroy () {
+    window.__KALEIDOSYNC_LOOP__.unwatch('tick', this.id)
+    clearInterval(this.sketchInterval)
   },
   methods: {
     async login () {
       this.hide = true
-      this.showCookies = false
       this.$refs.animate.addEventListener('animationend', () => {
         this.$store.dispatch('spotify/login')
       })
     },
-    
-    init () {
-      this.show = true
-      this.showCookies = true
-      if (this.$ga) {
-        this.$ga.page('/')
-      }
+    tick (now) {
+      requestAnimationFrame(this.tick.bind(this))
+      if (this.$refs.renderer) this.$refs.renderer.tick(now)
     }
   },
-  async mounted () {
-    if (typeof document.fonts.ready !== 'undefined') {
-      await document.fonts.ready
-      this.init()
-    } else {
-      await pause(300)
-      this.init()
-    }
-  }
 }
 </script>
 
@@ -78,87 +125,177 @@ export default {
 $splash-hide-duration: 1000ms;
 
 .home {
-  @include size(100vw, 100vh);
+  @include page;
+  @include flex(center, center, column);
+  color: $white;
+  opacity: 0;
+  text-align: center;
+  transition: opacity $splash-hide-duration;
+  background: $black;
+}
+
+@keyframes fadeslide {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
 }
 
 .splash {
+  @include size(100vw, 100vh);
+  @include position(fixed, 0 0 0 0);
+  @include flex;
+  color: $white;
+  background: $black;
+  padding: 5rem;
+  /* border-radius:  1000px; */
+  @include cascade;
   z-index: 100;
   position: relative;
-  opacity: 0;
-  transition: opacity $splash-hide-duration;
+  background: rgba(0, 0, 0, .7);
+
+  > * {
+    @include cascade(5, 50ms);
+    animation: fadeslide 1000ms $base-easing forwards;
+    opacity: 0;
+  }
 }
 
 h1 {
-  @include scale(font-size 220px 72px, line-height 150px 50px);
+  @include scale(font-size 54px 220px, line-height 54px 150px);
   font-family: 'Gochi Hand', cursive;
-  font-weight: 400;
+  font-weight: 100;
   letter-spacing: -.1em;
-  
+  position: relative;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, .5);;
+
   span { display: inline-block; }
+  
+  .beta {
+    @include position(absolute, 0 20px null null);
+    color: $red;
+    font-size: 30px !important; 
+    letter-spacing: 0;
+    transform: translateX(150%);
+    transition: all $splash-hide-duration $bounce-easing;
+    opacity: 0;
+  }
+
+  @include mobile-landscape {
+    font-size: 80px;
+    line-height: 80px;
+  }
 }
 
 h2 {
-  @include scale(font-size 32px 16px, line-height 24px 16px);
-  font-family: 'Open Sans';
+  @include scale(font-size 16px 40px, line-height 16px 40px);
+  display: inline-flex;
+  margin: 0 auto;
+  font-family: 'share', sans-serif;
+  text-transform: uppercase;
   font-weight: 300;
-  transition: transform $splash-hide-duration $bounce-easing, opacity $splash-hide-duration $bounce-easing;
-  opacity: .3;
+  /* letter-spacing: .05em; */
+  /* transition: all $splash-hide-duration $bounce-easing; */
   text-align: center;
+  padding: 5px;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, .5);
+
+  @include mobile-landscape {
+    font-size: 20px;
+    line-height: 20px;
+  }
+}
+
+p {
+  @include scale(font-size 18px 20px);
+  color: $white;
+  margin-top: 1rem;
+  /* transition: all $splash-hide-duration $bounce-easing; */
+  text-shadow: 0 1px 10px rgba(0, 0, 0, .5);;
+
+  a {
+    font-weight: 700;
+    color: $blue;
+
+    &:hover { color: $green; }
+  }
 }
 
 .buttons {
-  @include flex;
+  @include flex(center, center, row);
+  /* transition: all $splash-hide-duration $bounce-easing; */
   margin-top: 30px
 }
 
-button {
-  @include button(#65D36E);
-  @include flex;
-  background: #65D36E;
-  color: white;
-  position: relative;
-  font-size: 24px;
-  border: 0;
 
-  &:hover { background: darken(#65D36E, 20%); }
+button {
+  @include button($spotify-green, $white);
+  @include size(140px, 50px);
+  @include flex(center, center, row);
+  @include share;
+  font-size: 22px;
+  border-radius: 100px;
+  margin-right: 1rem;
 
   svg {
-    @include size(24px);
-    margin-left: 10px;
+    margin-left: 1rem;
   }
 }
 
 .links {
   @include position(fixed, null 0 30px 0);
-  @include flex;
+  @include flex(center, center, row);
   margin-top: 10px;
+  /* transition: all $splash-hide-duration $bounce-easing; */
+  margin-top: 2rem;
 }
 
 .link {
   @include flex;
   text-decoration: none;
-  font-weight: bold;
-  color: $black;
-  @include share;
+  transition: all 100ms ease-out;
+  color: $white;
+
+  &:hover { transform: scale(1.1); }
 
   svg {
     @include size(30px);
     margin-right: 8px;
-    transition: fill 200ms ease-in-out;
-
-    &:hover { fill: rgba(0, 0, 0, .5); }
   }
 
   &+.link { margin-left: 5px; }
 }
 
 .show {
-  .splash, .links {
+  opacity: 1;
+  .splash, .links, h1 .beta {
     opacity: 1;
   }
 }
 
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+}
+
 .hide {
+  .splash > * {
+    animation: none;
+    opacity: initial;
+  }
+
   @for $i from 1 through 11 {
     @keyframes shwoop-#{$i} {
       0% {
@@ -178,9 +315,15 @@ button {
     }
   }
 
-  h2, button, .links {
-    opacity: 0;
-    transform: scale(.7);
+  h2, p, .buttons, .links {
+    animation: fadeOut $splash-hide-duration $bounce-easing forwards !important;
   }
+}
+
+.renderer {
+  opacity: 0;
+  transition: opacity 1000ms $bounce-easing;
+
+  &.visible { opacity: 1; }
 }
 </style>

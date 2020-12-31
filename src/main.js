@@ -3,29 +3,57 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueAnalytics from 'vue-analytics'
-import FontAwesomeIcon from '@fortawesome/vue-fontawesome/src/components/FontAwesomeIcon'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
-import { faSyncAlt } from '@fortawesome/free-solid-svg-icons/faSyncAlt'
-import 'prismjs'
-import "prismjs/themes/prism-twilight.css";
-import VuePrismEditor from 'vue-prism-editor';
-import "vue-prism-editor/dist/VuePrismEditor.css";
-
-Vue.component("prism-editor", VuePrismEditor);
-
-library.add(faTrash)
-library.add(faSyncAlt)
-
-Vue.component('icon', FontAwesomeIcon)
+import {
+  faUser,
+  faPlay,
+  faPause,
+  faStepForward,
+  faStepBackward,
+  faEllipsisVAlt,
+  faPlus,
+  faExpand,
+  faTimes,
+  faSlidersH,
+  faChevronRight,
+  faChevronLeft,
+  faEnvelope,
+  faSyncAlt
+} from '@fortawesome/pro-light-svg-icons'
+import { faSpotify, faInstagram, faTelegram, faGithub } from '@fortawesome/free-brands-svg-icons'
+import Icon from '@/components/common/Icon'
 
 Vue.config.productionTip = false
+
+;[
+  faUser,
+  faPlay,
+  faPause,
+  faStepForward,
+  faStepBackward,
+  faEllipsisVAlt,
+  faPlus,
+  faExpand,
+  faTimes,
+  faSlidersH,
+  faChevronRight,
+  faChevronLeft,
+  faSpotify,
+  faInstagram,
+  faEnvelope,
+  faTelegram,
+  faGithub,
+  faSyncAlt
+].forEach(icon => library.add(icon))
+
+Vue.component('Icon', Icon)
 
 // eslint-disable-next-line 
 if (PRODUCTION && GOOGLE_ANALYTICS) {
   Vue.use(VueAnalytics, {
     // eslint-disable-next-line 
-    id: GOOGLE_ANALYTICS
+    id: GOOGLE_ANALYTICS,
+    router
   })
 }
 

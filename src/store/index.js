@@ -1,29 +1,58 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import VuexPersistence from 'vuex-persist'
-import getters from './getters'
 import spotify from './modules/spotify'
+import player from './modules/player'
+import visualizer from './modules/visualizer'
 import ui from './modules/ui'
-import trails from './modules/trails'
-import user from './modules/user'
+import keyboard from './modules/keyboard'
+import education from './modules/education'
+import { composeMutations } from '@zach.winter/vue-common/util/store'
+import cloneDeep from 'lodash/cloneDeep'
+import initLoop from './loop'
+import { detectSafari, detectMobile } from '@/util/browser'
 
 Vue.use(Vuex)
 
-const { plugin } = new VuexPersistence({
-  storage: window.localStorage,
-  key: 'kaleidosync-persist-v12',
-  reducer ({ user, trails }) {
-    return { user, trails }
-  }
-})
+const state = {
+  loaded: false,
+  isSafari: detectSafari(),
+  isMobile: detectMobile()
+}
 
 export default new Vuex.Store({
-  getters,
+  state,
+  mutations: composeMutations(state),
   modules: {
     spotify,
+    player,
+    visualizer,
     ui,
-    trails,
-    user
+    keyboard,
+    education
   },
-  plugins: [plugin]
+  actions: {
+    async init ({ dispatch, commit }) {
+      initLoop()
+      dispatch('keyboard/init')
+      await Promise.all([
+        document.fonts.ready,
+        dispatch('visualizer/fetchSketches')
+      ])
+      dispatch('visualizer/init')
+      dispatch('ui/initHover')
+      commit('SET_LOADED', true)
+    },
+  },
+  getters: {
+    legacy (state) {
+      return state.isSafari || state.isMobile
+    },
+    activeSketch (state) {
+      return cloneDeep(state.visualizer.sketches.find(({ _id: id }) => state.visualizer.activeSketchId === id))
+    },
+    activeSketchIndex (state) {
+      const sketch = state.visualizer.sketches.find(({ _id }) => _id === state.visualizer.activeSketchId)
+      return state.visualizer.sketches.indexOf(sketch)
+    }
+  }
 })
