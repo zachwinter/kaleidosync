@@ -1,12 +1,12 @@
 <template lang="pug">
-.beat-interval
+.beat-interval(:class="{ hidden: editingUniform}")
   h3 Beat Interval
   RadioGroup(:options="beatIntervalOptions" v-model="beatInterval" name="beat-interval").interval
 </template>
 
 <script>
 import form from '@zach.winter/vue-common/mixins/form'
-import { dualBind } from '@zach.winter/vue-common/util/store'
+import { dualBind, bind } from '@zach.winter/vue-common/util/store'
 
 export default {
   mixins: [form],
@@ -19,13 +19,22 @@ export default {
       value: 'tatums'
     }]
   }),
-  computed: dualBind('player/beatInterval')
+  computed: {
+    ...dualBind('player/beatInterval'),
+    ...bind(['ui/editingUniform'])
+  }
 }
 </script>
 
 <style lang="scss" scoped>
+.beat-interval {
+  transition: opacity $base-transition;
+
+  &.hidden { opacity: 0; }
+}
+
 h3 {
   @include separator;
-  margin-top: 0;
+  margin-top: 0 !important;
 }
 </style>

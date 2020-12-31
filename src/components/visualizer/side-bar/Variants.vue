@@ -1,5 +1,5 @@
 <template lang="pug">
-.variants
+.variants(:class="{ custom: !shuffleVariants, hidden: editingUniform }")
   h3 Variants
   .buttons
     button(
@@ -14,7 +14,9 @@
       p Every
       SelectDropdown(:options="[1, 2, 3, 4]" v-model="shuffleIntervalMultiplier").multiplier
       RadioGroup(:options="shuffleIntervalOptions" name="shuffle-interval" v-model="shuffleInterval").group
-  .cta(v-if="shuffleVariants"): p Disable shuffle to customize the visuals yourself!
+  .cta(v-if="shuffleVariants")
+    //- p Disable shuffle to customize the visuals yourself!
+    button(@click="$store.commit('player/SET_SHUFFLE_VARIANTS', false)") Customize
 </template>
 
 <script>
@@ -31,7 +33,8 @@ export default {
       'player/shuffleInterval',
       'player/shuffleIntervalMultiplier',
       'visualizer/activeVariant',
-      'visualizer/activeSketch'
+      'visualizer/activeSketch',
+      'ui/editingUniform'
     ]),
     shuffleIntervalOptions () {
       return [{
@@ -53,6 +56,10 @@ export default {
 
 <style lang="scss">
 .variants {
+  transition: opacity $base-transition;
+  
+  &.hidden { opacity: 0; }
+
   .buttons {
     @include flex(center, flex-start, row);
 
@@ -69,7 +76,13 @@ export default {
 
     @include mobile {
       @include flex(flex-start, flex-start, column);
-      margin-bottom: 1rem;
+      margin-bottom: 2rem;
+    }
+  }
+
+  &.custom .shuffle {
+    @include mobile {
+      margin-bottom: 0;
     }
   }
 
@@ -107,6 +120,14 @@ export default {
       text-transform: none;
       font-family: 'Open Sans', sans-serif;
       font-size: 1.5rem;
+    }
+
+    button {
+      @include button;
+      background: transparent;
+      color: white;
+      border: 1px solid white;
+      width: 100%;
     }
 
     @include mobile {

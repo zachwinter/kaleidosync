@@ -1,12 +1,13 @@
 <template lang="pug">
-.controls(:class="{ hide: hideAll || (controlPanelVisible && !sketchSelectorVisible) }" v-if="connected")
+.controls(:class="{ transparent: editingUniform, hide: hideAll || (controlPanelVisible && !sketchSelectorVisible) }" v-if="connected")
   IconButton(icon="times" @click="$store.dispatch('ui/toggleSideBar')").close
   BeatInterval
   //- Volume
   Variants
   Uniforms
-  Config
-  Contact
+  .opacity(:class="{ hidden: editingUniform }")
+    Config
+    Contact
 </template>
 
 <script>
@@ -38,7 +39,8 @@ export default {
     'ui/hideAll',
     'ui/showControlBar',
     'ui/sketchSelectorVisible',
-    'ui/controlPanelVisible'
+    'ui/controlPanelVisible',
+    'ui/editingUniform'
   ])
 }
 </script>
@@ -55,6 +57,12 @@ export default {
   font-family: 'Share', sans-serif;
   text-transform: uppercase;
   padding: 1rem;
+
+  &.transparent {
+    background: transparent;
+
+    h3 { opacity: 0; }
+  }
 
   .close {
     @include position(absolute, 1rem 1rem null null);
@@ -82,6 +90,7 @@ export default {
   
   h3 {
     @include separator;
+    transition: opacity $base-transition;
   }
 
   @include mobile-portrait {
@@ -90,6 +99,12 @@ export default {
 
   @include mobile-landscape {
     width: 50%;
+  }
+
+  .opacity {
+    transition: opacity $base-transition;
+
+    &.hidden { opacity: 0; }
   }
 }
 </style>

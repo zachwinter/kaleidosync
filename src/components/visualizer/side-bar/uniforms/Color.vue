@@ -1,5 +1,5 @@
 <template lang="pug">
-tr.color
+tr.color(:class="{ hidden }")
   td.close(v-if="devMode"): Icon(name="times" @click.native="$emit('delete')")
   td.name: label {{ value.name }}
   td(:colspan="devMode ? 4 : 1" :style="{ background: rgbString }" class="color"): input(type="color" :value="hex" @input="onInput")
@@ -14,7 +14,7 @@ export default {
     value: Object
   },
   computed: {
-    ...bind(['ui/devMode']),
+    ...bind(['ui/devMode', 'ui/uniform', 'ui/editingUniform']),
     rgbString () {
       const [r, g, b] = this.value.value
       return `rgb(${r * 255}, ${g * 255}, ${b * 255})`
@@ -22,6 +22,9 @@ export default {
     hex () {
       const [r, g, b] = this.value.value
       return rgbToHex(r * 255, g * 255, b * 255)
+    },
+    hidden () {
+      return this.editingUniform && this.value.name !== this.uniform
     }
   },
   methods: {
@@ -37,6 +40,8 @@ export default {
 <style lang="scss" scoped>
 .color {
   height: $form-control-height;
+
+  &.hidden { opacity: 0; }
 
   input[type="color"] {
     @include strip;

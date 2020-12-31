@@ -1,5 +1,5 @@
 <template lang="pug">
-.uniforms(v-if="!shuffleVariants")
+.uniforms(v-if="!shuffleVariants" :class="{ transparent: editingUniform }")
   h3 Uniforms
   table(cellspacing="0" cellpadding="0")
     tbody
@@ -33,7 +33,8 @@ export default {
       'ui/devMode',
       'visualizer/activeSketch',
       'visualizer/activeVariant',
-      'visualizer/sketch'
+      'visualizer/sketch',
+      'ui/editingUniform'
     ]),
     uniforms () {
       if (!this.sketch) return []
@@ -56,6 +57,7 @@ export default {
     onInput (val) {
       const uniforms = {...this.sketch.uniforms}
       uniforms[val.name] = val
+      if (val.type === 'number') this.$store.dispatch('ui/uniformEdit', val.name)
       this.$store.commit('visualizer/SET_SKETCH', { ...this.sketch, uniforms: buildUniforms(uniforms) })
     },
 
@@ -120,7 +122,10 @@ $border: 1px solid rgba($white, .5);
     font-size: .8rem;
   }
 
-  tbody { background: rgba($black, .5); }
+  tbody {
+    background: rgba($black, .5);
+    transition: background $base-transition;
+  }
   
   tbody td {
     border-right: $border;
@@ -151,4 +156,6 @@ $border: 1px solid rgba($white, .5);
 
   .num { padding: 0; }
 }
+
+.uniforms.transparent tbody { background: transparent; }
 </style>

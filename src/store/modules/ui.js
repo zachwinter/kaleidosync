@@ -8,7 +8,10 @@ const state = {
   sketchSelectorVisible: false,
   showSideBar: false,
   navigatorIndex: 0,
-  autohideToolbar: true
+  autohideToolbar: true,
+  editingUniform: false,
+  uniformTimeout: null,
+  uniform: null
 }
 
 const actions = {
@@ -38,6 +41,19 @@ const actions = {
         window.__KALEIDOSYNC_LOOP__.hover = false
       }, 2000)
     })
+  },
+  uniformEdit ({ commit, state }, name) {
+    // if (!rootState.isMobile) return
+    commit('SET_EDITING_UNIFORM', true)
+    commit('SET_UNIFORM', name)
+    clearTimeout(state.uniformTimeout)
+    commit('SET_UNIFORM_TIMEOUT', setTimeout(() => {
+      commit('SET_EDITING_UNIFORM', false)
+      commit('SET_UNIFORM_TIMEOUT', null)
+      setTimeout(() => {
+        commit('SET_UNIFORM', null)
+      }, 300)
+    }, 300))
   }
 }
 
