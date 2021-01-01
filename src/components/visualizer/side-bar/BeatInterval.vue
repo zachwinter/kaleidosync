@@ -1,7 +1,6 @@
 <template lang="pug">
 .beat-interval(:class="{ hidden: editingUniform}")
-  h3 Beat Interval
-  RadioGroup(:options="beatIntervalOptions" v-model="beatInterval" name="beat-interval").interval
+  RadioGroup(label="Beat Interval" :options="beatIntervalOptions" v-model="beatInterval" name="beat-interval").interval
 </template>
 
 <script>
@@ -26,15 +25,20 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .beat-interval {
+  @include flex(center, space-between, row);
   transition: opacity $base-transition;
 
   &.hidden { opacity: 0; }
-}
 
-h3 {
-  @include separator;
-  margin-top: 0 !important;
+  .interval {
+    @include flex(center, space-between, row);
+    @include size(100%, 30px);
+
+    .outer label {
+      margin: 0 0 0 1rem;
+    }
+  }
 }
 </style>
