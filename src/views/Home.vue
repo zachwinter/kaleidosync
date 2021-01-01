@@ -10,7 +10,7 @@ div.home(:class="{ hide, show }")
       span(data-letter="6") d
       span(data-letter="7") o
       span(data-letter="8") s
-      span(data-letter="9" ref="animate") y  
+      span(data-letter="9" ref="animate") y
       span(data-letter="10") n
       span(data-letter="11") c
     h2 A Spotify Visualizer

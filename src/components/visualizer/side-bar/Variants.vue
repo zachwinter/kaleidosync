@@ -16,16 +16,20 @@
       RadioGroup(:options="shuffleIntervalOptions" name="shuffle-interval" v-model="shuffleInterval").group
   .cta(v-if="shuffleVariants")
     //- p Disable shuffle to customize the visuals yourself!
-    button(@click="$store.commit('player/SET_SHUFFLE_VARIANTS', false)") Customize
+    button(@click="$store.commit('player/SET_SHUFFLE_VARIANTS', false)").button
+      IconButton(icon="sliders-h").icon
+      span Customize
 </template>
 
 <script>
 import { dualBind } from '@zach.winter/vue-common/util/store'
 import form from '@zach.winter/vue-common/mixins/form'
 import { mapState } from 'vuex'
+import IconButton from '@/components/common/IconButton'
 
 export default {
   mixins: [form],
+  components: { IconButton },
   computed: {
     ...mapState(['isMobile']),
     ...dualBind([
@@ -122,12 +126,28 @@ export default {
       font-size: 1.5rem;
     }
 
-    button {
+    .button {
       @include button;
+      @include flex(center, center, row);
       background: transparent;
       color: white;
       border: 1px solid white;
       width: 100%;
+      font-size: 18px;
+
+      span {
+        padding-left: .25rem;
+      }
+
+      &:hover {
+        border-color: $red;
+        background: $red;
+        color: $white;
+      }
+
+      &:active {
+        transform: scale(.9);
+      }
     }
 
     @include mobile {

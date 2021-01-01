@@ -1,24 +1,25 @@
 <template lang="pug">
 .controls(:class="{ transparent: editingUniform, hide: hideAll || (controlPanelVisible && !sketchSelectorVisible) }" v-if="connected")
   IconButton(icon="times" @click="$store.dispatch('ui/toggleSideBar')").close
-  BeatInterval
-  //- Volume
+  .opacity(:class="{ hidden: editingUniform }")
+    Config
   Variants
   Uniforms
   .opacity(:class="{ hidden: editingUniform }")
-    Config
+    Keys(v-if="!isMobile")
     Contact
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { bind } from '@zach.winter/vue-common/util/store'
 import IconButton from '@/components/common/IconButton'
 import Uniforms from '@/components/visualizer/side-bar/Uniforms'
-import BeatInterval from '@/components/visualizer/side-bar/BeatInterval'
 import Variants from '@/components/visualizer/side-bar/Variants'
 import Volume from '@/components/visualizer/side-bar/Volume'
 import Config from '@/components/visualizer/Config'
 import Contact from '@/components/visualizer/side-bar/Contact'
+import Keys from '@/components/visualizer/Keys'
 
 export default {
   props: {
@@ -26,22 +27,25 @@ export default {
   },
   components: {
     IconButton,
-    BeatInterval, 
     Uniforms, 
     Variants,
     Volume,
     Config,
-    Contact
+    Contact,
+    Keys
   },
-  computed: bind([
-    'player/connected',
-    'ui/fullScreen',
-    'ui/hideAll',
-    'ui/showControlBar',
-    'ui/sketchSelectorVisible',
-    'ui/controlPanelVisible',
-    'ui/editingUniform'
-  ])
+  computed: {
+    ...mapState(['isMobile']),
+    ...bind([
+      'player/connected',
+      'ui/fullScreen',
+      'ui/hideAll',
+      'ui/showControlBar',
+      'ui/sketchSelectorVisible',
+      'ui/controlPanelVisible',
+      'ui/editingUniform'
+    ])
+  }
 }
 </script>
 
@@ -52,7 +56,7 @@ export default {
   transition: all $base-transition;
   overflow-y: scroll;
   z-index: 100;
-  background: linear-gradient(to bottom, $ui-color, rgba($black, .25));
+  background: $ui-color;
   color: $white;
   font-family: 'Share', sans-serif;
   text-transform: uppercase;

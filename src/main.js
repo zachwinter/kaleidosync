@@ -18,7 +18,8 @@ import {
   faChevronRight,
   faChevronLeft,
   faEnvelope,
-  faSyncAlt
+  faSyncAlt,
+  faCog
 } from '@fortawesome/pro-light-svg-icons'
 import { faSpotify, faInstagram, faTelegram, faGithub } from '@fortawesome/free-brands-svg-icons'
 import Icon from '@/components/common/Icon'
@@ -43,7 +44,8 @@ Vue.config.productionTip = false
   faEnvelope,
   faTelegram,
   faGithub,
-  faSyncAlt
+  faSyncAlt,
+  faCog
 ].forEach(icon => library.add(icon))
 
 Vue.component('Icon', Icon)
