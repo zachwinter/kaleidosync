@@ -1,8 +1,10 @@
 <template lang="pug">
-.education(:class="{ full: legacy }")
+.education(:class="{ full: legacy }" v-if="sketches.length")
   h3 Welcome to Kaleidosync!
-  p(v-if="legacy") Play a song to get started! This version of Kaleidosync only works if you listen to entire songs. If you change songs before a song ends, make sure you click the refresh icon!
-  p(v-if="!legacy") Click the circle at the bottom right to choose one of {{ sketches.length }} customizable visualizers!
+  .legacy(v-if="legacy")
+    p #[strong Play a song in the Spotify app to get started!]
+    p #[i Note:] This version of Kaleidosync only works if you listen to entire songs. If you change songs before a song ends, make sure you click the refresh icon on the toolbar!
+  p Click the visualizer preview at the bottom right of the toolbar to choose one of {{ sketches.length }} customizable visualizers! Click the cog icon for configuration options.
   .keyboard(v-if="!isMobile")
     p Keyboard Shortcuts
     Keys(:horizontal="true")
@@ -20,7 +22,8 @@ export default {
   computed: {
     ...bind([
       'visualizer/sketches',
-      'player/paused'
+      'player/paused',
+      'player/initialized'
     ]),
     ...mapGetters(['legacy']),
     ...mapState(['isMobile'])
@@ -37,8 +40,9 @@ export default {
 .education {
   @include position(fixed, 0 0 $control-height 0);
   @include flex(center, center, column);
-  background: linear-gradient(to bottom, rgba(0, 0, 0, .3), $ui-color);
+  background: $ui-color;//linear-gradient(to bottom, rgba(0, 0, 0, .3), $ui-color);
   color: $white;
+  z-index: 999;
 
   &.full {
     bottom: 0;
@@ -49,7 +53,11 @@ h3 {
   @include scale(font-size 1.5rem 4rem);
   font-weight: bold;
   text-align: center;
-  margin-bottom: 0;
+  margin-bottom: 1rem;
+
+  @include mobile-landscape {
+    font-size: 2rem;
+  }
 }
 
 p {
@@ -57,11 +65,14 @@ p {
   max-width: 800px;
   text-align: center;
   padding: 0 2rem;
-  margin: 1rem 0;
-}
 
-p + p {
-  margin-bottom: .5rem;
+  strong {
+    font-weight: 700;
+  }
+
+  @include mobile {
+    font-size: 1rem;
+  }
 }
 
 .buttons {
@@ -91,6 +102,21 @@ button {
     font-family: 'Share', sans-serif;
     text-transform: uppercase;
     font-weight: 300; 
+  }
+}
+
+.legacy {
+  margin-bottom: 1rem;
+
+  p:first-child {
+    margin-bottom: 1rem;
+  }
+
+  i {
+    font-family: 'Share', sans-serif;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-style: normal;
   }
 }
 </style>

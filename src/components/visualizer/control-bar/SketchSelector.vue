@@ -1,6 +1,6 @@
 <template lang="pug">
 .sketch-selector(ref="container")
-  Thumbnail(:sketch="sketch" @click.native="$store.dispatch('ui/toggleSketchSelector')")
+  transition(name="fade"): Thumbnail(v-if="activeSketch" :sketch="sketch" @click.native="click")
 </template>
 
 <script>
@@ -9,12 +9,19 @@ import { bind } from '@zach.winter/vue-common/util/store'
 
 export default {
   components: { Thumbnail },
-  computed: bind(['visualizer/sketch'])
+  computed: bind(['visualizer/sketch', 'visualizer/activeSketch', 'education/educated']),
+  methods: {
+    click () {
+      this.$store.dispatch('ui/toggleSketchSelector')
+      if (!this.educated) this.$store.commit('education/SET_EDUCATED', true)
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .sketch-selector {
+  @include size(54px);
   margin-left: 1rem;
   cursor: pointer;
 }

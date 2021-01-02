@@ -179,6 +179,7 @@ export default {
     },
 
     composeShader () {
+      if (!this.material) return
       this.material.fragmentShader = `
         ${this.printUniforms()}
         ${this.sketch.shader}`

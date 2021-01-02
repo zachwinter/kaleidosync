@@ -1,6 +1,6 @@
 <template lang="pug">
-Renderer(
-  v-if="activeSketch"
+transition(name="fade"): Renderer(
+  v-if="activeSketch && (connected || legacy)"
   ref="renderer" 
   :sketch="sketch"
   :autosize="true",

@@ -11,8 +11,7 @@ const state = {
   refreshToken: null,
   refreshCode: null,
   authenticated: false,
-  user: null,
-  playlists: []
+  user: null
 }
 
 const actions = {
@@ -23,7 +22,6 @@ const actions = {
     if (!state.accessToken || !state.refreshToken || !state.refreshCode) return dispatch('login')
     commit('SET_AUTHENTICATED', true)
     commit('SET_USER', await dispatch('getUser'))
-    commit('SET_PLAYLISTS', Object.freeze(await dispatch('getAllPlaylists')))
   },
 
   async login () {
