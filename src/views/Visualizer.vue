@@ -1,8 +1,8 @@
 <template lang="pug">
 .visualizer
   transition(name="fade"): Connect(v-if="initialized && !connected && !legacy")
-  Sketch(v-if="connected || legacy")
-  transition(name="fade"): Education(v-if="(connected && !educated) || (legacy && !educated)")
+  Sketch
+  transition(name="fade"): Education(v-if="((connected || legacy) && !educated)")
   transition(name="slide-y"): ControlBar(v-if="!sketchSelectorVisible && !editingUniform && ((connected && showControlBar && hover) || (connected && !educated) || showSideBar)")
   transition(name="slide-x"): SideBar(v-if="showSideBar && !sketchSelectorVisible")
   transition(name="fade"): Sketches(v-if="sketchSelectorVisible")  
@@ -44,7 +44,15 @@ export default {
     ])
   },
   async mounted () {
-    this.a = window.__KALEIDOSYNC_LOOP__.watch('hover', val => this.hover = Object.freeze(val)).id
+    this.a = window.__KALEIDOSYNC_LOOP__.watch('hover', val => {
+      if (val) {
+        document.body.style.cursor = 'default'
+      } else {
+        document.body.style.cursor = 'none'
+      }
+
+      this.hover = Object.freeze(val)
+    }).id
     await this.$store.dispatch('spotify/init')
     if (this.legacy) {
       await this.$store.dispatch('player/legacyConnect')

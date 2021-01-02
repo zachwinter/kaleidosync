@@ -8,12 +8,13 @@
       a(href="https://www.instagram.com/zachary.io" target="instagram"): IconButton(set="fab" icon="instagram").button
       FullScreen
       IconButton(v-if="legacy" icon="sync-alt" @click.native="$store.dispatch('player/legacyConnect')")
-      IconButton(icon="cog" @click.native="$store.dispatch('ui/toggleSideBar')")
+      IconButton(icon="cog" @click.native="cog")
     SketchSelector
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { bind } from '@zach.winter/vue-common/util/store'
 import PlayerButtons from '@/components/visualizer/control-bar/PlayerButtons'
 import CurrentTrack from '@/components/visualizer/control-bar/CurrentTrack'
 import IconButton from '@/components/common/IconButton'
@@ -28,7 +29,16 @@ export default {
     FullScreen,
     SketchSelector
   },
-  computed: mapGetters(['legacy'])
+  computed: {
+    ...mapGetters(['legacy']),
+    ...bind(['education/educated'])
+  },
+  methods: {
+    cog () {
+      if (!this.educated) this.$store.commit('education/SET_EDUCATED', true)
+      this.$store.dispatch('ui/toggleSideBar')
+    }
+  }
 }
 </script>
 
