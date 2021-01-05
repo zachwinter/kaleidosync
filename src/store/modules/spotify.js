@@ -25,6 +25,9 @@ const actions = {
   },
 
   async login () {
+    cookies.set(ACCESS_TOKEN, null) // eslint-disable-line
+    cookies.set(REFRESH_TOKEN, null) // eslint-disable-line
+    cookies.set(REFRESH_CODE, null) // eslint-disable-line 
     const { success, auth_id } = await getAuthID()
     if (success) window.location.href = `${PROJECT_ROOT}/api/authentication/login?auth_id=${auth_id}` // eslint-disable-line
   },
