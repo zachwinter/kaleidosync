@@ -14,7 +14,7 @@ As of version 6.0.0 you won't be able to run this project locally in any reasona
 
 ## Changelog
 > #### Version 6.1
-* Introduces dev mode, allowing live-editing of shader and the creation of editable uniforms.
+* Introduces dev mode, allowing live-editing of shaders and the creation of editable uniforms.
 
 >  #### Version 6.0
 * Complete re-write.
