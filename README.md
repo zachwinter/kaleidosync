@@ -13,6 +13,9 @@ This project is my take on using this data to produce visual experiences using t
 As of version 6.0.0 you won't be able to run this project locally in any reasonable/useful way due to how coupled it is with my (unpublished) shader authoring tools. If you absolutely must get this running on your machine, feel free to reach out to me and I'll walk you through the hurdles and what you'll need to build in order for it to be useful. 
 
 ## Changelog
+> #### Version 6.1
+* Introduces dev mode, allowing live-editing of shader and the creation of editable uniforms.
+
 >  #### Version 6.0
 * Complete re-write.
 * Sketches have been removed from the codebase and are now stored in a database.

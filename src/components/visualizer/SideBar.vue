@@ -1,12 +1,12 @@
 <template lang="pug">
-.controls(:class="{ transparent: editingUniform, hide: hideAll || (controlPanelVisible && !sketchSelectorVisible) }" v-if="connected")
-  IconButton(icon="times" @click="$store.dispatch('ui/toggleSideBar')").close
+.controls(:class="{ full: devMode, expand: devMode, transparent: editingUniform, hide: hideAll || (controlPanelVisible && !sketchSelectorVisible) }" v-if="connected")
+  IconButton(icon="times" @click="close").close
   .opacity(:class="{ hidden: editingUniform }")
-    Config
-  Variants
+    Configuration
+  Variants(v-if="!devMode")
   Uniforms
   .opacity(:class="{ hidden: editingUniform }")
-    Keys(v-if="!isMobile")
+    Keys(v-if="!isMobile && !devMode")
     Contact
 </template>
 
@@ -17,7 +17,7 @@ import IconButton from '@/components/common/IconButton'
 import Uniforms from '@/components/visualizer/side-bar/Uniforms'
 import Variants from '@/components/visualizer/side-bar/Variants'
 import Volume from '@/components/visualizer/side-bar/Volume'
-import Config from '@/components/visualizer/Config'
+import Configuration from '@/components/visualizer/side-bar/Configuration'
 import Contact from '@/components/visualizer/side-bar/Contact'
 import Keys from '@/components/visualizer/Keys'
 
@@ -30,7 +30,7 @@ export default {
     Uniforms, 
     Variants,
     Volume,
-    Config,
+    Configuration,
     Contact,
     Keys
   },
@@ -43,8 +43,15 @@ export default {
       'ui/showControlBar',
       'ui/sketchSelectorVisible',
       'ui/controlPanelVisible',
-      'ui/editingUniform'
+      'ui/editingUniform',
+      'visualizer/devMode'
     ])
+  },
+  methods: {
+    close () {
+      this.$store.dispatch('ui/toggleSideBar')
+      this.$store.commit('visualizer/SET_DEV_MODE', false)
+    }
   }
 }
 </script>

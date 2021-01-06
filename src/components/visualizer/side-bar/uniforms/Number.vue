@@ -1,6 +1,6 @@
 <template lang="pug">
 tr.number(:class="{ hidden, active: uniform === value.name, disabled }" v-if="model")
-  td.close(v-if="devMode"): Icon(name="times" @click.native="$emit('delete')")
+  td(v-if="devMode").del: IconButton(icon="times" size="small" @click.native="$emit('delete')")
   td.name: label {{ model.name }}
   td.num(v-if="devMode"): TextInput(v-model="model.min" @input="update" :disabled="disabled")
   td: RangeInput(v-model="model.value" :step="parseFloat(model.step)" :min="parseFloat(model.min)" :max="parseFloat(model.max)" :disabled="disabled" @input="update")
@@ -12,6 +12,7 @@ tr.number(:class="{ hidden, active: uniform === value.name, disabled }" v-if="mo
 import form from '@zach.winter/vue-common/mixins/form'
 import { bind } from '@zach.winter/vue-common/util/store'
 import mixin from '@/mixins/uniform'
+import IconButton from '@/components/common/IconButton'
 
 export default {
   mixins: [form, mixin],
@@ -22,11 +23,12 @@ export default {
       default: false
     }
   },
+  components: { IconButton },
   data: () => ({
     model: null
   }),
   computed: {
-    ...bind(['ui/devMode', 'ui/uniform', 'ui/editingUniform']),
+    ...bind(['visualizer/devMode', 'ui/uniform', 'ui/editingUniform']),
     hidden () {
       return this.editingUniform && this.uniform !== this.value.name
     },

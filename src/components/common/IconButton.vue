@@ -1,5 +1,5 @@
 <template lang="pug">
-.icon-button(:class="{ disabled }")
+.icon-button(:class="{ disabled, [size]: size }")
   button(:class="{ border, text, [color]: color }" @click="onClick")
     icon(:set="set" :name="icon")
     span(v-if="text") {{ text }}
@@ -36,6 +36,11 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+
+    size: {
+      type: String,
+      default: 'normal'
     }
   },
 
@@ -59,6 +64,12 @@ export default {
       transform: none;
       cursor: default;
     }
+  }
+
+
+  &.small button {
+    @include size(30px);
+    font-size: 20px;
   }
 }
 
