@@ -2,7 +2,6 @@ import { buildModule } from '@zach.winter/vue-common/util/store'
 
 const state = {
   fullScreen: false,
-  devMode: false,
   hideAll: false,
   showControlBar: true,
   sketchSelectorVisible: false,

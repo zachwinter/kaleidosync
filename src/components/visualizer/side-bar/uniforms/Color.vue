@@ -1,6 +1,6 @@
 <template lang="pug">
 tr.color(:class="{ hidden }")
-  td.close(v-if="devMode"): Icon(name="times" @click.native="$emit('delete')")
+  td(v-if="devMode").del: IconButton(icon="times" size="small" @click.native="$emit('delete')")
   td.name: label {{ value.name }}
   td(:colspan="devMode ? 4 : 1" :style="{ background: rgbString }" class="color"): input(type="color" :value="hex" @input="onInput")
 </template>
@@ -8,13 +8,15 @@ tr.color(:class="{ hidden }")
 <script>
 import { bind } from '@zach.winter/vue-common/util/store'
 import { hexToRgb, rgbToHex } from '@zach.winter/common/js/colors'
+import IconButton from '@/components/common/IconButton'
 
 export default {
   props: {
     value: Object
   },
+  components: { IconButton },
   computed: {
-    ...bind(['ui/devMode', 'ui/uniform', 'ui/editingUniform']),
+    ...bind(['visualizer/devMode', 'ui/uniform', 'ui/editingUniform']),
     rgbString () {
       const [r, g, b] = this.value.value
       return `rgb(${r * 255}, ${g * 255}, ${b * 255})`

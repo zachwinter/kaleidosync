@@ -2,7 +2,7 @@
 transition(name="fade"): Renderer(
   v-if="activeSketch && (connected || legacy)"
   ref="renderer" 
-  :sketch="sketch"
+  :sketch="devMode ? devSketch : sketch"
   :autosize="true",
   :activeIntervals="activeIntervals"
   :beatInterval="beatInterval"
@@ -46,7 +46,9 @@ export default {
       'visualizer/activeVariant',
       'visualizer/selectingSketch',
       'visualizer/sketch',
-      'visualizer/tweenDuration'
+      'visualizer/tweenDuration',
+      'visualizer/devSketch',
+      'visualizer/devMode'
     ]),
     sketchId () {
       return this.activeSketch?._id || null

@@ -1,9 +1,11 @@
 <template lang="pug">
 .config
-  h3 Settings
+  h3 Config
   RadioGroup(label="Beat Interval" :options="beatIntervalOptions" v-model="beatInterval" name="beat-interval").interval
+  Toggle(v-if="!isMobile" v-model="devMode" label="Dev Mode")
   Toggle(v-if="showHiDPI" v-model="hidpi" label="HiDPI Rendering (Fast devices only!)")
-  Toggle(v-model="autohideToolbar" label="Auto-hide Toolbar")
+  Toggle(v-if="!devMode" v-model="autohideToolbar" label="Auto-hide Toolbar")
+  p(v-if="devMode").soon #[strong Coming Soon :] Saving your own sketches!
 </template>
 
 <script>
@@ -28,9 +30,19 @@ export default {
     ...dualBind([
       'visualizer/hidpi',
       'ui/autohideToolbar',
-      'player/beatInterval'
+      'player/beatInterval',
+      'visualizer/devMode'
     ]),
     ...bind(['ui/editingUniform'])
+  },
+  watch: {
+    devMode (val) {
+      if (val) {
+        this.$store.dispatch('visualizer/enableDevMode')
+      } else {
+        this.$store.dispatch('visualizer/disableDevMode')
+      }
+    }
   }
 }
 </script>
@@ -72,6 +84,16 @@ export default {
 
     .outer label {
       margin: 0 0 0 1rem;
+    }
+  }
+
+  .soon {
+    font-family: 'Quicksand', sans-serif;
+    text-transform: none;
+    /* margin-top: 1rem; */
+
+    strong {
+      font-family: 'Share', sans-serif;
     }
   }
 }

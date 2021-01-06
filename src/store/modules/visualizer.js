@@ -1,6 +1,7 @@
 import { buildModule } from '@zach.winter/vue-common/util/store'
 import { fetchSketches } from '@/api/sketches' 
 import sample from 'lodash/sample'
+import cloneDeep from 'lodash/cloneDeep'
 
 const state = {
   sketches: [],
@@ -10,7 +11,9 @@ const state = {
   selectingSketch: false,
   hidpi: false,
   sketch: null,
-  tweenDuration: 350
+  devSketch: null,
+  tweenDuration: 350,
+  devMode: false
 }
 
 const actions = {
@@ -43,6 +46,16 @@ const actions = {
   },
   async selectByIndex ({ state, dispatch }, i) {
     await dispatch('selectSketch', state.sketches[i]._id)
+  },
+  enableDevMode ({ state, commit }) {
+    commit('SET_DEV_SKETCH', cloneDeep(state.sketch))
+    commit('player/SET_SHUFFLE_VARIANTS', false, { root: true })
+  },
+  disableDevMode () {
+
+  },
+  onCodeInput ({ state, commit }) {
+    commit('SET_DEV_SKETCH', cloneDeep(state.devSketch))
   }
 }
 

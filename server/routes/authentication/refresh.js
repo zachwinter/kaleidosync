@@ -28,7 +28,7 @@ module.exports = app => {
         res.send({ success: true, access_token })
       } else {
         res.status(401)
-        res.send()
+        res.send(error)
       }
     })
   })

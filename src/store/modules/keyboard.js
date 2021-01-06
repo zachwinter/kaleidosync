@@ -11,6 +11,8 @@ const state = {
 const actions = {
   init ({ commit, dispatch, rootState, state }) {
     window.addEventListener('keydown', e => {
+      if (rootState.visualizer.devMode) return
+
       if (e.key === 'v') {
         dispatch('ui/toggleSketchSelector', null, { root: true })
       }
@@ -51,6 +53,7 @@ const actions = {
     }, true)
 
     window.addEventListener('keyup', ({ key }) => {
+      if (rootState.visualizer.devMode) return
       if (key === 'Meta') commit('SET_SUPER', false)
     }, true)
   },

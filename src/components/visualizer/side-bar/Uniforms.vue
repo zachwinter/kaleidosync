@@ -1,12 +1,12 @@
 <template lang="pug">
-.uniforms(v-if="!shuffleVariants" :class="{ transparent: editingUniform }")
+.uniforms(v-if="!shuffleVariants || devMode" :class="{ transparent: editingUniform }")
   h3 Uniforms
   table(cellspacing="0" cellpadding="0")
     tbody
       Color(v-for="(color, i) in colors" :value="color" @input="onInput" :key="`${i}-color`" @delete="onDelete(color)")
       Boolean(v-for="(boolean, i) in booleans" :value="boolean" @input="onInput" :key="`${i}-bool`" @delete="onDelete(boolean)")
       Number(v-for="(number, i) in numbers" :value="number" @input="onInput" :key="`${i}-number`" @delete="onDelete(number)")
-      tr(v-if="devMode"): td(colspan="6"): AddUniform(@add="onAdd")
+      tr(v-if="devMode").add: td(colspan="6"): AddUniform(@add="onAdd")
 </template>
 
 <script>
@@ -30,15 +30,16 @@ export default {
   computed: {
     ...bind([
       'player/shuffleVariants', 
-      'ui/devMode',
       'visualizer/activeSketch',
       'visualizer/activeVariant',
       'visualizer/sketch',
+      'visualizer/devSketch',
+      'visualizer/devMode',
       'ui/editingUniform'
     ]),
     uniforms () {
-      if (!this.sketch) return []
-      const uniforms = buildUniforms(this.sketch.uniforms)
+      if (!this.sketch || !this.devSketch) return []
+      const uniforms = buildUniforms(this.devMode ? this.devSketch.uniforms : this.sketch.uniforms)
       return Object.keys(uniforms).map(key => {
         return { ...uniforms[key], name: key }
       }).filter(uniform => uniform.visible !== false)
@@ -55,10 +56,17 @@ export default {
   },
   methods: {
     onInput (val) {
-      const uniforms = {...this.sketch.uniforms}
-      uniforms[val.name] = val
-      if (val.type === 'number') this.$store.dispatch('ui/uniformEdit', val.name)
-      this.$store.commit('visualizer/SET_SKETCH', { ...this.sketch, uniforms: buildUniforms(uniforms) })
+      if (this.devMode) {
+        const uniforms = {...this.devSketch.uniforms}
+        uniforms[val.name] = val
+        if (val.type === 'number') this.$store.dispatch('ui/uniformEdit', val.name)
+        this.$store.commit('visualizer/SET_DEV_SKETCH', { ...this.devSketch, uniforms: buildUniforms(uniforms) })
+      } else {
+        const uniforms = {...this.sketch.uniforms}
+        uniforms[val.name] = val
+        if (val.type === 'number') this.$store.dispatch('ui/uniformEdit', val.name)
+        this.$store.commit('visualizer/SET_SKETCH', { ...this.sketch, uniforms: buildUniforms(uniforms) })
+      }
     },
 
     onAdd ({ type, name }) {
@@ -89,21 +97,29 @@ export default {
           }
           break
       }
-      const model = this.model.reduce((acc, val) => {
+      const model = this.uniforms.reduce((acc, val) => {
         acc[val.name] = {...val}
         return acc
       }, {})
       model[name] = uniform
-      this.$store.dispatch('visualizer/updateUniforms', model)
+      if (this.devMode) {
+        this.$store.commit('visualizer/SET_DEV_SKETCH', { ...this.devSketch, uniforms: buildUniforms(model) })
+      } else {
+        this.$store.commit('visualizer/SET_SKETCH', { ...this.sketch, uniforms: buildUniforms(model) })
+      }
     },
 
     onDelete (uniform) {
-      const model = this.model.reduce((acc, val) => {
+      const model = this.uniforms.reduce((acc, val) => {
         acc[val.name] = {...val}
         return acc
       }, {})
       delete model[uniform.name]
-      this.$store.dispatch('visualizer/updateUniforms', model)
+      if (this.devMode) {
+        this.$store.commit('visualizer/SET_DEV_SKETCH', { ...this.devSketch, uniforms: buildUniforms(model) })
+      } else {
+        this.$store.commit('visualizer/SET_SKETCH', { ...this.sketch, uniforms: buildUniforms(model) })
+      }
     }
   }
 }
@@ -125,6 +141,14 @@ $border: 1px solid rgba($white, .5);
   tbody {
     background: rgba($black, .5);
     transition: background $base-transition;
+  }
+
+  .del {
+    width: 30px;
+  }
+
+  tr.add {
+    transition: opacity $base-transition;
   }
   
   tbody td {
@@ -157,5 +181,11 @@ $border: 1px solid rgba($white, .5);
   .num { padding: 0; }
 }
 
-.uniforms.transparent tbody { background: transparent; }
+.uniforms.transparent {
+  tbody { background: transparent; }
+
+  tr.add {
+    opacity: 0;
+  }
+}
 </style>

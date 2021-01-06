@@ -1,6 +1,6 @@
 <template lang="pug">
 tr.uniform(:class="{ disabled, hidden: editingUniform }" v-if="model")
-  td.close(v-if="devMode"): Icon(name="times" @click.native="$emit('delete')")
+  td(v-if="devMode").del: IconButton(icon="times" size="small" @click.native="$emit('delete')")
   td.name: label {{ model.name }}
   td(:colspan="devMode ? 5 : 1"): Toggle(v-model="model.value" @input="update" :disabled="disabled")
 </template>
@@ -9,6 +9,7 @@ tr.uniform(:class="{ disabled, hidden: editingUniform }" v-if="model")
 import { bind } from '@zach.winter/vue-common/util/store'
 import form from '@zach.winter/vue-common/mixins/form'
 import cloneDeep from 'lodash/cloneDeep'
+import IconButton from '@/components/common/IconButton'
 
 export default {
   mixins: [form],
@@ -22,7 +23,8 @@ export default {
   data: () => ({
     model: null
   }),
-  computed: bind(['ui/devMode', 'ui/editingUniform']),
+  components: { IconButton },
+  computed: bind(['visualizer/devMode', 'ui/editingUniform']),
   watch: {
     value: {
       handler (val) {
