@@ -8,8 +8,6 @@
       :class="{ active: activeSketchId === _id}"
     ): Thumbnail(:sketch="{ shader, uniforms: buildUniforms(uniforms[0]) }")
   .buttons
-    .info
-      p #[strong TIP:] If the screen goes black when you select a sketch, just click it again. I'll fix this soon.
     IconButton(icon="chevron-left" @click="onLeft" class="previous" :class="{ visible: showPrevious }")
     nav: a(v-for="(page, i) in pages" @click="selectPage(i)" :class="{ active: navigatorIndex === i }") {{ page }}
     IconButton(icon="chevron-right" @click="onRight"  class="next" :class="{ visible: showNext }")
@@ -49,10 +47,8 @@ export default {
     },
     showPrevious () {
       return this.activeSketchId !== this.sketches[0]._id
-      // return this.navigatorIndex !== 0
     },
     showNext () {
-      // return this.activeSketchId !== this.sketches[this.sketches.length - 1]._id
       return [...this.sketches].slice(this.numberVisible * (this.navigatorIndex + 1), (this.numberVisible * (this.navigatorIndex + 1)) + this.numberVisible).length
     },
     pages () {
@@ -79,10 +75,10 @@ export default {
   methods: {
     buildUniforms,
     async onLeft () {
-      this.$store.dispatch('ui/navBack')
+      if (this.showPrevious) this.$store.dispatch('ui/navBack')
     },
     async onRight () {
-      this.$store.dispatch('ui/navForward')
+      if (this.showNext) this.$store.dispatch('ui/navForward')
     },
     selectPage (i) {
       this.$store.commit('ui/SET_NAVIGATOR_INDEX', i)
