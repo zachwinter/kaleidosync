@@ -2,6 +2,7 @@ import { buildModule } from '@zach.winter/vue-common/util/store'
 import { fetchSketches } from '@/api/sketches' 
 import sample from 'lodash/sample'
 import cloneDeep from 'lodash/cloneDeep'
+import { pause } from '@zach.winter/common/js/timing'
 
 const state = {
   sketches: [],
@@ -25,12 +26,14 @@ const actions = {
     const { _id } = state.sketches[0]
     await dispatch('selectSketch', _id)
   },
-  selectSketch ({ state, commit }, _id) {
+  async selectSketch ({ state, commit }, _id) {
     const { shader, uniforms } = state.sketches.find(({ _id: id }) => _id === id)
     commit('SET_SELECTING_SKETCH', true)
     commit('SET_ACTIVE_VARIANT', 0)
     commit('SET_ACTIVE_SKETCH', { shader, uniforms, _id })
     commit('SET_ACTIVE_SKETCH_ID', _id)
+    await pause(0) // Fuck you.
+    commit('SET_ACTIVE_SKETCH', { shader, uniforms, _id })
     commit('SET_SELECTING_SKETCH', false)
   },
   async selectRandomSketch ({ state, dispatch }) {
@@ -50,9 +53,6 @@ const actions = {
   enableDevMode ({ state, commit }) {
     commit('SET_DEV_SKETCH', cloneDeep(state.sketch))
     commit('player/SET_SHUFFLE_VARIANTS', false, { root: true })
-  },
-  disableDevMode () {
-
   },
   onCodeInput ({ state, commit }) {
     commit('SET_DEV_SKETCH', cloneDeep(state.devSketch))
