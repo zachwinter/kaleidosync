@@ -21,7 +21,7 @@ export default {
   props: {
     sketch: {
       type: Object
-  },
+    },
     autosize: {
       type: Boolean,
       default: false
