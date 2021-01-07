@@ -115,4 +115,10 @@ button {
 
   * { color: inherit; }
 }
+
+.black {
+  color: $black;
+
+  * { color: inherit; }
+}
 </style>

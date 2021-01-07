@@ -14,7 +14,7 @@ div.home(:class="{ hide, show }")
       span(data-letter="10") n
       span(data-letter="11") c
     h2 A Spotify Visualizer
-    p A growing collection of {{ sketches.length }} customizable WebGL sketches by #[a(href="https://instagram.com/zachary.io" target="instagram") @zachary.io], fully in sync with every song in Spotify's library.
+    p A growing collection of {{ sketches.length }} customizable WebGL sketches by #[a(href="https://instagram.com/zachary.io" target="instagram") @zachary.io], with more added every week. 
     .buttons
       button(@click="login")
         span Log In
@@ -31,6 +31,8 @@ div.home(:class="{ hide, show }")
     v-if="localShader && localUniforms" 
     :sketch="{ shader: localShader, uniforms: localUniforms }"
   )
+  transition(name="fade"): Privacy(v-if="showPrivacyPolicy" @close="showPrivacyPolicy = false")
+  button.show-privacy(@click="showPrivacyPolicy = true") Privacy Policy
 </template>
 
 <script>
@@ -39,10 +41,11 @@ import { bind } from '@zach.winter/vue-common/util/store'
 import { mapState } from 'vuex'
 import Renderer from '@/components/common/Renderer'
 import { pause } from '@zach.winter/common/js/timing'
+import Privacy from '@/views/Privacy'
 
 export default {
   name: 'Home',
-  components: { Renderer },
+  components: { Renderer, Privacy },
   data () { 
     return {
       show: false,
@@ -52,7 +55,8 @@ export default {
       showRenderer: true,
       localShader: null,
       localUniforms: null,
-      initialized: false
+      initialized: false,
+      showPrivacyPolicy: false
     }
   },
   computed: {
@@ -290,6 +294,18 @@ button {
   }
 }
 
+@keyframes fadeOut2 {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(50px);
+  }
+}
+
 .hide {
   .splash > * {
     animation: none;
@@ -318,6 +334,8 @@ button {
   h2, p, .buttons, .links {
     animation: fadeOut $splash-hide-duration $bounce-easing forwards !important;
   }
+
+  .show-privacy { animation: fadeOut2 $splash-hide-duration $bounce-easing forwards !important; }
 }
 
 .renderer {
@@ -325,5 +343,34 @@ button {
   transition: opacity 1000ms $bounce-easing;
 
   &.visible { opacity: 1; }
+}
+
+@keyframes fade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.show-privacy {
+  @include strip;
+  @include position(fixed, null 0 $outer-padding 50%);
+  animation: fade 1000ms $base-easing forwards;
+  text-align: center;
+  transform: translateX(-50%);
+  z-index: 100;
+  font-size: 1rem;
+  font-family: Quicksand;
+  text-transform: none;
+  font-weight: bold;
+  color: $blue;
+
+  &:hover {
+    background: none;
+    color: $spotify-green;
+  }
+
+
+  @include mobile-landscape {
+    @include position(fixed, null 0 $outer-padding / 3 50%);
+  }
 }
 </style>
