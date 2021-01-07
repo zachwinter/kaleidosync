@@ -57,9 +57,7 @@ export default {
   },
   
   watch: {
-    async sketch (val, old) {
-      if (old && val._id !== old._id && JSON.stringify(old.uniforms) === JSON.stringify(val.uniforms)) return
-      await this.$nextTick()
+    async sketch () {
       this.buildUniforms()
       this.composeShader()
     },

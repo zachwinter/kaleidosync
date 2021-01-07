@@ -1,5 +1,4 @@
 import { buildModule } from '@zach.winter/vue-common/util/store'
-import { getAuthID } from '@/api/auth'
 import * as cookies from '@zach.winter/common/js/cookies'
 import axios from 'axios'
 
@@ -11,15 +10,23 @@ const state = {
   refreshToken: null,
   refreshCode: null,
   authenticated: false,
-  user: null
+  user: null,
+  refreshing: false
 }
 
 const actions = {
+  validateCookies () {
+    const accessToken = cookies.get(ACCESS_TOKEN) // eslint-disable-line 
+    const refreshToken = cookies.get(REFRESH_TOKEN) // eslint-disable-line 
+    const refreshCode = cookies.get(REFRESH_CODE) // eslint-disable-line 
+    return [accessToken, refreshToken, refreshCode].every(v => v && v !== 'null')
+  },
   async init ({ commit, dispatch }) {
+    const valid = await dispatch('validateCookies')
+    if (!valid) return await dispatch('login')
     commit('SET_ACCESS_TOKEN', cookies.get(ACCESS_TOKEN)) // eslint-disable-line 
     commit('SET_REFRESH_TOKEN', cookies.get(REFRESH_TOKEN)) // eslint-disable-line 
     commit('SET_REFRESH_CODE', cookies.get(REFRESH_CODE)) // eslint-disable-line 
-    if (!state.accessToken || !state.refreshToken || !state.refreshCode) return dispatch('login')
     commit('SET_AUTHENTICATED', true)
     commit('SET_USER', await dispatch('getUser'))
   },
@@ -28,8 +35,7 @@ const actions = {
     cookies.set(ACCESS_TOKEN, null) // eslint-disable-line
     cookies.set(REFRESH_TOKEN, null) // eslint-disable-line
     cookies.set(REFRESH_CODE, null) // eslint-disable-line 
-    const { success, auth_id } = await getAuthID()
-    if (success) window.location.href = `${PROJECT_ROOT}/api/authentication/login?auth_id=${auth_id}` // eslint-disable-line
+    window.location.href = `${PROJECT_ROOT}/api/authentication/login` // eslint-disable-line
   },
 
   async refresh ({ state, commit, dispatch }) {
