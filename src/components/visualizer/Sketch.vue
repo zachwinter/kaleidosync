@@ -85,7 +85,7 @@ export default {
       const totalVariants = this.activeSketch.uniforms.length - 1
       this.intervalIndex = interval.index
       if (this.intervalIndex % this.shuffleIntervalMultiplier !== 0) return
-      this.$store.commit('visualizer/SET_TWEEN_DURATION', interval.duration * this.shuffleIntervalMultiplier / 2)
+      this.$store.commit('visualizer/SET_TWEEN_DURATION', interval.duration * this.shuffleIntervalMultiplier * .9)
       if (this.activeVariant >= totalVariants) {
         this.$store.commit('visualizer/SET_ACTIVE_VARIANT', 0)
       } else {
