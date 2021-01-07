@@ -38,7 +38,7 @@ export default {
       'ui/editingUniform'
     ]),
     uniforms () {
-      if (!this.sketch || !this.devSketch) return []
+      if (!this.sketch || (this.devMode && !this.devSketch)) return []
       const uniforms = buildUniforms(this.devMode ? this.devSketch.uniforms : this.sketch.uniforms)
       return Object.keys(uniforms).map(key => {
         return { ...uniforms[key], name: key }
