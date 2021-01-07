@@ -5,6 +5,7 @@
       <h1>Privacy Policy</h1>
       <IconButton icon="times" color="black" @click="$emit('close')" />
     </header>
+    <h2 class="tldr">Short version: I use Google Analaytics for user statistics, and Google AdSense for surfacing advertisements. In the future I'm going to tap into Spotify listening history so I can surface music recommendations and other features.</h2>
     <p>Last updated: January 07, 2021</p>
     <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information
       when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
@@ -831,8 +832,7 @@ h1 {
   margin-bottom: 2rem;
 
   &:first-child {
-    margin-top: 5rem;
-    margin-bottom: 5rem;
+    margin: 0;
   }
 }
 
@@ -853,5 +853,10 @@ ul {
 a, h1, h2, h3, h4, strong {
   font-weight: 700;
   word-break: break-word;
+}
+
+.tldr {
+  color: $blue;
+  margin-bottom: 3rem;
 }
 </style>
