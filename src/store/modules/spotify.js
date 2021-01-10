@@ -35,7 +35,7 @@ const actions = {
     cookies.set(ACCESS_TOKEN, null) // eslint-disable-line
     cookies.set(REFRESH_TOKEN, null) // eslint-disable-line
     cookies.set(REFRESH_CODE, null) // eslint-disable-line 
-    window.location.href = `${PROJECT_ROOT}/api/authentication/login` // eslint-disable-line
+    window.location.replace(`${PROJECT_ROOT}/api/authentication/login`) // eslint-disable-line
   },
 
   async refresh ({ state, commit, dispatch }) {
@@ -155,18 +155,22 @@ const actions = {
   }
 }
 
-async function get (route, cache = false, { accessToken, dispatch, dropRoot = false }) {
-  if (cache && CACHE[route]) return CACHE[route]
-  const headers = { Authorization: `Bearer ${accessToken}`, Accept: 'application/json' }
+async function get (route, cache = false, { accessToken, dispatch, dropRoot = false } = {}) {
   try {
-    const { data } = await axios.get(dropRoot ? route : `${ROOT}/${route}`, { headers })
-    if (cache) CACHE[route] = data
-    return data
-  } catch ({ response }) {
-    if (response.status === 401) {
-      const token = await dispatch('refresh')
-      return get(route, cache, { accessToken: token, dispatch })
+    if (cache && CACHE[route]) return CACHE[route]
+    const headers = { Authorization: `Bearer ${accessToken}`, Accept: 'application/json' }
+    try {
+      const { data } = await axios.get(dropRoot ? route : `${ROOT}/${route}`, { headers })
+      if (cache) CACHE[route] = data
+      return data
+    } catch ({ response }) {
+      if (response.status === 401) {
+        const token = await dispatch('refresh')
+        return get(route, cache, { accessToken: token, dispatch })
+      }
     }
+  } catch (e) {
+    window.location.replace(`${PROJECT_ROOT}/api/authentication/login`) // eslint-disable-line
   }
 }
 
