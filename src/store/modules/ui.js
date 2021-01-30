@@ -14,9 +14,14 @@ const state = {
 }
 
 const actions = {
-  fullScreen ({ commit }) {
-    commit('SET_FULL_SCREEN', true)
-    document.body.requestFullscreen()
+  toggleFullScreen ({ commit, state }) {
+    if (state.fullScreen) {
+      commit('SET_FULL_SCREEN', false)
+      document.exitFullscreen()
+    } else {
+      commit('SET_FULL_SCREEN', true)
+      document.body.requestFullscreen()
+    }
   },
   toggleSketchSelector ({ commit, state }) {
     commit('SET_SKETCH_SELECTOR_VISIBLE', !state.sketchSelectorVisible)
