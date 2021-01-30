@@ -22,7 +22,7 @@ const actions = {
       }
 
       if (e.key === 'f') {
-        dispatch('ui/fullScreen', null, { root: true })
+        dispatch('ui/toggleFullScreen', null, { root: true })
       }
 
       if (e.key === 'b') {
