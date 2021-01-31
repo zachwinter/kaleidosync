@@ -1,6 +1,6 @@
 <template lang="pug">
 .full-screen(v-if="offerFullscreen")
-  IconButton(icon="expand" @click.native="$store.dispatch('ui/fullScreen')")
+  IconButton(icon="expand" @click.native="$store.dispatch('ui/toggleFullScreen')")
 </template>
 
 <script>
