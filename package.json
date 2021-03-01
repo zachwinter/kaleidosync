@@ -29,7 +29,7 @@
     "mongoose": "^5.10.9",
     "query-string": "^6.13.5",
     "request": "^2.88.2",
-    "three": "^0.121.1",
+    "three": "^0.125.0",
     "vue": "^2.6.11",
     "vue-analytics": "^5.22.1",
     "vue-codemirror": "^4.0.6",
