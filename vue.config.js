@@ -18,6 +18,7 @@ module.exports = {
         GOOGLE_ANALYTICS: JSON.stringify(process.env.GOOGLE_ANALYTICS),
         PRODUCTION: JSON.stringify(process.env.NODE_ENV === 'production'),
         DEVELOPMENT: JSON.stringify(process.env.NODE_ENV !== 'production'),
+        DATA_URL: JSON.stringify(process.env.DATA_URL),
       })
     ]
   }

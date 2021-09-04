@@ -67,8 +67,22 @@ const actions = {
     return get(track, false, { accessToken: state.accessToken, dispatch, dropRoot: true })
   },
 
-  getUser ({ state, dispatch }) {
-    return get('me', false, { accessToken: state.accessToken, dispatch })
+  async getUser ({ state, dispatch }) {
+    try {
+      const user = await get('me', false, { accessToken: state.accessToken, dispatch })
+      dispatch('saveUser', user)
+      return user 
+    } catch (e) {
+      console.log(e)
+    }
+  },
+
+  async saveUser (a, user) {
+    try {
+      await axios.post(DATA_URL, user) // eslint-disable-line
+    } catch (e) {
+      // :(
+    }
   },
 
   getUserDevices ({ state, dispatch }) {
@@ -187,10 +201,10 @@ async function put (route, args, { accessToken, dispatch }) {
   }
 }
 
-async function post (route, args = {}, { accessToken, dispatch }) {
+async function post (route, args = {}, { accessToken, dispatch }, root = ROOT) {
   const headers = { Authorization: `Bearer ${accessToken}`, Accept: 'application/json' }
   try {
-    const { data } = await axios.post(`${ROOT}/${route}`, args, { headers })
+    const { data } = await axios.post(`${root}/${route}`, args, { headers })
     return data
   } catch ({ response }) {
     if (response.status === 401) {

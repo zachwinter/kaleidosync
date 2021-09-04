@@ -46,7 +46,6 @@ const state = {
 const actions = {
   async createPlayer ({ dispatch, commit, rootState }) {
     return new Promise(resolve => {
-      loadExternalScript('https://sdk.scdn.co/spotify-player.js')
       window.onSpotifyWebPlaybackSDKReady = async () => {
         window.$player = new window.Spotify.Player({
           name: 'Kaleidosync',
@@ -57,6 +56,7 @@ const actions = {
         commit('SET_INITIALIZED', true)
         resolve()
       }
+      loadExternalScript('https://sdk.scdn.co/spotify-player.js')
     })
   },
 
@@ -103,7 +103,7 @@ const actions = {
 
   async sync ({ dispatch }) {
     if (!window.$player) return
-    const _state = await window.$player.getCurrentState()
+    const _state = await window?.$player?.getCurrentState() || null
     if (!_state) return
     const { position } = _state
     window.__KALEIDOSYNC_LOOP__.volume = Math.pow(await dispatch('_getVolume', position), 3)
