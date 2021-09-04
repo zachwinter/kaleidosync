@@ -31,8 +31,6 @@ div.home(:class="{ hide, show }")
     v-if="localShader && localUniforms" 
     :sketch="{ shader: localShader, uniforms: localUniforms }"
   )
-  transition(name="fade"): Privacy(v-if="showPrivacyPolicy" @close="showPrivacyPolicy = false")
-  button.show-privacy(@click="showPrivacyPolicy = true") Privacy Policy
 </template>
 
 <script>
@@ -55,8 +53,7 @@ export default {
       showRenderer: true,
       localShader: null,
       localUniforms: null,
-      initialized: false,
-      showPrivacyPolicy: false
+      initialized: false
     }
   },
   computed: {
@@ -348,29 +345,5 @@ button {
 @keyframes fade {
   0% { opacity: 0; }
   100% { opacity: 1; }
-}
-
-.show-privacy {
-  @include strip;
-  @include position(fixed, null 0 $outer-padding 50%);
-  animation: fade 1000ms $base-easing forwards;
-  text-align: center;
-  transform: translateX(-50%);
-  z-index: 100;
-  font-size: 1rem;
-  font-family: Quicksand;
-  text-transform: none;
-  font-weight: bold;
-  color: $blue;
-
-  &:hover {
-    background: none;
-    color: $spotify-green;
-  }
-
-
-  @include mobile-landscape {
-    @include position(fixed, null 0 $outer-padding / 3 50%);
-  }
 }
 </style>
