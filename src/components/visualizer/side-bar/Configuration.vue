@@ -2,7 +2,7 @@
 .config
   h3 Config
   RadioGroup(label="Beat Interval" :options="beatIntervalOptions" v-model="beatInterval" name="beat-interval").interval
-  Toggle(v-if="!isMobile" v-model="devMode" label="Dev Mode")
+  //- Toggle(v-if="!isMobile" v-model="devMode" label="Dev Mode")
   Toggle(v-if="showHiDPI" v-model="hidpi" label="HiDPI Rendering (Fast devices only!)")
   Toggle(v-if="!devMode" v-model="autohideToolbar" label="Auto-hide Toolbar")
   p(v-if="devMode").soon #[strong Coming Soon :] Saving your own sketches!
