@@ -1,7 +1,6 @@
 {
   "name": "kaleidosync-client",
-  "version": "6.1.7",
-  "private": true,
+  "version": "6.2.0",
   "scripts": {
     "start": "node ./server/index.js",
     "serve": "concurrently \"nodemon ./server/index.js --port 6868\" \"vue-cli-service serve\"",

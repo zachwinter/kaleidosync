@@ -3,7 +3,7 @@ const request = require('request')
 module.exports = app => {
   app.get('/api/authentication/callback', async (req, res) => {
     const code = req.query.code || null
-    
+     
     if (code === null) return res.json({ error: true, message: 'No login code present.' })
     
     const config = {
