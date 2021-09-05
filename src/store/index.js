@@ -44,8 +44,8 @@ export default new Vuex.Store({
     },
   },
   getters: {
-    legacy (state) {
-      return state.isSafari || state.isMobile
+    legacy () {
+      return true
     },
     activeSketch (state) {
       return cloneDeep(state.visualizer.sketches.find(({ _id: id }) => state.visualizer.activeSketchId === id))

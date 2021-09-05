@@ -38,7 +38,7 @@ const state = {
   volumeSmoothing: 30,
   volumeReference: 20,
   volumeReferenceMultiplier: 2,
-  legacy: false,
+  legacy: true,
   timestamp: null,
   start: null
 }

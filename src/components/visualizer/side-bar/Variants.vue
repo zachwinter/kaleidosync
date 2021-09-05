@@ -12,7 +12,7 @@
     Toggle(v-model="shuffleVariants" label="Shuffle Variants")
     .horizontal(v-if="shuffleVariants")
       p Every
-      SelectDropdown(:options="[1, 2, 3, 4]" v-model="shuffleIntervalMultiplier").multiplier
+      SelectDropdown(:options="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]" v-model="shuffleIntervalMultiplier").multiplier
       RadioGroup(:options="shuffleIntervalOptions" name="shuffle-interval" v-model="shuffleInterval").group
   .cta(v-if="shuffleVariants")
     //- p Disable shuffle to customize the visuals yourself!
