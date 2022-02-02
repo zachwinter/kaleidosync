@@ -85,6 +85,7 @@ button {
   background: $white;
   color: $black;
   margin: 0 1rem;
+  cursor: pointer;
 }
 
 button {
