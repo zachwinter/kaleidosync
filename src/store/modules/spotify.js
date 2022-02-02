@@ -40,7 +40,7 @@ const actions = {
 
   async refresh ({ state, commit, dispatch }) {
     try {
-      const { data } = await get(`${PROJECT_ROOT}/api/authentication/refresh?token=${state.refreshToken}`, false, { accessToken: state.accessToken, dispatch, dropRoot: true }) //eslint-disable-line
+      const { data } = await axios.get(`${PROJECT_ROOT}/api/authentication/refresh?token=${state.refreshToken}`) //eslint-disable-line
       commit('SET_ACCESS_TOKEN', data.access_token) 
       return data.access_token
     } catch (e) {
