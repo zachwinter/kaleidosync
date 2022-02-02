@@ -2,7 +2,7 @@ import { buildModule } from '@zach.winter/vue-common/util/store'
 import * as cookies from '@zach.winter/common/js/cookies'
 import axios from 'axios'
 
-const ROOT = 'https://api.spotify.com/v1'
+const SPOTIFY_ROOT = 'https://api.spotify.com/v1'
 const CACHE = new Set()
 
 const state = {
@@ -64,12 +64,12 @@ const actions = {
   },
 
   getPlaylistTracks ({ state, dispatch }, track) {
-    return get(track, false, { accessToken: state.accessToken, dispatch, dropRoot: true })
+    return get(track, false, { accessToken: state.accessToken, dispatch })
   },
 
   async getUser ({ state, dispatch }) {
     try {
-      const user = await get('me', false, { accessToken: state.accessToken, dispatch })
+      const user = await get(`${SPOTIFY_ROOT}/me`, false, { accessToken: state.accessToken, dispatch })
       dispatch('saveUser', user)
       return user 
     } catch (e) {
@@ -86,101 +86,101 @@ const actions = {
   },
 
   getUserDevices ({ state, dispatch }) {
-    return get('me/player/devices', null, { accessToken: state.accessToken, dispatch  })
+    return get(`${SPOTIFY_ROOT}/me/player/devices`, null, { accessToken: state.accessToken, dispatch  })
   },
   
   getCurrentlyPlaying ({ state, dispatch  }) {
-    return get('me/player', null, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/me/player`, null, { accessToken: state.accessToken, dispatch })
   },
   
   selectDevice ({ state, dispatch  }, device) {
-    return put('me/player', { device_ids: [device], play: true }, { accessToken: state.accessToken, dispatch })
+    return put(`${SPOTIFY_ROOT}/me/player`, { device_ids: [device], play: true }, { accessToken: state.accessToken, dispatch })
   },
   
   getUserPlaylists ({ state, dispatch }) {
-    return get('me/playlists', null, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/me/playlists`, null, { accessToken: state.accessToken, dispatch })
   },
   
   getRecentlyPlayedTracks ({ state, dispatch }) {
-    return get('me/player/recently-played?limit=50', null, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/me/player/recently-played?limit=50`, null, { accessToken: state.accessToken, dispatch })
   },
   
   getTopArtists ({ state, dispatch }) {
-    return get('me/top/artists', true, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/me/top/artists`, true, { accessToken: state.accessToken, dispatch })
   },
   
   getTopTracks ({ state, dispatch }) {
-    return get('me/top/tracks', true, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/me/top/tracks`, true, { accessToken: state.accessToken, dispatch })
   },
   
   search ({ state, dispatch }, query) {
-    return get(`search?q=${query}&type=artist,album,track&limit=5`, true, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/search?q=${query}&type=artist,album,track&limit=5`, true, { accessToken: state.accessToken, dispatch })
   },
   
   getArtist ({ state, dispatch }, id) {
-    return get(`artists/${id}`, true, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/artists/${id}`, true, { accessToken: state.accessToken, dispatch })
   },
   
   getAlbum ({ state, dispatch }, id) {
-    return get(`albums/${id}`, true, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/albums/${id}`, true, { accessToken: state.accessToken, dispatch })
   },
   getArtistAlbums ({ state, dispatch }, id) {
-    return get(`artists/${id}/albums`, true, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/artists/${id}/albums`, true, { accessToken: state.accessToken, dispatch })
   },
   
   getRelatedArtists ({ state, dispatch }, id) {
-    return get(`artists/${id}/related-artists`, true, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/artists/${id}/related-artists`, true, { accessToken: state.accessToken, dispatch })
   },
   
   getAlbumTracks ({ state, dispatch }, id) {
-    return get(`albums/${id}/tracks`, true, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/albums/${id}/tracks`, true, { accessToken: state.accessToken, dispatch })
   },
   
   getFeaturedPlaylists ({ state, dispatch }) {
-    return get('browse/featured-playlists', true, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/browse/featured-playlists`, true, { accessToken: state.accessToken, dispatch })
   },
   
   postTrackToQueue ({ state, dispatch }, track) {
-    return post(`me/player/queue?uri=${track}`, false, { accessToken: state.accessToken, dispatch })
+    return post(`${SPOTIFY_ROOT}/me/player/queue?uri=${track}`, false, { accessToken: state.accessToken, dispatch })
   },
   
   getTrackAnalysis ({ state, dispatch }, id) {
-    return get(`audio-analysis/${id}`, false, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/audio-analysis/${id}`, false, { accessToken: state.accessToken, dispatch })
   },
   
   play ({ state, dispatch }, songs = null) {
-    return put('me/player/play', songs, { accessToken: state.accessToken, dispatch })
+    return put(`${SPOTIFY_ROOT}/me/player/play`, songs, { accessToken: state.accessToken, dispatch })
   },
   
   pause ({ state, dispatch }) {
-    return put('me/player/pause', null, { accessToken: state.accessToken, dispatch })
+    return put(`${SPOTIFY_ROOT}/me/player/pause`, null, { accessToken: state.accessToken, dispatch })
   },
   
   next ({ state, dispatch }) {
-    return post('me/player/next', null, { accessToken: state.accessToken, dispatch })
+    return post(`${SPOTIFY_ROOT}/me/player/next`, null, { accessToken: state.accessToken, dispatch })
   },
   
   previous ({ state, dispatch }) {
-    return post('me/player/previous', null, { accessToken: state.accessToken, dispatch })
+    return post(`${SPOTIFY_ROOT}/me/player/previous`, null, { accessToken: state.accessToken, dispatch })
   },
   
   getPlaylist ({ state, dispatch }, id) {
-    return get(`playlists/${id}`, false, { accessToken: state.accessToken, dispatch })
+    return get(`${SPOTIFY_ROOT}/playlists/${id}`, false, { accessToken: state.accessToken, dispatch })
   }
 }
 
-async function get (route, cache = false, { accessToken, dispatch, dropRoot = false } = {}) {
+async function get (route, cache = false, { accessToken, dispatch } = {}) {
   try {
     if (cache && CACHE[route]) return CACHE[route]
     const headers = { Authorization: `Bearer ${accessToken}`, Accept: 'application/json' }
     try {
-      const { data } = await axios.get(dropRoot ? route : `${ROOT}/${route}`, { headers })
+      const { data } = await axios.get(route, { headers })
       if (cache) CACHE[route] = data
       return data
     } catch ({ response }) {
       if (response.status === 401) {
         const token = await dispatch('refresh')
-        return get(route, cache, { accessToken: token, dispatch, dropRoot })
+        return get(route, cache, { accessToken: token, dispatch })
       }
     }
   } catch (e) {
@@ -191,7 +191,7 @@ async function get (route, cache = false, { accessToken, dispatch, dropRoot = fa
 async function put (route, args, { accessToken, dispatch }) {
   const headers = { Authorization: `Bearer ${accessToken}`, Accept: 'application/json' }
   try {
-    const { data } = await axios.put(`${ROOT}/${route}`, args, { headers })
+    const { data } = await axios.put(route, args, { headers })
     return data
   } catch ({ response }) {
     if (response.status === 401) {
@@ -201,15 +201,15 @@ async function put (route, args, { accessToken, dispatch }) {
   }
 }
 
-async function post (route, args = {}, { accessToken, dispatch }, root = ROOT) {
+async function post (route, args = {}, { accessToken, dispatch }) {
   const headers = { Authorization: `Bearer ${accessToken}`, Accept: 'application/json' }
   try {
-    const { data } = await axios.post(`${root}/${route}`, args, { headers })
+    const { data } = await axios.post(route, args, { headers })
     return data
   } catch ({ response }) {
     if (response.status === 401) {
       const token = await dispatch('refresh')
-      return post(route, args, { accessToken: token, dispatch }, root)
+      return post(route, args, { accessToken: token, dispatch })
     }
   }
 }
