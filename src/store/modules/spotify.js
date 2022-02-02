@@ -209,7 +209,7 @@ async function post (route, args = {}, { accessToken, dispatch }, root = ROOT) {
   } catch ({ response }) {
     if (response.status === 401) {
       const token = await dispatch('refresh')
-      return put(route, args, { accessToken: token, dispatch })
+      return post(route, args, { accessToken: token, dispatch }, root)
     }
   }
 }
