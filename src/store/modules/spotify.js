@@ -44,8 +44,8 @@ const actions = {
       commit('SET_ACCESS_TOKEN', data.access_token) 
       return data.access_token
     } catch (e) {
-      dispatch('login')
       console.log(e) // eslint-disable-line 
+      await dispatch('login')
     }
   },
 
@@ -184,7 +184,7 @@ async function get (route, cache = false, { accessToken, dispatch, dropRoot = fa
       }
     }
   } catch (e) {
-    window.location.replace(`${PROJECT_ROOT}/api/authentication/login`) // eslint-disable-line
+    await dispatch('login')
   }
 }
 
