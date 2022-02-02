@@ -40,7 +40,7 @@ const actions = {
 
   async refresh ({ state, commit, dispatch }) {
     try {
-      const { data } = await get(`${PROJECT_ROOT}/api/authentication/refresh?token=${state.refreshToken}`, { accessToken: state.accessToken, dispatch }) //eslint-disable-line
+      const { data } = await get(`${PROJECT_ROOT}/api/authentication/refresh?token=${state.refreshToken}`, false, { accessToken: state.accessToken, dispatch, dropRoot: true }) //eslint-disable-line
       commit('SET_ACCESS_TOKEN', data.access_token) 
       return data.access_token
     } catch (e) {
@@ -180,7 +180,7 @@ async function get (route, cache = false, { accessToken, dispatch, dropRoot = fa
     } catch ({ response }) {
       if (response.status === 401) {
         const token = await dispatch('refresh')
-        return get(route, cache, { accessToken: token, dispatch })
+        return get(route, cache, { accessToken: token, dispatch, dropRoot })
       }
     }
   } catch (e) {
