@@ -68,6 +68,7 @@ export default {
   font-family: 'Share', sans-serif;
   text-transform: uppercase;
   padding: 1rem;
+  box-sizing: content-box;
 
   &.transparent {
     background: transparent;
