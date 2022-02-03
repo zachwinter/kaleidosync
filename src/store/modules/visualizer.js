@@ -3,14 +3,20 @@ import { fetchSketches } from '@/api/sketches'
 import sample from 'lodash/sample'
 import cloneDeep from 'lodash/cloneDeep'
 import { pause } from '@zach.winter/common/js/timing'
+import { setting, types } from '@/util/settings'
+
+const hidpi = setting('hidpi', false, types.boolean);
+const activeSketchId = setting('activeSketchId', null, types.string);
 
 const state = {
   sketches: [],
   activeSketch: null,
-  activeSketchId: null,
+  get activeSketchId() { return activeSketchId.get() },
+  set activeSketchId(value) { return activeSketchId.set(value) },
   activeVariant: 0,
   selectingSketch: false,
-  hidpi: false,
+  get hidpi() { return hidpi.get() },
+  set hidpi(value) { return hidpi.set(value) },
   sketch: null,
   devSketch: null,
   tweenDuration: 350,
@@ -22,9 +28,15 @@ const actions = {
     const { sketches } = await fetchSketches()
     commit('SET_SKETCHES', sketches.reverse())
   },
-  async init ({ dispatch }) {
-    const { _id } = state.sketches[0]
-    await dispatch('selectSketch', _id)
+  async init ({ state, dispatch }) {
+    // resore selected sketch
+    if (state.activeSketchId && state.sketches.some(_ => _._id === state.activeSketchId)) {
+      await dispatch('selectSketch', state.activeSketchId)
+    }
+    else {
+      const { _id } = state.sketches[0]
+      await dispatch('selectSketch', _id)
+    }
   },
   async selectSketch ({ state, commit }, _id) {
     const { shader, uniforms } = state.sketches.find(({ _id: id }) => _id === id)
