@@ -47,6 +47,7 @@ const actions = {
   async refresh ({ state, commit, dispatch }) {
     try {
       const { data } = await axios.get(`${PROJECT_ROOT}/api/authentication/refresh?token=${state.refreshToken}`)
+      cookies.set(ACCESS_TOKEN, data.access_token); // update ACCESS_TOKEN cookie to have the new token if page reloads
       commit('SET_ACCESS_TOKEN', data.access_token) 
       return data.access_token
     } catch (e) {
