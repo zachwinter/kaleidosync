@@ -97,13 +97,22 @@ export default {
     this.setSketch(this.activeSketch)
   },
   async mounted () {
-    this._t = window.__KALEIDOSYNC_LOOP__.watch('tick', async (now) => {
-      if (this.legacy) {
-        await this.$store.dispatch('player/legacySync')
-      } else {
-        await this.$store.dispatch('player/sync')
+    let taskRunning = false;
+    const sync = async () => {
+      if (this.legacy) await this.$store.dispatch('player/legacySync')
+      else await this.$store.dispatch('player/sync')
+    }
+
+    this._t = window.__KALEIDOSYNC_LOOP__.watch('tick', (now) => {
+      /**
+       * Don't make parallel calls to `sync` for each tick.
+       * NOTE: this tick handler does not support `await`!
+       */
+      if (!taskRunning) {
+        taskRunning = true;
+        sync().finally(() => taskRunning = false)
       }
-      if (this.$refs.renderer) this.$refs.renderer.tick(now) 
+      if (this.$refs.renderer) this.$refs.renderer.tick(now)
     }).id
     this._aI = window.__KALEIDOSYNC_LOOP__.watch('activeIntervals', val => this.activeIntervals = Object.freeze(val)).id
     this._v = window.__KALEIDOSYNC_LOOP__.watch('volume', val => this.volume = Object.freeze(val)).id

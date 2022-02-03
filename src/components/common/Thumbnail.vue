@@ -31,7 +31,7 @@ export default {
     this.$refs.renderer.tick()
   },
   beforeDestroy () {
-    window.__KALEIDOSYNC_LOOP__.unwatch('tick', this.tick)
+    window.__KALEIDOSYNC_LOOP__.unwatch('tick', this.a)
     window.__KALEIDOSYNC_LOOP__.unwatch('activeIntervals', this.b)
     window.__KALEIDOSYNC_LOOP__.unwatch('volume', this.c)
   }
