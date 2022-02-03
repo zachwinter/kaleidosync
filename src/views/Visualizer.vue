@@ -5,7 +5,7 @@
       Code(v-model="devSketch.shader" @input="$store.dispatch('visualizer/onCodeInput')")
   Sketch
   transition(name="fade"): Education(v-if="(!educated)")
-  transition(name="slide-y"): ControlBar(v-if="!devMode && !sketchSelectorVisible && !editingUniform && ((connected && showControlBar && hover) || (connected && !educated) || showSideBar)")
+  transition(name="slide-y"): ControlBar(v-if="!devMode && !sketchSelectorVisible && !editingUniform && ((connected && showControlBar && (autohideToolbar ? hover : true)) || (connected && !educated) || showSideBar)")
   transition(name="slide-x"): SideBar(v-if="showSideBar && !sketchSelectorVisible")
   transition(name="fade"): Sketches(v-if="sketchSelectorVisible")  
 </template>
@@ -38,6 +38,7 @@ export default {
       'player/initialized', 
       'player/connected',
       'ui/showControlBar',
+      'ui/autohideToolbar',
       'ui/showSideBar',
       'ui/controlPanelVisible',
       'ui/sketchSelectorVisible',
