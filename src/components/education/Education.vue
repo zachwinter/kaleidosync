@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     dismiss () {
-      this.$store.commit('education/SET_EDUCATED', true)
+      this.$store.dispatch('education/dismis')
     }
   }
 }

@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     cog () {
-      if (!this.educated) this.$store.commit('education/SET_EDUCATED', true)
+      if (!this.educated) this.$store.dispatch('education/dismis')
       this.$store.dispatch('ui/toggleSideBar')
     }
   }
