@@ -2,6 +2,12 @@ import { buildModule } from '@zach.winter/vue-common/util/store'
 import * as cookies from '@zach.winter/common/js/cookies'
 import axios from 'axios'
 
+/*global PROJECT_ROOT */
+/*global ACCESS_TOKEN */
+/*global REFRESH_TOKEN */
+/*global REFRESH_CODE */
+/*global DATA_URL */
+
 const SPOTIFY_ROOT = 'https://api.spotify.com/v1'
 const CACHE = new Set()
 
@@ -16,31 +22,31 @@ const state = {
 
 const actions = {
   validateCookies () {
-    const accessToken = cookies.get(ACCESS_TOKEN) // eslint-disable-line 
-    const refreshToken = cookies.get(REFRESH_TOKEN) // eslint-disable-line 
-    const refreshCode = cookies.get(REFRESH_CODE) // eslint-disable-line 
+    const accessToken = cookies.get(ACCESS_TOKEN)
+    const refreshToken = cookies.get(REFRESH_TOKEN)
+    const refreshCode = cookies.get(REFRESH_CODE)
     return [accessToken, refreshToken, refreshCode].every(v => v && v !== 'null')
   },
   async init ({ commit, dispatch }) {
     const valid = await dispatch('validateCookies')
     if (!valid) return await dispatch('login')
-    commit('SET_ACCESS_TOKEN', cookies.get(ACCESS_TOKEN)) // eslint-disable-line 
-    commit('SET_REFRESH_TOKEN', cookies.get(REFRESH_TOKEN)) // eslint-disable-line 
-    commit('SET_REFRESH_CODE', cookies.get(REFRESH_CODE)) // eslint-disable-line 
+    commit('SET_ACCESS_TOKEN', cookies.get(ACCESS_TOKEN))
+    commit('SET_REFRESH_TOKEN', cookies.get(REFRESH_TOKEN))
+    commit('SET_REFRESH_CODE', cookies.get(REFRESH_CODE))
     commit('SET_AUTHENTICATED', true)
     commit('SET_USER', await dispatch('getUser'))
   },
 
   async login () {
-    cookies.set(ACCESS_TOKEN, null) // eslint-disable-line
-    cookies.set(REFRESH_TOKEN, null) // eslint-disable-line
-    cookies.set(REFRESH_CODE, null) // eslint-disable-line 
-    window.location.replace(`${PROJECT_ROOT}/api/authentication/login`) // eslint-disable-line
+    cookies.set(ACCESS_TOKEN, null)
+    cookies.set(REFRESH_TOKEN, null)
+    cookies.set(REFRESH_CODE, null)
+    window.location.replace(`${PROJECT_ROOT}/api/authentication/login`)
   },
 
   async refresh ({ state, commit, dispatch }) {
     try {
-      const { data } = await axios.get(`${PROJECT_ROOT}/api/authentication/refresh?token=${state.refreshToken}`) //eslint-disable-line
+      const { data } = await axios.get(`${PROJECT_ROOT}/api/authentication/refresh?token=${state.refreshToken}`)
       commit('SET_ACCESS_TOKEN', data.access_token) 
       return data.access_token
     } catch (e) {
@@ -79,7 +85,7 @@ const actions = {
 
   async saveUser (a, user) {
     try {
-      await axios.post(DATA_URL, user) // eslint-disable-line
+      await axios.post(DATA_URL, user)
     } catch (e) {
       // :(
     }
