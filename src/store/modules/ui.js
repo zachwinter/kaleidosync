@@ -1,4 +1,7 @@
 import { buildModule } from '@zach.winter/vue-common/util/store'
+import { setting, types } from '@/util/settings'
+
+const autohideToolbar = setting('autohideToolbar', true, types.boolean);
 
 const state = {
   fullScreen: false,
@@ -7,7 +10,8 @@ const state = {
   sketchSelectorVisible: false,
   showSideBar: false,
   navigatorIndex: 0,
-  autohideToolbar: true,
+  get autohideToolbar() { return autohideToolbar.get() },
+  set autohideToolbar(value) { autohideToolbar.set(value) },
   editingUniform: false,
   uniformTimeout: null,
   uniform: null
