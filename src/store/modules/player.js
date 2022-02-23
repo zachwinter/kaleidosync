@@ -8,6 +8,12 @@ import { buildModule } from '@zach.winter/vue-common/util/store'
 import { loadExternalScript } from '@zach.winter/common/js/dom'
 import ease from '@zach.winter/common/js/ease'
 import { pause } from '@zach.winter/common/js/timing'
+import { setting, types } from '@/util/settings'
+
+const beatInterval = setting('beatInterval', 'beats', types.enum(['beats', 'tatums']));
+const shuffleVariants = setting('shuffleVariants', true, types.boolean);
+const shuffleInterval = setting('shuffleInterval', 'bars', types.enum(['bars', 'beats']));
+const shuffleIntervalMultiplier = setting('shuffleIntervalMultiplier', 2, types.number);
 
 const state = {
   intervalTypes: [
@@ -30,10 +36,19 @@ const state = {
   volumeQueues: {},
   volume: 1,
   songVolume: null,
-  beatInterval: 'beats',
-  shuffleVariants: true,
-  shuffleInterval: 'bars',
-  shuffleIntervalMultiplier: 2,
+
+  get beatInterval() { return beatInterval.get() },
+  set beatInterval(value) { beatInterval.set(value) },
+
+  get shuffleVariants() { return shuffleVariants.get() },
+  set shuffleVariants(value) { shuffleVariants.set(value) },
+
+  get shuffleInterval() { return shuffleInterval.get() },
+  set shuffleInterval(value) { shuffleInterval.set(value) },
+
+  get shuffleIntervalMultiplier() { return shuffleIntervalMultiplier.get() },
+  set shuffleIntervalMultiplier(value) { shuffleIntervalMultiplier.set(value) },
+
   connected: false,
   volumeSmoothing: 30,
   volumeReference: 20,
