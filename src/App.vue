@@ -16,6 +16,7 @@ export default {
 
 html, body {
   @include size(100%);
+  overflow: hidden;
 }
 
 body {
