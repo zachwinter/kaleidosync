@@ -89,7 +89,7 @@ export default {
     }
   },
   async mounted () {
-    this.id = window.__KALEIDOSYNC_LOOP__.watch('tick', async (now) => {
+    this.id = window.__KALEIDOSYNC_LOOP__.watch('tick', (now) => {
      if (this.$refs.renderer) this.$refs.renderer.tick(now) 
     })
     this.sketchInterval  = setInterval(() => {
