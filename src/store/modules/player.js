@@ -112,9 +112,23 @@ const actions = {
 
   async legacySync ({ dispatch, state }) {
     if (!state.currentTrack) return
+
     window.__KALEIDOSYNC_LOOP__.trackProgressMs = Date.now() - state.timestamp
     window.__KALEIDOSYNC_LOOP__.trackProgress = Math.min(window.__KALEIDOSYNC_LOOP__.trackProgressMs / state.trackDuration, 1)
-    if (window.__KALEIDOSYNC_LOOP__.trackProgress === 1) return dispatch('legacyConnect')
+
+    if (window.__KALEIDOSYNC_LOOP__.trackProgress === 1) {
+      /** 
+       * The current song has finished and the next song has not started yet
+       * so we fetch the currently playing song again and again until
+       * the next song starts and progress goes down to 0-isch
+       * NOTE: 
+       * we could delay polling here, but this might be 
+       * noticeable if crossfade is active!
+       */
+      // await pause(500);
+      return await dispatch('legacyConnect')
+    }
+
     window.__KALEIDOSYNC_LOOP__.volume = Math.pow(await dispatch('_getVolume', window.__KALEIDOSYNC_LOOP__.trackProgressMs), 3)
     await dispatch('determineActiveIntervals', window.__KALEIDOSYNC_LOOP__.trackProgressMs)
   },
