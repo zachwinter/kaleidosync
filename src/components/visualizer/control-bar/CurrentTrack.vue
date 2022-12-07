@@ -17,7 +17,7 @@ export default {
       const track = this.currentTrack
       if (!track) return null
       return {
-        artist: track.artists[0].name,
+        artist: track.artists.map(({name}) => name).join(', '),
         track: track.name,
         album: track.album.name,
         artwork: track.album.images[2].url,
