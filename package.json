@@ -40,7 +40,7 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
+    "@vue/cli-service": "~5.0.8",
     "babel-eslint": "^10.1.0",
     "concurrently": "^5.3.0",
     "eslint": "^6.7.2",
