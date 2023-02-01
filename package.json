@@ -25,7 +25,7 @@
     "express-history-api-fallback": "^2.2.1",
     "humps": "^2.0.1",
     "lodash": "^4.17.20",
-    "mongoose": "^5.10.9",
+    "mongoose": "^5.13.15",
     "query-string": "^6.13.5",
     "request": "^2.88.2",
     "three": "^0.137.0",
