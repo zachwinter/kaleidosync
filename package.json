@@ -1,6 +1,6 @@
 {
   "name": "kaleidosync",
-  "version": "10.0.6",
+  "version": "10.0.7",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
@@ -11,8 +11,7 @@
     "@tresjs/core": "4.3.6",
     "@vueuse/core": "13.3.0",
     "@wearesage/editor": "0.1.0",
-    "@wearesage/shared": "1.5.0",
-    "@wearesage/static": "3.0.0",
+    "@wearesage/shared": "1.60",
     "@wearesage/vue": "2.3.4",
     "@wearesage/sass": "0.1.1",
     "compression": "^1.7.4",
