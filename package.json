@@ -15,8 +15,7 @@
     "@wearesage/static": "2.0.0",
     "@wearesage/vue": "2.2.3",
     "@wearesage/sass": "0.1.1",
-    "dotenv": "^17.0.1",
-    "express": "^5.1.0",
+    "dotenv": "17.0.1",
     "pinia": "3.0.3",
     "sass": "1.89.1",
     "typescript": "5.8.3",
@@ -24,6 +23,7 @@
     "vue": "3.5.17"
   },
   "devDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.24.4",
     "@types/three": "0.173.0",
     "rollup-plugin-visualizer": "^6.0.3",
     "sass": "1.89.1",
