@@ -5,9 +5,17 @@ import { config } from "dotenv";
 config();
 
 // Pure magic - one function call!
-export default defineConfig(() => createSageConfig({
-  router: true,
-  apiProxy: {
-    target: process.env.VITE_API_BASE_URL || "http://localhost:2223",
-  }
-}));
+export default defineConfig(async () => {
+  const baseConfig = await createSageConfig({
+    router: true
+  });
+
+  // Fix dayjs ES module issue from AppKit - merge configs properly
+  return {
+    ...baseConfig,
+    optimizeDeps: {
+      ...baseConfig.optimizeDeps,
+      include: [...(baseConfig.optimizeDeps?.include || []), "dayjs", "dayjs/locale/en", "dayjs/esm/locale/en"]
+    }
+  };
+});

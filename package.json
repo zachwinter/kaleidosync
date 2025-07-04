@@ -1,34 +1,38 @@
 {
   "name": "kaleidosync",
-  "version": "10.0.7",
+  "version": "10.0.8",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite --host --port 5173",
     "build": "NODE_ENV=production vite build",
-    "start": "node ./server.js"
+    "preview": "vite preview",
+    "start": "node server.js"
   },
   "dependencies": {
+    "@mapbox/vector-tile": "^2.0.3",
+    "@solana/web3.js": "^1.98.2",
     "@tresjs/core": "4.3.6",
     "@vueuse/core": "13.3.0",
     "@wearesage/editor": "0.1.0",
-    "@wearesage/shared": "1.6.0",
-    "@wearesage/vue": "2.3.4",
     "@wearesage/sass": "0.1.1",
-    "compression": "^1.7.4",
-    "dotenv": "17.0.1",
-    "express": "^4.18.2",
-    "helmet": "^7.1.0",
-    "http-proxy-middleware": "^3.0.0",
+    "@wearesage/shared": "1.6.0",
+    "@wearesage/static": "^3.0.0",
+    "@wearesage/vue": "3.1.2",
+    "axios": "^1.10.0",
+    "dotenv": "^17.0.1",
+    "ethers": "^6.14.4",
     "pinia": "3.0.3",
     "sass": "1.89.1",
-    "typescript": "5.8.3",
+    "socket.io-client": "^4.8.1",
+    "typescript": "^5.8.2",
     "vite": "6.3.5",
     "vue": "3.5.17"
   },
   "devDependencies": {
     "@types/three": "0.173.0",
+    "@vitejs/plugin-vue": "^5.2.4",
     "sass": "1.89.1",
-    "typescript": "5.8.3",
+    "typescript": "^5.8.2",
     "vite": "6.3.5",
     "vue-tsc": "2.2.0"
   }
