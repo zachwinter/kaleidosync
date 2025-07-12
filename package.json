@@ -1,6 +1,6 @@
 {
   "name": "kaleidosync",
-  "version": "10.0.10",
+  "version": "10.0.69",
   "type": "module",
   "scripts": {
     "dev": "npm run dev:local",
