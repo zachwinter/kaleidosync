@@ -1,11 +1,12 @@
 {
   "name": "kaleidosync",
-  "version": "10.0.9",
+  "version": "10.0.10",
   "type": "module",
   "scripts": {
-    "dev": "vite --host --port 5173",
-    "build": "NODE_ENV=production vite build",
-    "preview": "vite preview",
+    "dev": "npm run dev:local",
+    "dev:prod": "VITE_API_BASE_URL=https://kaleidosync-api-690ea0e25a5b.herokuapp.com VITE_SOCKET_URL=wss://kaleidosync-api-690ea0e25a5b.herokuapp.com vite --host",
+    "dev:local": "VITE_API_BASE_URL=http://localhost:2223 VITE_SOCKET_URL=http://localhost:2223 vite --host",
+    "build": "vite build",
     "start": "node server.js"
   },
   "dependencies": {
@@ -15,7 +16,7 @@
     "@wearesage/sass": "0.1.1",
     "@wearesage/shared": "1.6.0",
     "@wearesage/static": "3.1.0",
-    "@wearesage/vue": "3.1.4",
+    "@wearesage/vue": "4.2.0",
     "axios": "^1.10.0",
     "dotenv": "^17.0.1",
     "pinia": "3.0.3",

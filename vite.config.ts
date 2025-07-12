@@ -7,7 +7,11 @@ config();
 // Pure magic - one function call!
 export default defineConfig(async () => {
   const baseConfig = await createSageConfig({
-    router: true
+    router: true,
+    apiProxy: {
+      target: "http://localhost:2223",
+      path: "/api"
+    }
   });
 
   // Fix dayjs ES module issue from AppKit - merge configs properly

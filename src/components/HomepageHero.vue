@@ -13,10 +13,29 @@
       <span><strong>LOOKS like</strong> </span>
     </Row>
 
-    <Column gap="1" v-if="!auth.isAuthenticated">
-      <Button @click="auth.signIn" :disabled="auth.isAuthenticating">
-        {{ auth.isAuthenticating ? "SIGNING IN..." : "SIGN IN" }}
-      </Button>
+    <Column gap="1">
+      <!-- Not authenticated - show auth flow -->
+      <div v-if="!auth.isAuthenticated">
+        <!-- Loading state -->
+        <button v-if="auth.loading || auth.isWalletInitializing" disabled>
+          {{ auth.isWalletInitializing ? 'Initializing Wallet...' : 'Loading...' }}
+        </button>
+        
+        <!-- Wallet connection needed -->
+        <button v-else-if="auth.needsWalletConnection" @click="auth.connectWallet">
+          Connect Wallet
+        </button>
+        
+        <!-- Wallet connected, need to authenticate -->
+        <button v-else-if="auth.needsAuthentication" @click="auth.signIn" :disabled="auth.isAuthenticating">
+          {{ auth.isAuthenticating ? 'Signing In...' : 'Sign In' }}
+        </button>
+      </div>
+      
+      <!-- Authenticated - show user info -->
+      <div v-else>
+        Welcome {{ auth.walletAddress?.slice(0, 8) }}!
+      </div>
     </Column>
   </Column>
 </template>

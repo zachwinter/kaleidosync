@@ -1,28 +1,30 @@
 <template>
   <View>
     <AudiusSearch />
-    <Transition name="fade">
-      <Column v-if="audius.results?.length === 0">
-        <AudiusTrending type="playlists" title="Trending Playlists" @select="viewPlaylist" />
-        <AudiusTrending type="tracks" title="Trending Tracks" @select="playTrack" />
+
+    <Row v-if="audius.query?.length > 2">
+      <AudiusTrending type="tracks" title="Trending Tracks" @select="playTrack" />
+      <Column v-if="users.length > 0">
+        <AudiusTrending :data="users" title="Users" @select="viewPlaylist" />
       </Column>
-    </Transition>
+      <Column v-if="tracks?.length > 0">
+        <AudiusTrending :data="tracks" title="Tracks" @select="viewPlaylist" />
+      </Column>
+      <Column v-if="playlists?.length > 0">
+        <AudiusTrending :data="playlists" title="Playlists" @select="viewPlaylist" />
+      </Column>
+    </Row>
+
+    <Column v-else>
+      <AudiusTrending type="playlists" title="Trending Playlists" @select="viewPlaylist" />
+      <AudiusTrending type="tracks" title="Trending Tracks" @select="playTrack" />
+    </Column>
   </View>
 </template>
 
 <script setup lang="ts">
-import {
-  View,
-  AudiusSearch,
-  Column,
-  AudiusFeatured,
-  AudiusTrending,
-  useAudius,
-  useRouter,
-  useQueue,
-  useSources,
-  adaptTrack
-} from "@wearesage/vue";
+import { computed } from "vue";
+import { View, AudiusSearch, Column, Row, AudiusTrending, useAudius, useRouter, useQueue, useSources, adaptTrack } from "@wearesage/vue";
 import { AudioSource } from "@wearesage/shared";
 
 const audius = useAudius();
@@ -33,6 +35,10 @@ const sources = useSources();
 function viewPlaylist({ id }: { id: string }) {
   router.push(`/audius/playlists/${id}`);
 }
+
+const playlists = computed(() => audius.results?.playlists || []);
+const users = computed(() => audius.results?.users || []);
+const tracks = computed(() => audius.results?.tracks || []);
 
 async function playTrack(track: any) {
   const universalTrack = adaptTrack(track, AudioSource.AUDIUS);
