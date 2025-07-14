@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ESNext",
+    "module": "nodenext",
     "moduleResolution": "bundler",
     "strict": true,
     "noUnusedLocals": true,

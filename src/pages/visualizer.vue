@@ -1,11 +1,11 @@
 <template>
-  <View>
-    <Transition name="fade-up">
+  <View :class="{ hidden: ui.showShaderScroll }">
+    <!-- <Transition name="fade-up">
       <AccountPill v-if="showMenu || showSources" />
-    </Transition>
+    </Transition> -->
 
     <Transition name="fade">
-      <Menu v-if="showMenu && !forceHide" @open-sources="openSources" />
+      <Menu v-if="showMenu && !forceHide" @open-sources="openSources" @open-designs="openDesigns" />
     </Transition>
 
     <Transition name="fade">
@@ -21,7 +21,17 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import { useMagicKeys } from "@vueuse/core";
-import { AccountPill, View, useSources, useViewport, useSketches, parseQueryString, useUserState, TrackDisplay } from "@wearesage/vue";
+import {
+  AccountPill,
+  View,
+  useSources,
+  useViewport,
+  useUI,
+  useSketches,
+  parseQueryString,
+  useUserState,
+  TrackDisplay
+} from "@wearesage/vue";
 import { Menu, AudioSources } from "../components";
 import { useRouter } from "@wearesage/vue";
 import { AudioSource, RadioParadiseStation } from "@wearesage/shared";
@@ -31,6 +41,7 @@ const viewport = useViewport();
 const sources = useSources();
 const sketches = useSketches();
 const state = useUserState();
+const ui = useUI();
 const showSources = ref(!sources.source);
 const showMenu = ref(!showSources.value);
 const forceHide = ref(false);
@@ -53,7 +64,7 @@ onMounted(async () => {
 watch(
   () => viewport.mouse,
   () => {
-    if (forceHide.value || showSources.value) return;
+    if (forceHide.value || showSources.value || ui.showShaderScroll) return;
     clearTimeout(showMenuTimeout.value);
     showMenu.value = true;
     showMenuTimeout.value = setTimeout(() => {
@@ -123,6 +134,11 @@ function selectSource(source: AudioSource) {
   showMenu.value = false;
 }
 
+function openDesigns() {
+  showMenu.value = false;
+  ui.showShaderScroll = true;
+}
+
 function selectRadioParadise(data: { station: RadioParadiseStation }) {
   sources.selectRadioParadiseStation(data.station);
   sources.selectSource(AudioSource.RADIO_PARADISE);
@@ -140,3 +156,9 @@ function selectRadioParadise(data: { station: RadioParadiseStation }) {
   }
 }
 </route>
+
+<style lang="scss" scoped>
+.hidden {
+  pointer-events: none;
+}
+</style>

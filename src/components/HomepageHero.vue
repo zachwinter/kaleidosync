@@ -1,11 +1,4 @@
 <template>
-  <Transition name="fade">
-    <Row gap="0.5" v-if="!toast.visible" class="active-users" align="center" justify="center">
-      <i class="dot"></i>
-      <span>{{ globalUsers.totalUsers }} people seeing the music <strong>right now</strong></span>
-    </Row>
-  </Transition>
-
   <Column class="hero" align="start" :padding="device.isMobile ? '1 1 1 1' : '1 1 1 5'" gap="1" justify="center">
     <Row align="start" justify="start" is="h1">
       <span>what</span>
@@ -13,35 +6,16 @@
       <span><strong>LOOKS like</strong> </span>
     </Row>
 
-    <Column gap="1" v-if="!auth.isAuthenticated">
-      <Button @click="auth.signIn" :disabled="auth.isAuthenticating">
-        {{ auth.isAuthenticating ? "SIGNING IN..." : "SIGN IN" }}
-      </Button>
-    </Column>
+    <Link :to="`/visualizer`"> GET STARTED </Link>
   </Column>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, onUnmounted } from "vue";
-import {
-  Column,
-  Row,
-  Button,
-  pause,
-  randomNumber,
-  useViewport,
-  useAnimation,
-  useAuth,
-  useToast,
-  useGlobalActiveUsers,
-  useDevice
-} from "@wearesage/vue";
+import { Column, Row, pause, randomNumber, useViewport, useAnimation, Link, useDevice } from "@wearesage/vue";
 
 const device = useDevice();
 const viewport = useViewport();
-const auth = useAuth();
-const toast = useToast();
-const globalUsers = useGlobalActiveUsers();
 const typed = ref(["Spotify", "Audius", "Radio Paradise", "your voice"]);
 const activeIndex = ref(0);
 const visible = ref("");
@@ -204,5 +178,9 @@ h1 {
       height: 3rem;
     }
   }
+}
+
+.hero :deep(button) {
+  text-decoration: none !important;
 }
 </style>

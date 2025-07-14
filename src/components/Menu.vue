@@ -8,7 +8,9 @@
       :label="userState.showMenuLabels ? 'Library' : undefined"
       icon="vinyl" />
 
-    <IconButton to="/design" icon="sliders" :label="userState.showMenuLabels ? 'Design' : undefined" />
+    <IconButton icon="eye" :label="userState.showMenuLabels ? 'Designs' : undefined" @click="$emit('open-designs')" />
+
+    <IconButton to="/design" icon="sliders" :label="userState.showMenuLabels ? 'Customize' : undefined" />
 
     <IconButton to="/settings" icon="settings" :label="userState.showMenuLabels ? 'Settings' : undefined" />
 
@@ -26,7 +28,7 @@
 import { IconButton, useViewport, useSources, useNativeShare, useUserState, AudioSourceButton } from "@wearesage/vue";
 import { AudioSource } from "@wearesage/shared";
 
-defineEmits(["open-sources"]);
+defineEmits(["open-sources", "open-designs"]);
 
 const viewport = useViewport();
 const sources = useSources();

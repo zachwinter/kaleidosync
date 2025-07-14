@@ -1,5 +1,5 @@
 <template>
-  <figure class="renderer" :style="styles">
+  <figure class="renderer" :style="styles" :class="{ show: ui.showShaderScroll }">
     <TresCanvas
       :width="width"
       :height="height"
@@ -30,7 +30,7 @@
         :width="viewport.width"
         :height="viewport.height"
         :dpr="dpr"
-        :visible="showScroll"
+        :visible="ui.showShaderScroll"
         :sketches="sketches.iterations"
         :volume="userState.disableFlashing ? 1 : sources.volume"
         :stream="sources.stream * userState.visualizerSpeed"
@@ -52,7 +52,8 @@ import {
   useDevice,
   useShaderErrorDetection,
   useRoute,
-  useUserState
+  useUserState,
+  useUI
 } from "@wearesage/vue";
 
 const raf = useRAF();
@@ -60,6 +61,7 @@ const sketches = useSketches();
 const sources = useSources();
 const route = useRoute();
 const device = useDevice();
+const ui = useUI();
 const viewport = useViewport();
 const userState = useUserState();
 const width = computed(() => viewport.width);
@@ -69,7 +71,6 @@ const context = shallowRef();
 const sketch = shallowRef();
 const scroll = shallowRef();
 const { error, setup, isSetup } = useShaderErrorDetection(toRef(sketches.shader));
-const showScroll = computed(() => false /*!isAudius && sources.menuVisible*/);
 const renderIndex = ref(0);
 
 const styles = computed(() => {
@@ -103,7 +104,8 @@ watch(
 );
 
 function selectSketch(s: any) {
-  console.log(s);
+  sketches.selectSketch(s);
+  ui.showShaderScroll = false;
 }
 
 useAnimation(now => {
@@ -116,11 +118,17 @@ useAnimation(now => {
 });
 
 if (!sketches.sketch) sketches.sampleSketches();
+
+document.body.addEventListener("wheel", e => {
+  raf.preFrame.push(() => {
+    viewport.onScroll(e.deltaY);
+  });
+});
 </script>
 
 <style lang="scss" scoped>
 figure {
-  @include position(fixed, 0 0 null null, -1);
+  @include position(fixed, 0 0 null null, 1);
   @include size(100%);
   transition: all 1000ms $transition-easing;
 }
