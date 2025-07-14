@@ -1,6 +1,6 @@
 {
   "name": "kaleidosync",
-  "version": "10.0.12",
+  "version": "10.0.13",
   "type": "module",
   "scripts": {
     "dev": "vite --host --port 5173",
