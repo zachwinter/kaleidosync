@@ -13,7 +13,7 @@
     </Transition>
 
     <Transition name="fade-down">
-      <TrackDisplay v-if="(showMenu && !forceHide && sources.source) || state.alwaysShowTrack" />
+      <TrackDisplay v-if="showMenu && !forceHide && sources.source" />
     </Transition>
   </View>
 </template>
@@ -21,17 +21,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import { useMagicKeys } from "@vueuse/core";
-import {
-  AccountPill,
-  View,
-  useSources,
-  useViewport,
-  useUI,
-  useSketches,
-  parseQueryString,
-  useUserState,
-  TrackDisplay
-} from "@wearesage/vue";
+import { View, useSources, useViewport, useUI, useSketches, parseQueryString, TrackDisplay } from "@wearesage/vue";
 import { Menu, AudioSources } from "../components";
 import { useRouter } from "@wearesage/vue";
 import { AudioSource, RadioParadiseStation } from "@wearesage/shared";
@@ -40,7 +30,6 @@ const router = useRouter();
 const viewport = useViewport();
 const sources = useSources();
 const sketches = useSketches();
-const state = useUserState();
 const ui = useUI();
 const showSources = ref(!sources.source);
 const showMenu = ref(!showSources.value);

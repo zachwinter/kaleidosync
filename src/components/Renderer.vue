@@ -20,9 +20,9 @@
         :height="height"
         :shader="sketches.shader"
         :uniforms="sketches.uniforms"
-        :volume="userState.disableFlashing ? 1 : sources.volume"
-        :stream="sources.stream * userState.visualizerSpeed"
-        :time="raf.time * userState.visualizerSpeed" />
+        :volume="sources.volume"
+        :stream="sources.stream"
+        :time="raf.time" />
       <ShaderScroll
         @select="selectSketch"
         ref="scroll"
@@ -32,9 +32,9 @@
         :dpr="dpr"
         :visible="ui.showShaderScroll"
         :sketches="sketches.iterations"
-        :volume="userState.disableFlashing ? 1 : sources.volume"
-        :stream="sources.stream * userState.visualizerSpeed"
-        :time="raf.time * userState.visualizerSpeed" />
+        :volume="sources.volume"
+        :stream="sources.stream"
+        :time="raf.time" />
     </TresCanvas>
   </figure>
 </template>
@@ -52,7 +52,6 @@ import {
   useDevice,
   useShaderErrorDetection,
   useRoute,
-  useUserState,
   useUI
 } from "@wearesage/vue";
 
@@ -63,7 +62,6 @@ const route = useRoute();
 const device = useDevice();
 const ui = useUI();
 const viewport = useViewport();
-const userState = useUserState();
 const width = computed(() => viewport.width);
 const height = computed(() => viewport.height);
 const dpr = computed(() => (1 ? 1 : device.isMobile ? 1 : 1));
@@ -77,7 +75,7 @@ const styles = computed(() => {
   return {
     width: width.value + "px",
     height: height.value + "px",
-    opacity: userState.isOnHomepage ? 0.15 : 1
+    opacity: 1
   };
 });
 

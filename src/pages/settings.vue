@@ -17,11 +17,21 @@
 </template>
 
 <script setup lang="ts">
-import { View, Column, Toggle, RangeInput, useUserState, useRouter } from "@wearesage/vue";
+import { View, Column, Toggle, RangeInput, useRouter } from "@wearesage/vue";
 import { MenuHeader } from "../components";
 
-const userState = useUserState();
 const router = useRouter();
+
+const userState = {
+  disableFlashing: false,
+  neonMode: false,
+  showMenuLabels: false,
+  shuffleDesigns: true,
+  alwaysShowTrack: false,
+  infinityPlay: false,
+  preferLossless: false,
+  visualizerSpeed: 1
+};
 </script>
 
 <style lang="scss" scoped>
