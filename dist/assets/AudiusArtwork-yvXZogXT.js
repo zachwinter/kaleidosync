@@ -1,0 +1,2 @@
+import{d as a,k as o,e as r,i,o as n,h as s,t,_ as m}from"./index-DLc9lyo5.js";const l={key:0},p=["src"],u=a({__name:"AudiusArtwork",props:{size:{default:"240px"},item:{}},setup(c){return o(e=>({"43a7f1b3":e.size})),(e,_)=>e.item?(n(),r("figure",l,[s("img",{src:e.item?.artwork?.["480x480"]},null,8,p),s("p",null,t(e.item?.title||e.item?.playlist_name),1),s("strong",null,t(e.item?.user?.handle),1)])):i("",!0)}}),f=m(u,[["__scopeId","data-v-6c67eba2"]]);export{f as A};
+//# sourceMappingURL=AudiusArtwork-yvXZogXT.js.map
