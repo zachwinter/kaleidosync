@@ -15,7 +15,7 @@
     "@wearesage/sass": "0.1.1",
     "@wearesage/shared": "1.6.0",
     "@wearesage/static": "3.1.0",
-    "@wearesage/vue": "4.2.99999999",
+    "@wearesage/vue": "4.2.999999999",
     "axios": "^1.10.0",
     "dotenv": "^17.0.1",
     "pinia": "3.0.3",
